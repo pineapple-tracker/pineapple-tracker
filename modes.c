@@ -226,7 +226,6 @@ void _parsecmd(char cmd[]){
 void normalmode(int c){
 	int i;
 
-
 	// don't save the action for repeat if it's a movement or a repeat, or
 	// something else that doesnt make sense to repeat
 	if(c != 'h' &&
