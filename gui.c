@@ -587,11 +587,31 @@ void export() {
 	fclose(hf);
 }
 
-void vicmd() {
-}
+//void vicmd() {
+//}
 
 void handleinput() {
 	int c, x;
+	SDL_Event event;
+	SDL_Joystick *joystick;
+
+	SDL_JoystickEventState(SDL_ENABLE);
+	joystick = SDL_JoystickOpen(0);
+
+	while(SDL_PollEvent(&event))
+	{  
+			switch(event.type)
+			{  
+					case SDL_KEYDOWN:
+					/* handle keyboard stuff here */                            
+					break;
+
+					case SDL_QUIT:
+					/* Set whatever flags are necessary to */
+					/* end the main game loop here */
+					break;
+			}
+	}
 	
 	if (vimode) {
 		if ((c = getch()) != ERR) switch(c) {
@@ -609,7 +629,7 @@ void handleinput() {
 			case ':':
 				// interactive command thing
 
-				vicmd();
+				//vicmd();
 				break;
 			case 'h':
 				switch(currtab) {

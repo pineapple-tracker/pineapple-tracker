@@ -1,6 +1,9 @@
-LDFLAGS=-lSDL -lncurses
-CFLAGS=-Wall
-CC=gcc
+LDFLAGS = $(SDL_LDFLAGS) $(NCURSES_LDFLAGS)
+CFLAGS = -Wall
+CC = gcc
+
+NCURSES_LDFLAGS := $(shell ncurses5-config --libs)
+SDL_LDFLAGS := $(shell sdl-config --libs)
 
 all:		tracker
 
