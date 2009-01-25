@@ -1,0 +1,31 @@
+
+
+resource 0 = song
+resource 1 = instrument 1
+...
+resource 15 = instrument 15
+resource 16 = track 1
+...
+
+resource table:
+	xxxxxxxxxxxxx			= byte offset into songdata
+	(for each resource)
+
+song:
+	0xxxxxx				= track x, transp 0
+	1xxxxxxyyyy			= track x, transp y (signed)
+	(times four, for each line)
+
+instrument:
+	00000000			= end
+	0000ccccpppppppp		= command c, parameter p
+	(for each cmd)
+
+track:
+	000				= blank line
+	100xxxxxxx			= note x, instr 0 (last)
+	110xxxxxxxiiii			= note x, instr i
+	001ccccpppppppp			= cmd c, param p
+	101xxxxxxxccccpppppppp		= note x, instr 0 (last), cmd c, param p
+	111xxxxxxxiiiiccccpppppppp	= note x, instr i, cmd c, param p
+	(for each line)
