@@ -592,18 +592,24 @@ void export() {
 //}
 
 void initjoystick() {
-	SDL_Joystick *joystick;
+	SDL_Event event;
+	SDL_Joystick *joystick = NULL;
 
 	SDL_JoystickEventState(SDL_ENABLE);
-	joystick = SDL_JoystickOpen(0);
+	if (SDL_NumJoysticks > 0) {
+		joystick = SDL_JoystickOpen(0);
+	}
+
+	sdlmainloop(event, joystick);
 }
 
 void sdlmainloop(SDL_Event event, SDL_Joystick *joystick) {
 	SDL_JoystickEventState(SDL_ENABLE);
 	joystick = SDL_JoystickOpen(0);
 
+	// wtf does this do
 	//while(SDL_PollEvent(&event)) {  
-	while(!sdl_finished) {  
+	while(SDL_PollEvent(&event)) {  
 		switch(event.type) {  
 			case SDL_KEYDOWN:
 				mvaddstr(2, 0, "kello again");
@@ -1184,6 +1190,7 @@ void drawgui() {
 
 	erase();
 	mvaddstr(0, 0, "music chip tracker 0.1 by lft");
+	mvaddstr(1, 0, "press m to switch input modes");
 	drawmodeinfo(cols - 30, 0);
 	snprintf(buf, sizeof(buf), "Octave:   %d <>", octave);
 	mvaddstr(2, cols - 14, buf);

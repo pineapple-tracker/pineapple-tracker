@@ -25,7 +25,6 @@ struct track {
 	struct trackline	line[TRACKLEN];
 };
 
-
 void initchip();
 u8 interrupthandler();
 
@@ -38,6 +37,10 @@ void iedplonk(int, int);
 
 void initgui();
 void guiloop();
+
+void initjoystick();
+void sdlmainloop();
+FILE ztlog;
 
 void startplaysong(int);
 void startplaytrack(int);

@@ -1,3 +1,5 @@
 *.o
 *.swp
 *.song
+tracker
+ztlog

@@ -63,27 +63,27 @@ void audiocb(void *userdata, Uint8 *buf, int len) {
 
 int main(int argc, char **argv) {
 	SDL_AudioSpec requested, obtained;
-	FILE *log;
+	FILE *ztlog;
 
-	log = fopen("ztlog","w");
+	ztlog = fopen("ztlog","w");
 
 	if(argc != 2) {
 		err(1, "usage: %s <filename>\n", argv[0]);
 	}
 
 	if (SDL_Init( SDL_INIT_AUDIO | SDL_INIT_JOYSTICK ) < 0) {
-		fprintf(log, "Couldn't initialize SDL: %s\n", SDL_GetError());
+		fprintf(ztlog, "Couldn't initialize SDL: %s\n", SDL_GetError());
 		exit(1);
 	}
 
 	initjoystick();
 
-	fprintf(log, "%i joysticks were found.\n\n", SDL_NumJoysticks() );
-	fprintf(log, "The names of the joysticks are:\n");
+	fprintf(ztlog, "%i joysticks were found.\n\n", SDL_NumJoysticks() );
+	fprintf(ztlog, "The names of the joysticks are:\n");
 
 	int i;
 	for( i=0; i < SDL_NumJoysticks(); i++ ) {
-		fprintf(log,"    %s\n", SDL_JoystickName(i));
+		fprintf(ztlog,"    %s\n", SDL_JoystickName(i));
 	}
 
 	atexit(SDL_Quit);
