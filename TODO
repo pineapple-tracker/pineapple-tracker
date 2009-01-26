@@ -3,3 +3,5 @@ vi-style keybindings
 control with a gamepad
 
 show play position in instrument view
+
+port gui to libcaca,  lol

@@ -40,6 +40,7 @@ void guiloop();
 
 void initjoystick();
 void sdlmainloop();
+void display();
 
 void startplaysong(int);
 void startplaytrack(int);

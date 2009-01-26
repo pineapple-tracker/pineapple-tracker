@@ -18,9 +18,10 @@ int currtrack = 1, currinstr = 1;
 int currtab = 0;
 int octave = 4;
 bool vimode = true;
-char *dispstr = "";
-int disptimeout = 0;
+char *dispmesg = "";
+int disptick = 60;
 bool sdl_finished = false;
+int currbutt = -1;
 
 char filename[1024];
 
@@ -608,11 +609,10 @@ void sdlmainloop(SDL_Event event, SDL_Joystick *joystick) {
 	joystick = SDL_JoystickOpen(0);
 
 	// wtf does this do
-	//while(SDL_PollEvent(&event)) {  
 	while(SDL_PollEvent(&event)) {  
+	//while(!sdl_finished) {  
 		switch(event.type) {  
 			case SDL_KEYDOWN:
-				mvaddstr(2, 0, "kello again");
 				break;
 
 			case SDL_JOYBUTTONDOWN:
@@ -620,19 +620,23 @@ void sdlmainloop(SDL_Event event, SDL_Joystick *joystick) {
 				// should probably figure out what these are
 				// gotta make them configurable, too
 					case 0:
-						mvaddstr(2, 0, "Button 0");
+						currbutt = 0;
+						display("0");
 						break;
 					case 1:
-						mvaddstr(2, 0, "Button 1");
+						currbutt = 1;
+						display("1");
 						break;
 					case 2:
-						mvaddstr(2, 0, "Button 2");
+						currbutt = 2;
+						display("2");
 						break;
 					case 3:
-						mvaddstr(2, 0, "Button 3");
+						currbutt = 3;
+						display("3");
 						break;
 					default:
-						mvaddstr(2, 0, "hellooo");
+						display("hii");
 						break;
 				}
 				break;
@@ -642,7 +646,6 @@ void sdlmainloop(SDL_Event event, SDL_Joystick *joystick) {
 				break;
 
 			default:
-				mvaddstr(2, 0, "hellooo again");
 				break;
 		}
 	}
@@ -1181,6 +1184,11 @@ void handleinput() {
 	}
 }
 
+void display(char *str) {
+	disptick = 5;
+	dispmesg = str;
+}
+
 void drawgui() {
 	char buf[1024];
 	int lines = LINES, cols = 79;
@@ -1190,7 +1198,7 @@ void drawgui() {
 
 	erase();
 	mvaddstr(0, 0, "music chip tracker 0.1 by lft");
-	mvaddstr(1, 0, "press m to switch input modes");
+	mvaddstr(1, 0, "press m to switch keybindings");
 	drawmodeinfo(cols - 30, 0);
 	snprintf(buf, sizeof(buf), "Octave:   %d <>", octave);
 	mvaddstr(2, cols - 14, buf);
@@ -1209,9 +1217,18 @@ void drawgui() {
 	snprintf(buf, sizeof(buf), "Instr. %02x []", currinstr);
 	mvaddstr(5, 49, buf);
 	drawinstred(49, 6, lines - 12);
-    
+
+	if (currbutt > -1) {
+		snprintf(buf, sizeof(buf), "joybutton: %d", currbutt);
+		mvaddstr(2, 0, buf);
+	}
+
+	if (disptick > 0) {
+		mvaddstr(3, 0, dispmesg);
+	}
+
 	if (vimode) {
-		mvaddstr(3, 0, "vimode on");
+		mvaddstr(2, 0, "*vimode*");
 	}
     
 	switch(currtab) {
@@ -1227,6 +1244,10 @@ void drawgui() {
 	}
 
 	refresh();
+
+	if (disptick > 0) {
+		disptick--;
+	}
 }
 
 void guiloop() {
