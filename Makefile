@@ -5,9 +5,15 @@ CC = gcc
 NCURSES_LDFLAGS := $(shell ncurses5-config --libs)
 SDL_LDFLAGS := $(shell sdl-config --libs)
 
-all:		tracker
+all:	tracker
 
 tracker:	main.o chip.o gui.o
-		gcc -o $@ $^ ${LDFLAGS}
+	gcc -o $@ $^ ${LDFLAGS}
 
-%.o:		%.c stuff.h Makefile
+%.o:	%.c stuff.h Makefile
+
+.PHONY:
+	clean
+clean:	
+	@echo "clean ..."
+	@rm -f *.o

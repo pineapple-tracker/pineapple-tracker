@@ -20,6 +20,7 @@ int octave = 4;
 bool vimode = true;
 char *dispstr = "";
 int disptimeout = 0;
+bool sdl_finished = false;
 
 char filename[1024];
 
@@ -590,29 +591,60 @@ void export() {
 //void vicmd() {
 //}
 
-void handleinput() {
-	int c, x;
-	SDL_Event event;
+void initjoystick() {
 	SDL_Joystick *joystick;
 
 	SDL_JoystickEventState(SDL_ENABLE);
 	joystick = SDL_JoystickOpen(0);
+}
 
-	while(SDL_PollEvent(&event))
-	{  
-			switch(event.type)
-			{  
-					case SDL_KEYDOWN:
-					/* handle keyboard stuff here */                            
-					break;
+void sdlmainloop(SDL_Event event, SDL_Joystick *joystick) {
+	SDL_JoystickEventState(SDL_ENABLE);
+	joystick = SDL_JoystickOpen(0);
 
-					case SDL_QUIT:
-					/* Set whatever flags are necessary to */
-					/* end the main game loop here */
-					break;
-			}
+	//while(SDL_PollEvent(&event)) {  
+	while(!sdl_finished) {  
+		switch(event.type) {  
+			case SDL_KEYDOWN:
+				mvaddstr(2, 0, "kello again");
+				break;
+
+			case SDL_JOYBUTTONDOWN:
+				switch(event.jbutton.button) {
+				// should probably figure out what these are
+				// gotta make them configurable, too
+					case 0:
+						mvaddstr(2, 0, "Button 0");
+						break;
+					case 1:
+						mvaddstr(2, 0, "Button 1");
+						break;
+					case 2:
+						mvaddstr(2, 0, "Button 2");
+						break;
+					case 3:
+						mvaddstr(2, 0, "Button 3");
+						break;
+					default:
+						mvaddstr(2, 0, "hellooo");
+						break;
+				}
+				break;
+
+			case SDL_QUIT:
+				sdl_finished = true;
+				break;
+
+			default:
+				mvaddstr(2, 0, "hellooo again");
+				break;
+		}
 	}
-	
+}
+
+void handleinput() {
+	int c, x;
+
 	if (vimode) {
 		if ((c = getch()) != ERR) switch(c) {
 			case 10:
@@ -631,7 +663,16 @@ void handleinput() {
 
 				//vicmd();
 				break;
+			case ' ':
+				silence();
+				if(playmode == PM_IDLE) {
+					playmode = PM_EDIT;
+				} else {
+					playmode = PM_IDLE;
+				}
+				break;
 			case 'h':
+			case KEY_LEFT:
 				switch(currtab) {
 					case 0:
 						if(songx) songx--;
@@ -644,15 +685,8 @@ void handleinput() {
 						break;
 				}
 				break;
-			case ' ':
-				silence();
-				if(playmode == PM_IDLE) {
-					playmode = PM_EDIT;
-				} else {
-					playmode = PM_IDLE;
-				}
-				break;
 			case 'l':
+			case KEY_RIGHT:
 				switch(currtab) {
 					case 0:
 						if(songx < 15) songx++;
@@ -666,6 +700,7 @@ void handleinput() {
 				}
 				break;
 			case 'k':
+			case KEY_UP:
 				switch(currtab) {
 					case 0:
 						if(songy) songy--;
@@ -683,6 +718,7 @@ void handleinput() {
 				}
 				break;
 			case 'j':
+			case KEY_DOWN:
 				switch(currtab) {
 					case 0:
 						if(songy < songlen - 1) songy++;
