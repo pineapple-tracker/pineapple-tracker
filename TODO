@@ -1,5 +1,5 @@
 vi-style keybindings
-control with a gamepad
-show play position in instrument view
 
-gui only updates on keypress -- done, halfdelay(1)
+control with a gamepad
+
+show play position in instrument view
