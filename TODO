@@ -3,7 +3,7 @@ enhancements:
 vi-style keybindings
 	make comand mode
 	^h and ^l to change windows (or maybe ^w h?)
-	insert mode -> edit mode
+	stop escape key delay
 
 vi-ideas:
 	Number+action, do that action that many times
@@ -17,3 +17,5 @@ show play position in instrument view
 
 port gui to libcaca.
 branch?
+
+save as.. support
