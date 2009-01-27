@@ -17,7 +17,7 @@ int instrx, instry, instroffs;
 int currtrack = 1, currinstr = 1;
 int currtab = 0;
 int octave = 4;
-bool vimode = true;
+bool vimode = false;
 char *dispmesg = "";
 int disptick = 60;
 bool sdl_finished = false;
@@ -244,13 +244,15 @@ void exitgui() {
 void initgui() {
 	int i;
 
+	// curses opts
 	initscr();
-	//noecho();
+	raw();
+	noecho();
+	nodelay(stdscr, TRUE);
 	keypad(stdscr, TRUE);
+	curs_set(0);
+	//halfdelay(1);
 	//cbreak();
-	//nodelay(stdscr, TRUE);
-	halfdelay(1);
-	//raw();
 
 	for(i = 1; i < 256; i++) {
 		instrument[i].length = 1;
@@ -636,7 +638,7 @@ void sdlmainloop(SDL_Event event, SDL_Joystick *joystick) {
 						display("3");
 						break;
 					default:
-						display("hii");
+						display("unknown joystick button");
 						break;
 				}
 				break;
@@ -649,6 +651,16 @@ void sdlmainloop(SDL_Event event, SDL_Joystick *joystick) {
 				break;
 		}
 	}
+}
+
+// waits for next char from getch and matches it with the parameter
+bool inpwait(char ch) {
+	while (getch() == ERR) {
+		if (getch() == ch) {
+			return true;
+		}
+	}
+	return (getch() == ch);
 }
 
 void handleinput() {
@@ -667,6 +679,26 @@ void handleinput() {
 					}
 				}
 				break;
+			case 'Z':
+				if (inpwait('Z')) {
+					savefile(filename);
+					erase();
+					refresh();
+					endwin();
+					exit(0);
+				}
+				/*while (getch() == ERR) {
+					display("waiting");
+					if (getch() == 'Z') {
+						savefile(filename);
+						erase();
+						refresh();
+						endwin();
+						exit(0);
+					} else {
+						display("hii");
+					}
+				}*/
 			case ':':
 				// interactive command thing
 
@@ -778,7 +810,7 @@ void handleinput() {
 						break;
 				}
 				break;
-			case 'm':
+			case 'L' - '@':
 				vimode = false;
 				break;
 			default:
@@ -847,7 +879,7 @@ void handleinput() {
 							track[currtrack].line[tracky].cmd[(trackx - 3) / 3] = c;
 						}
 					}
-					if(c == 'A') {
+					if(c == 'o') {
 						if(currtab == 2) {
 							struct instrument *in = &instrument[currinstr];
 
@@ -909,6 +941,7 @@ void handleinput() {
 				}
 				break;
 		}
+	/* normal mode */
 	} else {
 		if((c = getch()) != ERR) switch(c) {
 			case 10:
@@ -922,7 +955,7 @@ void handleinput() {
 					}
 				}
 				break;
-			case 'm':
+			case 'L' - '@':
 				vimode = true;
 				break;
 			case ' ':
@@ -945,6 +978,7 @@ void handleinput() {
 				break;
 			case 'W' - '@':
 				savefile(filename);
+				display("*saved*");
 				break;
 			case '<':
 				if(octave) octave--;
@@ -1185,7 +1219,7 @@ void handleinput() {
 }
 
 void display(char *str) {
-	disptick = 5;
+	disptick = 300;
 	dispmesg = str;
 }
 
@@ -1198,7 +1232,7 @@ void drawgui() {
 
 	erase();
 	mvaddstr(0, 0, "music chip tracker 0.1 by lft");
-	mvaddstr(1, 0, "press m to switch keybindings");
+	mvaddstr(1, 0, "press ^L to switch keybindings");
 	drawmodeinfo(cols - 30, 0);
 	snprintf(buf, sizeof(buf), "Octave:   %d <>", octave);
 	mvaddstr(2, cols - 14, buf);
