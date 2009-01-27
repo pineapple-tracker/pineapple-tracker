@@ -429,10 +429,7 @@ void optimize() {
 
 		for(j = 0; j < tracklen; j++) {
 			if(track[i].line[j].instr) {
-				if(track[i].line[j].instr == last) {
-					track[i].line[j].instr = 0;
-				} else {
-					last = track[i].line[j].instr;
+				if(track[i].line[j].instr == last) { track[i].line[j].instr = 0; } else { last = track[i].line[j].instr;
 				}
 			}
 		}
@@ -676,9 +673,10 @@ void handleinput() {
 				insertmode = false;
 			default:
 				winheight = getmaxy(stdscr);
-				strcpy(cmdstr,strcat(cmdstr,c));
-				mvaddstr(winheight-1, strlen(cmdstr)+1, c);
+				//strcpy(cmdstr,strcat(cmdstr,c));
+				//mvaddstr(winheight-1, strlen(cmdstr)+1, c);
 		}
+		cmdmode = false;
 		cmdstr = "";
 	} else if (insertmode) {
 		if ((c = getch()) != ERR) switch(c) {
@@ -866,7 +864,7 @@ void handleinput() {
 						if(tracky >= 8) {
 							tracky -= 8;
 						} else {
-							tracky = tracklen - 8;
+							tracky = 0;
 						}
 						break;
 					case 2:
@@ -883,7 +881,7 @@ void handleinput() {
 						if(tracky < tracklen - 8) {
 							tracky += 8;
 						} else {
-							tracky = 0;
+							tracky = tracklen - 1;
 						}
 						break;
 					case 2:
@@ -891,11 +889,11 @@ void handleinput() {
 						break;
 				}
 				break;
-			//case 'L' - '@':
-			//case KEY_ESCAPE:
+			case 'L' - '@':
+			case KEY_ESCAPE:
 			//case 'i':
-			//	vimode = false;
-			//	break;
+				vimode = false;
+				break;
 			default:
 				if(playmode == PM_EDIT) {
 					x = hexdigit(c);
@@ -1038,7 +1036,7 @@ void handleinput() {
 					}
 				}
 				break;
-			//case 'L' - '@':
+			case 'L' - '@':
 			case KEY_ESCAPE:
 				vimode = true;
 				break;
@@ -1303,7 +1301,7 @@ void handleinput() {
 }
 
 void display(char *str) {
-	disptick = 300;
+	disptick = 1000;
 	dispmesg = str;
 }
 
@@ -1354,7 +1352,10 @@ void drawgui() {
 		mvaddstr(winheight-1, 0, "-- INSERT --");
 	}
 
-	mvaddstr(winheight-1, 0, cmdstr);
+	if (cmdmode) {
+		winheight = getmaxy(stdscr);
+		mvaddstr(winheight-1, 0, cmdstr);
+	}
     
 	switch(currtab) {
 		case 0:
