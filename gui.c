@@ -250,7 +250,7 @@ void initgui() {
 	noecho();
 	nodelay(stdscr, TRUE);
 	keypad(stdscr, TRUE);
-	curs_set(0);
+	curs_set(1);
 	//halfdelay(1);
 	//cbreak();
 
@@ -611,7 +611,7 @@ void sdlmainloop(SDL_Event event, SDL_Joystick *joystick) {
 	joystick = SDL_JoystickOpen(0);
 
 	// wtf does this do
-	while(SDL_PollEvent(&event)) {  
+	while(SDL_PollEvent(&event)) { //nik its just checking if a bit is set :) 
 	//while(!sdl_finished) {  
 		switch(event.type) {  
 			case SDL_KEYDOWN:
@@ -810,7 +810,9 @@ void handleinput() {
 						break;
 				}
 				break;
-			case 'L' - '@':
+			//case 'L' - '@':
+			//case KEY_ESCAPE:
+			case 'i':
 				vimode = false;
 				break;
 			default:
@@ -955,7 +957,8 @@ void handleinput() {
 					}
 				}
 				break;
-			case 'L' - '@':
+			//case 'L' - '@':
+			case KEY_ESCAPE:
 				vimode = true;
 				break;
 			case ' ':
@@ -966,7 +969,7 @@ void handleinput() {
 					playmode = PM_IDLE;
 				}
 				break;
-			case 9:
+			case 9: //this is tab
 				currtab++;
 				currtab %= 3;
 				break;
@@ -1073,7 +1076,7 @@ void handleinput() {
 						break;
 				}
 				break;
-                        case 'C':
+        case 'C':
 				if(currtab == 2) {
 					memcpy(&iclip, &instrument[currinstr], sizeof(struct instrument));
 				} else if(currtab == 1) {
@@ -1262,7 +1265,10 @@ void drawgui() {
 	}
 
 	if (vimode) {
-		mvaddstr(2, 0, "*vimode*");
+		mvaddstr(2, 0, "*(escape)vimode*");
+	} 
+	if (!vimode) {
+		mvaddstr(2, 0, "*INSERT*");
 	}
     
 	switch(currtab) {

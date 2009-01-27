@@ -1,5 +1,7 @@
 #define TRACKLEN 32
 
+#define KEY_ESCAPE 27
+
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef char s8;
