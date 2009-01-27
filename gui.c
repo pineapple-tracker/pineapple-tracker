@@ -18,10 +18,14 @@ int currtrack = 1, currinstr = 1;
 int currtab = 0;
 int octave = 4;
 bool vimode = false;
+bool insertmode = false;
+bool cmdmode = false;
+char *cmdstr = "";
 char *dispmesg = "";
 int disptick = 60;
 bool sdl_finished = false;
 int currbutt = -1;
+int winheight = 0;
 
 char filename[1024];
 
@@ -244,13 +248,12 @@ void exitgui() {
 void initgui() {
 	int i;
 
-	// curses opts
 	initscr();
 	raw();
 	noecho();
 	nodelay(stdscr, TRUE);
 	keypad(stdscr, TRUE);
-	curs_set(1);
+	//curs_set(2);
 	//halfdelay(1);
 	//cbreak();
 
@@ -665,11 +668,87 @@ bool inpwait(char ch) {
 
 void handleinput() {
 	int c, x;
+	cmdstr = ":";
 
-	if (vimode) {
+	if (cmdmode) {
+		if ((c = getch()) != ERR) switch(c) {
+			case 27: // ESC
+				insertmode = false;
+			default:
+				winheight = getmaxy(stdscr);
+				strcpy(cmdstr,strcat(cmdstr,c));
+				mvaddstr(winheight-1, strlen(cmdstr)+1, c);
+		}
+		cmdstr = "";
+	} else if (insertmode) {
+		if ((c = getch()) != ERR) switch(c) {
+			case 27: // ESC
+				insertmode = false;
+			case KEY_LEFT:
+				switch(currtab) {
+					case 0:
+						if(songx) songx--;
+						break;
+					case 1:
+						if(trackx) trackx--;
+						break;
+					case 2:
+						if(instrx) instrx--;
+						break;
+				}
+				break;
+			case KEY_RIGHT:
+				switch(currtab) {
+					case 0:
+						if(songx < 15) songx++;
+						break;
+					case 1:
+						if(trackx < 8) trackx++;
+						break;
+					case 2:
+						if(instrx < 2) instrx++;
+						break;
+				}
+				break;
+			case KEY_UP:
+				switch(currtab) {
+					case 0:
+						if(songy) songy--;
+						break;
+					case 1:
+						if(tracky) {
+							tracky--;
+						} else {
+							tracky = tracklen - 1;
+						}
+						break;
+					case 2:
+						if(instry) instry--;
+						break;
+				}
+				break;
+			case KEY_DOWN:
+				switch(currtab) {
+					case 0:
+						if(songy < songlen - 1) songy++;
+						break;
+					case 1:
+						if(tracky < tracklen - 1) {
+							tracky++;
+						} else {
+							tracky = 0;
+						}
+						break;
+					case 2:
+						if(instry < instrument[currinstr].length - 1) instry++;
+						break;
+				}
+				break;
+		}
+	} else if (vimode) {
 		if ((c = getch()) != ERR) switch(c) {
 			case 10:
-			case 13:
+			case 13: // Enter
 				if(currtab != 2) {
 					playmode = PM_PLAY;
 					if(currtab == 1) {
@@ -701,8 +780,7 @@ void handleinput() {
 				}*/
 			case ':':
 				// interactive command thing
-
-				//vicmd();
+				cmdmode = true;
 				break;
 			case ' ':
 				silence();
@@ -712,6 +790,9 @@ void handleinput() {
 					playmode = PM_IDLE;
 				}
 				break;
+			case 'i':
+				playmode = PM_EDIT;
+				insertmode = true;
 			case 'h':
 			case KEY_LEFT:
 				switch(currtab) {
@@ -812,9 +893,9 @@ void handleinput() {
 				break;
 			//case 'L' - '@':
 			//case KEY_ESCAPE:
-			case 'i':
-				vimode = false;
-				break;
+			//case 'i':
+			//	vimode = false;
+			//	break;
 			default:
 				if(playmode == PM_EDIT) {
 					x = hexdigit(c);
@@ -1267,9 +1348,13 @@ void drawgui() {
 	if (vimode) {
 		mvaddstr(2, 0, "*(escape)vimode*");
 	} 
-	if (!vimode) {
-		mvaddstr(2, 0, "*INSERT*");
+
+	if (insertmode) {
+		winheight = getmaxy(stdscr);
+		mvaddstr(winheight-1, 0, "-- INSERT --");
 	}
+
+	mvaddstr(winheight-1, 0, cmdstr);
     
 	switch(currtab) {
 		case 0:

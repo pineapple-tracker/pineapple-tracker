@@ -3,7 +3,7 @@ enhancements:
 vi-style keybindings
 	make comand mode
 	^h and ^l to change windows (or maybe ^w h?)
-	insert mode -> edit mode
+	stop escape key delay
 
 vi-ideas:
 	Number+action, do that action that many times
@@ -20,6 +20,7 @@ branch?
 
 bugs:
 ----
-//cursor  is gone
 you have to hit escape twice
 you have to hit ZZ reallyfast
+
+save as.. support

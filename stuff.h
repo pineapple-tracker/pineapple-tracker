@@ -12,6 +12,7 @@ enum {
 	WF_TRI,
 	WF_SAW,
 	WF_PUL,
+	WF_PU2,
 	WF_NOI
 };
 
