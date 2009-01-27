@@ -67,10 +67,6 @@ int main(int argc, char **argv) {
 
 	ztlog = fopen("ztlog","w");
 
-	if(argc != 2) {
-		err(1, "usage: %s <filename>\n", argv[0]);
-	}
-
 	if (SDL_Init( SDL_INIT_AUDIO | SDL_INIT_JOYSTICK ) < 0) {
 		fprintf(ztlog, "Couldn't initialize SDL: %s\n", SDL_GetError());
 		exit(1);
@@ -103,7 +99,12 @@ int main(int argc, char **argv) {
 	initchip();
 	initgui();
 
-	loadfile(argv[1]);
+	if(argc != 2) {
+		//err(1, "usage: %s <filename>\n", argv[0]);
+		loadfile("untitled.song");
+	} else {
+		loadfile(argv[1]);
+	}
 
 	SDL_PauseAudio(0);
 

@@ -17,7 +17,3 @@ show play position in instrument view
 
 port gui to libcaca.
 branch?
-
-bugs:
-----
-cursor  is gone

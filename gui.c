@@ -250,7 +250,7 @@ void initgui() {
 	noecho();
 	nodelay(stdscr, TRUE);
 	keypad(stdscr, TRUE);
-	curs_set(0);
+	//curs_set(0);
 	//halfdelay(1);
 	//cbreak();
 
