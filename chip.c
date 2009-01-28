@@ -332,9 +332,6 @@ u8 interrupthandler()
 			case WF_PUL:
 				value = (osc[i].phase > osc[i].duty)? -32 : 31;
 				break;
-			case WF_PU2:
-				value = -32 + (osc[i%2].phase >> 10);
-				break;
 			case WF_NOI:
 				value = (noiseseed & 63) - 32;
 				break;

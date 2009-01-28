@@ -13,6 +13,14 @@ songline 08 04 00 01 00 06 00 08 00
 songline 09 04 00 01 00 07 00 08 00
 songline 0a 04 00 01 00 06 00 09 00
 songline 0b 05 00 02 00 07 00 08 00
+songline 0c 04 00 02 00 0a 00 09 00
+songline 0d 04 00 02 00 0b 00 08 00
+songline 0e 04 00 01 00 07 00 00 00
+songline 0f 05 00 01 00 07 00 0c ef
+songline 10 00 00 02 00 06 00 07 e2
+songline 11 00 00 02 00 07 00 07 e2
+songline 12 00 00 01 00 06 00 07 e4
+songline 13 00 00 01 00 07 00 07 e4
 
 trackline 01 00 1b 01 00 00 00 00
 trackline 01 01 00 00 76 00 00 00
@@ -97,6 +105,30 @@ trackline 06 02 3f 01 00 00 00 00
 trackline 06 0a 35 01 00 00 00 00
 trackline 06 10 36 01 00 00 00 00
 trackline 06 18 33 01 00 00 00 00
+trackline 06 1a 00 00 76 00 00 00
+trackline 06 1c 00 00 76 80 00 00
+trackline 06 1d 00 00 76 00 00 00
+trackline 06 1e 00 00 76 80 00 00
+trackline 07 00 00 00 76 80 00 00
+trackline 07 01 00 00 76 00 00 00
+trackline 07 02 00 00 76 80 00 00
+trackline 07 03 00 00 76 00 00 00
+trackline 07 04 00 00 76 80 00 00
+trackline 07 05 00 00 76 00 00 00
+trackline 07 08 00 00 76 80 00 00
+trackline 07 09 00 00 76 00 00 00
+trackline 07 0a 00 00 76 80 00 00
+trackline 07 0b 00 00 76 00 00 00
+trackline 07 10 00 00 76 80 00 00
+trackline 07 11 00 00 76 00 00 00
+trackline 07 12 00 00 76 80 00 00
+trackline 07 13 00 00 76 00 00 00
+trackline 07 18 00 00 76 80 00 00
+trackline 07 19 00 00 76 00 00 00
+trackline 07 1a 00 00 76 80 00 00
+trackline 07 1b 00 00 76 00 00 00
+trackline 07 1e 00 00 76 80 00 00
+trackline 07 1f 00 00 76 00 00 00
 trackline 08 10 33 02 00 00 00 00
 trackline 08 14 00 00 76 00 00 00
 trackline 09 10 33 02 00 00 00 00
@@ -105,6 +137,93 @@ trackline 09 12 33 02 00 00 00 00
 trackline 09 13 00 00 76 00 00 00
 trackline 09 14 33 02 64 00 00 00
 trackline 09 18 00 00 76 00 00 00
+trackline 0a 02 42 01 76 80 00 00
+trackline 0a 03 00 00 76 00 00 00
+trackline 0a 04 00 00 76 80 00 00
+trackline 0a 05 00 00 76 00 00 00
+trackline 0a 06 00 00 76 80 00 00
+trackline 0a 07 00 00 76 00 00 00
+trackline 0a 08 00 00 76 80 00 00
+trackline 0a 09 00 00 76 80 00 00
+trackline 0a 0a 00 00 76 80 00 00
+trackline 0a 0b 00 00 76 80 00 00
+trackline 0a 0c 3d 01 76 80 00 00
+trackline 0a 0d 00 00 76 80 00 00
+trackline 0a 0e 3d 01 00 00 00 00
+trackline 0a 0f 00 00 76 70 00 00
+trackline 0a 10 41 01 76 80 00 00
+trackline 0a 11 00 00 76 70 00 00
+trackline 0a 13 00 00 76 80 00 00
+trackline 0a 14 3f 01 76 70 00 00
+trackline 0a 19 00 00 76 80 00 00
+trackline 0a 1f 00 00 76 80 00 00
+trackline 0b 00 00 00 76 00 00 00
+trackline 0b 02 42 01 76 80 00 00
+trackline 0b 03 00 00 76 00 00 00
+trackline 0b 04 00 00 76 80 00 00
+trackline 0b 05 00 00 76 00 00 00
+trackline 0b 06 00 00 76 80 00 00
+trackline 0b 07 00 00 76 00 00 00
+trackline 0b 08 00 00 76 80 00 00
+trackline 0b 09 00 00 76 80 00 00
+trackline 0b 0a 00 00 76 80 00 00
+trackline 0b 0b 00 00 76 80 00 00
+trackline 0b 0c 3d 01 76 80 00 00
+trackline 0b 0d 00 00 76 80 00 00
+trackline 0b 0e 35 01 76 80 00 00
+trackline 0b 10 31 01 00 00 00 00
+trackline 0b 12 3a 01 00 00 00 00
+trackline 0b 14 31 01 00 00 00 00
+trackline 0b 18 2e 01 00 00 00 00
+trackline 0b 19 00 00 76 80 00 00
+trackline 0b 1a 2e 01 00 00 00 00
+trackline 0b 1b 3a 01 76 80 00 00
+trackline 0b 1c 2e 01 00 00 00 00
+trackline 0b 1d 00 00 76 80 00 00
+trackline 0b 1f 00 00 76 80 00 00
+trackline 0c 11 00 00 76 00 00 00
+trackline 0c 13 00 00 76 00 00 00
+trackline 0c 14 33 02 76 80 00 00
+trackline 0c 15 00 00 76 00 00 00
+trackline 0c 16 00 00 76 00 00 00
+trackline 0c 17 00 00 76 00 00 00
+trackline 0c 18 33 02 00 00 00 00
+trackline 0c 19 00 00 76 00 00 00
+trackline 0c 1a 33 02 76 80 00 00
+trackline 0c 1b 00 00 76 00 00 00
+trackline 0c 1c 00 00 76 00 00 00
+trackline 0c 1d 00 00 76 00 00 00
+trackline 0c 1e 00 00 76 00 00 00
+trackline 0c 1f 00 00 76 00 00 00
+trackline 0d 00 27 02 64 00 00 00
+trackline 0d 03 00 00 76 e0 00 00
+trackline 0d 04 00 00 76 00 00 00
+trackline 0d 05 00 00 76 00 00 00
+trackline 0d 06 00 00 76 e0 00 00
+trackline 0d 07 00 00 76 00 00 00
+trackline 0d 08 00 00 76 00 00 00
+trackline 0d 09 00 00 76 e0 00 00
+trackline 0d 0a 00 00 76 00 00 00
+trackline 0d 0b 00 00 76 00 00 00
+trackline 0d 0c 00 00 76 00 00 00
+trackline 0d 0d 00 00 76 00 00 00
+trackline 0d 0e 00 00 76 e0 00 00
+trackline 0d 0f 00 00 76 00 00 00
+trackline 0d 10 27 02 64 00 00 00
+trackline 0d 11 00 00 76 e0 00 00
+trackline 0d 12 00 00 76 e0 00 00
+trackline 0d 13 00 00 76 e0 00 00
+trackline 0d 14 00 00 76 00 00 00
+trackline 0d 15 00 00 76 00 00 00
+trackline 0d 16 00 00 76 00 00 00
+trackline 0d 17 00 00 76 00 00 00
+trackline 0d 18 00 00 76 00 00 00
+trackline 0d 19 00 00 64 00 00 00
+trackline 0d 1a 00 00 76 00 00 00
+trackline 0d 1c 00 00 76 00 00 00
+trackline 0d 1d 00 00 76 00 00 00
+trackline 0d 1e 00 00 76 00 00 00
+trackline 0d 1f 00 00 76 00 00 00
 
 instrumentline 01 00 76 af
 instrumentline 01 01 77 02
