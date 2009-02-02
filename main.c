@@ -100,7 +100,6 @@ int main(int argc, char **argv) {
 	initgui();
 
 	if(argc != 2) {
-		//err(1, "usage: %s <filename>\n", argv[0]);
 		loadfile("untitled.song");
 	} else {
 		loadfile(argv[1]);

@@ -15,6 +15,8 @@ control with a gamepad
 
 show play position in instrument view
 
+save as.. support
+
 port gui to libcaca.
 branch?
 
@@ -23,4 +25,7 @@ bugs:
 you have to hit escape twice
 you have to hit ZZ reallyfast
 
-save as.. support
+right now there are at least 7 states for the mode to be in, lol. this is too many.
+
+handleinput: we gotta clean this *shit* up someday
+

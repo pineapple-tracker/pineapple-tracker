@@ -250,12 +250,12 @@ void initgui() {
 
 	initscr();
 	raw();
-	noecho();
-	nodelay(stdscr, TRUE);
-	keypad(stdscr, TRUE);
-	//curs_set(2);
 	//halfdelay(1);
 	//cbreak();
+	nodelay(stdscr, TRUE);
+	noecho();
+	keypad(stdscr, TRUE);
+	//curs_set(2);
 
 	for(i = 1; i < 256; i++) {
 		instrument[i].length = 1;
@@ -612,7 +612,7 @@ void sdlmainloop(SDL_Event event, SDL_Joystick *joystick) {
 
 	// wtf does this do
 	while(SDL_PollEvent(&event)) { //nik its just checking if a bit is set :) 
-	//while(!sdl_finished) {  
+	//while(!sdl_finished) {       //   oh hmmm.. ok.
 		switch(event.type) {  
 			case SDL_KEYDOWN:
 				break;
@@ -654,11 +654,16 @@ void sdlmainloop(SDL_Event event, SDL_Joystick *joystick) {
 }
 
 // waits for next char from getch and matches it with the parameter
+// look at this stupid function.. i wish i could make it more clear and have
+// it still work. note: actually it doesn't work.
 bool inpwait(char ch) {
-	while (getch() == ERR) {
-		if (getch() == ch) {
+	char newch;
+	newch = getch();
+	while (newch == ERR) {
+		if (getch() == ch || newch == ch) {
 			return true;
 		}
+		newch = getch();
 	}
 	return (getch() == ch);
 }
@@ -742,6 +747,20 @@ void handleinput() {
 						break;
 				}
 				break;
+			case 9: // this is tab, and it also happens to be ^i, hahhaaa
+					// that's ok though.. it's kind of a nice vi-like
+					// keycommand to switch views
+				currtab++;
+				currtab %= 3;
+				break;
+			case ' ':
+				silence();
+				if(playmode == PM_IDLE) {
+					playmode = PM_EDIT;
+				} else {
+					playmode = PM_IDLE;
+				}
+				break;
 		}
 	} else if (vimode) {
 		if ((c = getch()) != ERR) switch(c) {
@@ -764,6 +783,7 @@ void handleinput() {
 					endwin();
 					exit(0);
 				}
+				break;
 				/*while (getch() == ERR) {
 					display("waiting");
 					if (getch() == 'Z') {
@@ -854,6 +874,10 @@ void handleinput() {
 						if(instry < instrument[currinstr].length - 1) instry++;
 						break;
 				}
+				break;
+			case 9: //this is tab
+				currtab++;
+				currtab %= 3;
 				break;
 			case 'B' - '@':
 				switch(currtab) {
