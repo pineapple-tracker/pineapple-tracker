@@ -1,3 +1,9 @@
+/*
+	Using tabs here.
+	set ts=4
+	set sw=4
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,7 +28,7 @@ bool insertmode = false;
 bool cmdmode = false;
 char *cmdstr = "";
 char *dispmesg = "";
-int disptick = 60;
+int disptick = 0;
 bool sdl_finished = false;
 int currbutt = -1;
 int winheight = 0;
@@ -248,13 +254,19 @@ void exitgui() {
 void initgui() {
 	int i;
 
+	// recommended by the ncurses man page
 	initscr();
-	raw();
-	//halfdelay(1);
-	//cbreak();
-	nodelay(stdscr, TRUE);
+	cbreak();
 	noecho();
+	nonl();
+	intrflush(stdscr, FALSE);
 	keypad(stdscr, TRUE);
+
+	// this is so the screen updates when you're not pressing keys
+	nodelay(stdscr, TRUE);
+
+	//raw();
+	//halfdelay(1);
 	//curs_set(2);
 
 	for(i = 1; i < 256; i++) {
@@ -654,9 +666,9 @@ void sdlmainloop(SDL_Event event, SDL_Joystick *joystick) {
 }
 
 // waits for next char from getch and matches it with the parameter
-// look at this stupid function.. i wish i could make it more clear and have
-// it still work. note: actually it doesn't work.
-bool inpwait(char ch) {
+// Look at this stupid function.. i wish i could make it more clear and have
+// it still work.
+bool nextchar(char ch) {
 	char newch;
 	newch = getch();
 	while (newch == ERR) {
@@ -665,7 +677,7 @@ bool inpwait(char ch) {
 		}
 		newch = getch();
 	}
-	return (getch() == ch);
+	return (newch == ch);
 }
 
 void handleinput() {
@@ -747,9 +759,13 @@ void handleinput() {
 						break;
 				}
 				break;
-			case 9: // this is tab, and it also happens to be ^i, hahhaaa
-					// that's ok though.. it's kind of a nice vi-like
-					// keycommand to switch views
+			case 'H' - '@':
+				//if (currtab-- < 0)
+				//	{ currtab = 2; }
+				currtab--;
+				currtab %= 3;
+				break;
+			case 'L' - '@':
 				currtab++;
 				currtab %= 3;
 				break;
@@ -776,7 +792,7 @@ void handleinput() {
 				}
 				break;
 			case 'Z':
-				if (inpwait('Z')) {
+				if (nextchar('Z')) {
 					savefile(filename);
 					erase();
 					refresh();
@@ -875,7 +891,15 @@ void handleinput() {
 						break;
 				}
 				break;
-			case 9: //this is tab
+			case 'H' - '@':
+				currtab--;
+				currtab %= 3;
+				break;
+			case 'L' - '@':
+				currtab++;
+				currtab %= 3;
+				break;
+			case 9:
 				currtab++;
 				currtab %= 3;
 				break;
@@ -913,7 +937,7 @@ void handleinput() {
 						break;
 				}
 				break;
-			case 'L' - '@':
+			case 'P' - '@':
 			case KEY_ESCAPE:
 			//case 'i':
 				vimode = false;
@@ -1060,7 +1084,7 @@ void handleinput() {
 					}
 				}
 				break;
-			case 'L' - '@':
+			case 'P' - '@':
 			case KEY_ESCAPE:
 				vimode = true;
 				break;
@@ -1072,7 +1096,9 @@ void handleinput() {
 					playmode = PM_IDLE;
 				}
 				break;
-			case 9: //this is tab
+			case 9: // this is tab, and it also happens to be ^i, hahhaaa
+					// that's ok though.. it's kind of a nice vi-like
+					// keycommand to switch views
 				currtab++;
 				currtab %= 3;
 				break;
@@ -1338,7 +1364,7 @@ void drawgui() {
 
 	erase();
 	mvaddstr(0, 0, "music chip tracker 0.1 by lft");
-	mvaddstr(1, 0, "press ^L to switch keybindings");
+	mvaddstr(1, 0, "press ^P to switch keybindings");
 	drawmodeinfo(cols - 30, 0);
 	snprintf(buf, sizeof(buf), "Octave:   %d <>", octave);
 	mvaddstr(2, cols - 14, buf);
@@ -1363,8 +1389,10 @@ void drawgui() {
 		mvaddstr(2, 0, buf);
 	}
 
+	// display
 	if (disptick > 0) {
 		mvaddstr(3, 0, dispmesg);
+		disptick--;
 	}
 
 	if (vimode) {

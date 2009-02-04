@@ -23,9 +23,9 @@ branch?
 bugs:
 ----
 you have to hit escape twice
-you have to hit ZZ reallyfast
 
 right now there are at least 7 states for the mode to be in, lol. this is too many.
 
 handleinput: we gotta clean this *shit* up someday
 
+^h doesn't behave correctly in tab 0
