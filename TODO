@@ -2,10 +2,7 @@ enhancements:
 -------------
 vi-style keybindings
 	make comand mode
-	^h and ^l to change windows (or maybe ^w h?)
 	stop escape key delay
-
-vi-ideas:
 	Number+action, do that action that many times
 	record mode?
 
@@ -27,5 +24,8 @@ you have to hit escape twice
 right now there are at least 7 states for the mode to be in, lol. this is too many.
 
 handleinput: we gotta clean this *shit* up someday
+	currently working on this one... trying to get insertmode and cmdmode out of
+	handleinput() with this cool text editor as an example:
+	http://en.allexperts.com/q/C-1587/text-editor-using-ncurses.htm 
 
 ^h doesn't behave correctly in tab 0
