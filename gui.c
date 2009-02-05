@@ -17,6 +17,7 @@
 #define SETLO(v,x) v = ((v) & 0xf0) | (x)
 #define SETHI(v,x) v = ((v) & 0x0f) | ((x) << 4)
 #define CTRL(c) ((c) & 037)
+#define KEY_ESCAPE 27
 
 int songx, songy, songoffs, songlen = 1;
 int trackx, tracky, trackoffs, tracklen = TRACKLEN;
@@ -682,12 +683,16 @@ bool nextchar(char ch) {
 	return (newch == ch);
 }
 
-void insert() {
+/* vi insert mode */
+void insertroutine() {
 	int c;
+	playmode = PM_EDIT;
+	insertmode = true;
 	drawgui();
 	for(;;) {
 		if ((c = getch()) != ERR) switch(c) {
-			case 27: // ESC
+			case KEY_ESCAPE:
+				playmode = PM_IDLE;
 				insertmode = false;
 				guiloop();
 			case KEY_LEFT:
@@ -701,112 +706,6 @@ void insert() {
 					case 2:
 						if(instrx) instrx--;
 					break;
-				}
-				break;
-			case KEY_RIGHT:
-				switch(currtab) {
-					case 0:
-						if(songx < 15) songx++;
-						break;
-					case 1:
-						if(trackx < 8) trackx++;
-						break;
-					case 2:
-						if(instrx < 2) instrx++;
-						break;
-				}
-				break;
-			case KEY_UP:
-				switch(currtab) {
-					case 0:
-						if(songy) songy--;
-						break;
-					case 1:
-						if(tracky) {
-						tracky--;
-						} else {
-						tracky = tracklen - 1;
-						}
-						break;
-					case 2:
-						if(instry) instry--;
-						break;
-				}
-				break;
-			case KEY_DOWN:
-				switch(currtab) {
-					case 0:
-						if(songy < songlen - 1) songy++;
-						break;
-					case 1:
-						if(tracky < tracklen - 1) {
-							tracky++;
-						} else {
-							tracky = 0;
-						}
-						break;
-					case 2:
-						if(instry < instrument[currinstr].length - 1) instry++;
-						break;
-				}
-				break;
-			case CTRL('H'):
-				//if (currtab-- < 0)
-				//	{ currtab = 2; }
-				currtab--;
-				currtab %= 3;
-				break;
-			case CTRL('L'):
-				currtab++;
-				currtab %= 3;
-				break;
-			case ' ':
-				silence();
-				if(playmode == PM_IDLE) {
-					playmode = PM_EDIT;
-				} else {
-					playmode = PM_IDLE;
-				}
-				break;
-		}
-		drawgui();
-	}
-}
-
-void handleinput() {
-	int c, x;
-	cmdstr = ":";
-
-	if (cmdmode) {
-		if ((c = getch()) != ERR) switch(c) {
-			case 27: // ESC
-				insertmode = false;
-				break;
-			default:
-				winheight = getmaxy(stdscr);
-				//strcpy(cmdstr,strcat(cmdstr,c));
-				//mvaddstr(winheight-1, strlen(cmdstr)+1, c);
-				break;
-		}
-		cmdmode = false;
-		cmdstr = "";
-	//} else if (insertmode) {
-	} else if (false) {
-		if ((c = getch()) != ERR) switch(c) {
-			case 27: // ESC
-				insertmode = false;
-				break;
-			case KEY_LEFT:
-				switch(currtab) {
-					case 0:
-						if(songx) songx--;
-						break;
-					case 1:
-						if(trackx) trackx--;
-						break;
-					case 2:
-						if(instrx) instrx--;
-						break;
 				}
 				break;
 			case KEY_RIGHT:
@@ -875,7 +774,37 @@ void handleinput() {
 				}
 				break;
 		}
-	} else if (vimode) {
+		drawgui();
+	}
+}
+
+/* vi command mode */
+void commandroutine() {
+	int c;
+	cmdstr = ":";
+	drawgui();
+	for(;;) {
+		if ((c = getch()) != ERR) switch(c) {
+			case KEY_ESCAPE:
+				insertmode = false;
+				break;
+			default:
+				winheight = getmaxy(stdscr);
+				//strcpy(cmdstr,strcat(cmdstr,c));
+				//mvaddstr(winheight-1, strlen(cmdstr)+1, c);
+				break;
+		}
+	drawgui();
+	}
+	cmdmode = false;
+	cmdstr = "";
+}
+
+/* vi mode or normal mode */
+void handleinput() {
+	int c, x;
+
+	if (vimode) {
 		if ((c = getch()) != ERR) switch(c) {
 			case 10:
 			case 13: // Enter
@@ -897,18 +826,7 @@ void handleinput() {
 					exit(0);
 				}
 				break;
-				/*while (getch() == ERR) {
-					display("waiting");
-					if (getch() == 'Z') {
-						savefile(filename);
-						erase();
-						refresh();
-						endwin();
-						exit(0);
-					} else {
-						display("hii");
-					}
-				}*/
+			/* Enter command mode */
 			case ':':
 				// interactive command thing
 				cmdmode = true;
@@ -921,10 +839,9 @@ void handleinput() {
 					playmode = PM_IDLE;
 				}
 				break;
+			/* Enter insert mode */
 			case 'i':
-				playmode = PM_EDIT;
-				insertmode = true;
-				insert();
+				insertroutine();
 				break;
 			case 'h':
 			case KEY_LEFT:
@@ -1005,7 +922,11 @@ void handleinput() {
 			case CTRL('B'):
 				switch(currtab) {
 					case 0:
-						if(songy >= 8) songy -= 8;
+						if(songy >= 8) {
+							songy -= 8;
+						} else {
+							songy = 0;
+						}
 						break;
 					case 1:
 						if(tracky >= 8) {
@@ -1022,7 +943,11 @@ void handleinput() {
 			case CTRL('F'):
 				switch(currtab) {
 					case 0:
-						if(songy < songlen - 8) songy += 8;
+						if(songy < songlen - 8) {
+							songy += 8;
+						} else {
+							songy = songlen - 1;
+						}
 						break;
 					case 1:
 						if(tracky < tracklen - 8) {
@@ -1037,7 +962,6 @@ void handleinput() {
 				}
 				break;
 			case CTRL('P'):
-			case KEY_ESCAPE:
 				vimode = false;
 				break;
 			default:
@@ -1183,7 +1107,6 @@ void handleinput() {
 				}
 				break;
 			case CTRL('P'):
-			case KEY_ESCAPE:
 				vimode = true;
 				break;
 			case ' ':
@@ -1527,6 +1450,8 @@ void drawgui() {
 }
 
 void guiloop() {
+	// don't treat the escape key like a meta key
+	ESCDELAY = 50;
 	for(;;) {
 		drawgui();
 		handleinput();

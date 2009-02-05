@@ -2,7 +2,6 @@ enhancements:
 -------------
 vi-style keybindings
 	make comand mode
-	stop escape key delay
 	Number+action, do that action that many times
 	record mode?
 
@@ -19,8 +18,6 @@ branch?
 
 bugs:
 ----
-you have to hit escape twice
-
 right now there are at least 7 states for the mode to be in, lol. this is too many.
 
 handleinput: we gotta clean this *shit* up someday
