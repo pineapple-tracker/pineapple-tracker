@@ -685,7 +685,9 @@ enum {
 	ACT_ALTNOTEINC,
 	ACT_ALTNOTEDEC,
 	ACT_ALTINSTRINC,
-	ACT_ALTINSTRDEC
+	ACT_ALTINSTRDEC,
+	ACT_ADDLINE,
+	ACT_DELLINE
 };
 /* execute an action */
 void actexec (int act) {
@@ -765,6 +767,10 @@ void actexec (int act) {
 				break;
 			case ACT_ALTINSTRDEC:
 				break;
+			case ACT_ADDLINE:
+				break;
+			case ACT_DELLINE:
+				break;
 		}
 	}
 }
@@ -796,6 +802,7 @@ void insertroutine() {
 				playmode = PM_IDLE;
 				insertmode = false;
 				guiloop();
+			case 'h':
 			case KEY_LEFT:
 				switch(currtab) {
 					case 0:
@@ -809,6 +816,7 @@ void insertroutine() {
 					break;
 				}
 				break;
+			case 'l':
 			case KEY_RIGHT:
 				switch(currtab) {
 					case 0:
@@ -822,6 +830,7 @@ void insertroutine() {
 						break;
 				}
 				break;
+			case 'k':
 			case KEY_UP:
 				switch(currtab) {
 					case 0:
@@ -839,6 +848,7 @@ void insertroutine() {
 						break;
 				}
 				break;
+			case 'j':
 			case KEY_DOWN:
 				switch(currtab) {
 					case 0:
@@ -854,6 +864,15 @@ void insertroutine() {
 					case 2:
 						if(instry < instrument[currinstr].length - 1) instry++;
 						break;
+				}
+				break;
+			case 'Z':
+				if (nextchar('Z')) {
+					savefile(filename);
+					erase();
+					refresh();
+					endwin();
+					exit(0);
 				}
 				break;
 			case CTRL('H'):
@@ -1042,7 +1061,62 @@ void handleinput() {
 			}
 
 			switch(c) {
-			case 13: // Enter
+			/* add line */
+			case 'a':
+				if(currtab == 2) {
+					struct instrument *in = &instrument[currinstr];
+
+					if(in->length < 256) {
+						memmove(&in->line[instry + 2], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
+						instry++;
+						in->length++;
+						in->line[instry].cmd = '0';
+						in->line[instry].param = 0;
+					}
+				} else if(currtab == 0) {
+					if(songlen < 256) {
+						memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
+						songy++;
+						songlen++;
+						memset(&song[songy], 0, sizeof(struct songline));
+					}
+				}
+				break;
+			/* delete line */
+			// TODO: 'd' then direction
+			case 'd':
+				if (nextchar('d')) {
+					if(currtab == 2) {
+						struct instrument *in = &instrument[currinstr];
+
+						if(in->length > 1) {
+							memmove(&in->line[instry + 0], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
+							in->length--;
+							if(instry >= in->length) instry = in->length - 1;
+						}
+					} else if(currtab == 0) {
+						if(songlen > 1) {
+							memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
+							songlen--;
+							if(songy >= songlen) songy = songlen - 1;
+						}
+					}
+				}
+				break;
+			/* Clear */
+			case 'x':
+			// gotta get it workin for tab 0 now
+			//	if(currtab == 0 && !trackx) {
+			//		song[
+				if(currtab == 1 && !trackx) {
+					track[currtrack].line[tracky].note = 0;
+					track[currtrack].line[tracky].instr = 0;
+					//tracky++;
+					//tracky %= tracklen;
+					//if(x) iedplonk(x, currinstr);
+				}
+				break;
+			case 13:  // Enter key
 				if(currtab != 2) {
 					playmode = PM_PLAY;
 					if(currtab == 1) {
@@ -1059,19 +1133,6 @@ void handleinput() {
 					refresh();
 					endwin();
 					exit(0);
-				}
-				break;
-			/* Clear */
-			case 'x':
-			// gotta get it workin for tab 0 now
-			//	if(currtab == 0 && !trackx) {
-			//		song[
-				if(currtab == 1 && !trackx) {
-					track[currtrack].line[tracky].note = 0;
-					track[currtrack].line[tracky].instr = 0;
-					//tracky++;
-					//tracky %= tracklen;
-					//if(x) iedplonk(x, currinstr);
 				}
 				break;
 			/* Enter command mode */
@@ -1095,25 +1156,6 @@ void handleinput() {
 					currtab = 0;
 				}
 				break;
-			/*case 'o':
-				if(currtab == 2) {
-					struct instrument *in = &instrument[currinstr];
-
-					if(in->length < 256) {
-						memmove(&in->line[instry + 2], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
-						instry++;
-						in->length++;
-						in->line[instry].cmd = '0';
-						in->line[instry].param = 0;
-					}
-				} else if(currtab == 0) {
-					if(songlen < 256) {
-						memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
-						songy++;
-						songlen++;
-						memset(&song[songy], 0, sizeof(struct songline));
-					}
-				}*/
 			/* Enter insert mode */
 			case 'i':
 				insertroutine();
