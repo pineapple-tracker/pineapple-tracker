@@ -849,26 +849,7 @@ void insertroutine() {
 						track[currtrack].line[tracky].cmd[(trackx - 3) / 3] = c;
 					}
 				}
-				if(c == 'o') {
-					if(currtab == 2) {
-						struct instrument *in = &instrument[currinstr];
-
-						if(in->length < 256) {
-							memmove(&in->line[instry + 2], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
-							instry++;
-							in->length++;
-							in->line[instry].cmd = '0';
-							in->line[instry].param = 0;
-						}
-					} else if(currtab == 0) {
-						if(songlen < 256) {
-							memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
-							songy++;
-							songlen++;
-							memset(&song[songy], 0, sizeof(struct songline));
-						}
-					}
-				} else if(c == 'I') {
+				if(c == 'I') {
 					if(currtab == 2) {
 						struct instrument *in = &instrument[currinstr];
 
@@ -1000,6 +981,27 @@ void handleinput() {
 			case 'i':
 				insertroutine();
 				break;
+			case 'o':
+				if(currtab == 2) {
+					struct instrument *in = &instrument[currinstr];
+
+					if(in->length < 256) {
+						memmove(&in->line[instry + 2], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
+						instry++;
+						in->length++;
+						in->line[instry].cmd = '0';
+						in->line[instry].param = 0;
+					}
+				} else if(currtab == 0) {
+					if(songlen < 256) {
+						memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
+						songy++;
+						songlen++;
+						memset(&song[songy], 0, sizeof(struct songline));
+					}
+				}
+				insertroutine();
+				break;
 			case 'h':
 			case KEY_LEFT:
 				switch(currtab) {
@@ -1064,18 +1066,50 @@ void handleinput() {
 						break;
 				}
 				break;
+			case '<':
+				if(octave) octave--;
+				break;
+			case '>':
+				if(octave < 8) octave++;
+				break;
+			case 'J':
+				if(currtab == 1) {
+					if (!trackx) {
+						track[currtrack].line[tracky].note--;
+					} else {
+						//switch (trackx):
+						//	case 1: SETHI(track[currtrack].line[tracky].instr, x); break;
+						//	case 2: SETLO(track[currtrack].line[tracky].instr, x); break;
+					}
+				}
+				break;
+			case 'K':
+				if(currtab == 1 && !trackx) {
+					track[currtrack].line[tracky].note++;
+				}
+				break;
 			case CTRL('J'):
 				if (currtab == 2) {
 					if(currinstr > 1) currinstr--;
 				} else if (currtab == 1) {
-					if(currtrack > 1) currtrack--;
+					if(currtrack > 1) {
+						currtrack--;
+						if (playmode == PM_PLAY) {
+							startplaytrack(currtrack);
+						}
+					}
 				}
 				break;
 			case CTRL('K'):
 				if (currtab == 2) {
 					if(currinstr < 255) currinstr++;
 				} else if (currtab == 1) {
-					if(currtrack < 255) currtrack++;
+					if(currtrack < 255) {
+						currtrack++;
+						if (playmode == PM_PLAY) {
+							startplaytrack(currtrack);
+						}
+					}
 				}
 				break;
 			case CTRL('H'):

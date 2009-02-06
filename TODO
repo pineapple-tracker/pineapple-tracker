@@ -5,8 +5,6 @@ vi-style keybindings
 	Number+action, do that action that many times
 	record mode?
 
-BE ABLE TO DELETE LINES IN INSTRUMENT VIEW
-
 control with a gamepad
 
 show play position in instrument view
@@ -19,8 +17,3 @@ branch?
 bugs:
 ----
 right now there are at least 7 states for the mode to be in, lol. this is too many. agreed --tony.
-
-handleinput: we gotta clean this *shit* up someday
-	currently working on this one... trying to get insertmode and cmdmode out of
-	handleinput() with this cool text editor as an example:
-	http://en.allexperts.com/q/C-1587/text-editor-using-ncurses.htm 
