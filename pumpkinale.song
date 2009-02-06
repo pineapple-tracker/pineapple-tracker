@@ -8,11 +8,11 @@ songline 03 05 00 00 00 00 00 00 00
 songline 04 04 00 0e 00 12 00 00 00
 songline 05 04 00 0f 00 13 00 00 00
 songline 06 04 00 0f 00 14 00 00 00
-songline 07 05 00 11 00 00 00 00 00
-songline 08 04 00 10 00 00 00 00 00
-songline 09 04 00 0f 00 00 00 00 00
-songline 0a 04 00 0f 00 00 00 00 00
-songline 0b 05 00 11 00 00 00 00 00
+songline 07 05 00 11 00 15 00 00 00
+songline 08 04 00 10 00 16 00 00 00
+songline 09 04 00 0f 00 16 00 00 00
+songline 0a 04 00 0f 00 17 00 00 00
+songline 0b 05 00 11 00 16 00 00 00
 
 trackline 01 00 1b 01 00 00 00 00
 trackline 01 01 00 00 76 00 00 00
@@ -232,6 +232,28 @@ trackline 13 14 00 00 6c 8f 00 00
 trackline 13 16 00 00 66 f8 00 00
 trackline 13 18 00 00 6c ff 00 00
 trackline 13 1a 00 00 6c ff 00 00
+trackline 14 00 46 01 00 00 00 00
+trackline 14 06 49 01 00 00 00 00
+trackline 14 0c 4b 01 00 00 00 00
+trackline 14 10 44 01 00 00 00 00
+trackline 14 14 00 00 7e 23 00 00
+trackline 15 00 59 07 69 00 00 00
+trackline 15 01 00 00 76 00 00 00
+trackline 15 02 5a 07 69 00 00 00
+trackline 15 03 00 00 76 00 00 00
+trackline 15 04 5c 07 69 00 00 00
+trackline 15 05 00 00 76 00 00 00
+trackline 15 06 59 07 69 00 00 00
+trackline 15 07 00 00 76 00 00 00
+trackline 15 08 57 07 69 00 00 00
+trackline 15 09 00 00 76 00 00 00
+trackline 15 0a 55 07 69 00 00 00
+trackline 15 0d 00 00 7e 26 00 00
+trackline 15 10 4b 01 69 00 00 00
+trackline 15 12 00 00 7e 26 00 00
+trackline 16 00 00 00 66 ff 00 00
+trackline 16 1f 46 01 00 00 00 00
+trackline 17 00 44 01 00 00 00 00
 
 instrumentline 01 00 76 af
 instrumentline 01 01 69 4f
@@ -283,3 +305,7 @@ instrumentline 06 01 77 02
 instrumentline 06 02 2b 25
 instrumentline 06 03 6d 03
 instrumentline 06 04 7e 25
+instrumentline 07 00 76 f1
+instrumentline 07 01 77 02
+instrumentline 07 02 6d 02
+instrumentline 07 03 2b 19

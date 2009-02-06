@@ -784,6 +784,8 @@ void insertroutine() {
 					currtab = 0;
 				}
 				break;
+
+				break;	
 			default:
 				x = hexdigit(c);
 				if(x >= 0) {
@@ -996,6 +998,25 @@ void handleinput() {
 					currtab = 0;
 				}
 				break;
+			case 'o':
+				if(currtab == 2) {
+					struct instrument *in = &instrument[currinstr];
+
+					if(in->length < 256) {
+						memmove(&in->line[instry + 2], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
+						instry++;
+						in->length++;
+						in->line[instry].cmd = '0';
+						in->line[instry].param = 0;
+					}
+				} else if(currtab == 0) {
+					if(songlen < 256) {
+						memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
+						songy++;
+						songlen++;
+						memset(&song[songy], 0, sizeof(struct songline));
+					}
+				}
 			/* Enter insert mode */
 			case 'i':
 				insertroutine();
@@ -1208,6 +1229,7 @@ void handleinput() {
 					currtab = 0;
 				}
 				break;
+
 			case '#':
 				optimize();
 				break;
