@@ -20,6 +20,7 @@
 #define KEY_ESCAPE 27
 #define KEY_TAB 9   // this also happens to be ^i...
 
+
 int songx, songy, songoffs, songlen = 1;
 int trackx, tracky, trackoffs, tracklen = TRACKLEN;
 int instrx, instry, instroffs;
@@ -760,7 +761,9 @@ void insertroutine() {
 				//if (currtab-- < 0)
 				//	{ currtab = 2; }
 				currtab--;
-				currtab %= 3;
+				//currtab %= 3;
+				if(currtab < 0)
+					currtab = 2;
 				break;
 			case CTRL('L'):
 				currtab++;
@@ -771,6 +774,15 @@ void insertroutine() {
 				playmode = PM_IDLE;
 				insertmode = false;
 				guiloop();
+				break;
+			case '`':
+				if(currtab == 0) {
+					int t = song[songy].track[songx / 4];
+					if(t) currtrack = t;
+					currtab = 1;
+				} else if(currtab == 1) {
+					currtab = 0;
+				}
 				break;
 			default:
 				x = hexdigit(c);
@@ -975,6 +987,15 @@ void handleinput() {
 					playmode = PM_IDLE;
 				}
 				break;
+			case '`':
+				if(currtab == 0) {
+					int t = song[songy].track[songx / 4];
+					if(t) currtrack = t;
+					currtab = 1;
+				} else if(currtab == 1) {
+					currtab = 0;
+				}
+				break;
 			/* Enter insert mode */
 			case 'i':
 				insertroutine();
@@ -1059,7 +1080,9 @@ void handleinput() {
 				break;
 			case CTRL('H'):
 				currtab--;
-				currtab %= 3;
+				//currtab %= 3;
+				if(currtab < 0)
+					currtab = 2;
 				break;
 			case CTRL('L'):
 				currtab++;
