@@ -1095,7 +1095,7 @@ void handleinput() {
 					currtab = 0;
 				}
 				break;
-			case 'o':
+			/*case 'o':
 				if(currtab == 2) {
 					struct instrument *in = &instrument[currinstr];
 
@@ -1113,7 +1113,7 @@ void handleinput() {
 						songlen++;
 						memset(&song[songy], 0, sizeof(struct songline));
 					}
-				}
+				}*/
 			/* Enter insert mode */
 			case 'i':
 				insertroutine();
