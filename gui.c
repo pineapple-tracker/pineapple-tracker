@@ -37,6 +37,8 @@ bool sdl_finished = false;
 int currbutt = -1;
 int winheight = 0;
 void drawgui();
+bool cmdrepeat = false;
+int cmdrepeatnum = 1;
 
 char filename[1024];
 
@@ -670,6 +672,103 @@ void sdlmainloop(SDL_Event event, SDL_Joystick *joystick) {
 	}
 }
 
+/* actions are anything that can be repeated by entering a number beforehand */
+enum {
+	ACT_MVLEFT,
+	ACT_MVRIGHT,
+	ACT_MVUP,
+	ACT_MVDOWN,
+	ACT_VIEWPHRASEINC,
+	ACT_VIEWPHRASEDEC,
+	ACT_VIEWINSTRINC,
+	ACT_VIEWINSTRDEC,
+	ACT_ALTNOTEINC,
+	ACT_ALTNOTEDEC,
+	ACT_ALTINSTRINC,
+	ACT_ALTINSTRDEC
+};
+/* execute an action */
+void actexec (int act) {
+	int i;
+	for (i=0;i<cmdrepeatnum;i++) {
+		switch (act) {
+			case ACT_MVLEFT:
+				switch(currtab) {
+					case 0:
+						if(songx) songx--;
+						break;
+					case 1:
+						if(trackx) trackx--;
+						break;
+					case 2:
+						if(instrx) instrx--;
+					break;
+				}
+			case ACT_MVRIGHT:
+				switch(currtab) {
+					case 0:
+						if(songx < 15) songx++;
+						break;
+					case 1:
+						if(trackx < 8) trackx++;
+						break;
+					case 2:
+						if(instrx < 2) instrx++;
+						break;
+				}
+			case ACT_MVUP:
+				switch(currtab) {
+					case 0:
+						if(songy) songy--;
+						break;
+					case 1:
+						if(tracky) {
+							tracky--;
+						} else {
+							tracky = tracklen - 1;
+						}
+						break;
+					case 2:
+						if(instry) instry--;
+						break;
+				}
+			case ACT_MVDOWN:
+				switch(currtab) {
+					case 0:
+						if(songy < songlen - 1) songy++;
+						break;
+					case 1:
+						if(tracky < tracklen - 1) {
+							tracky++;
+						} else {
+							tracky = 0;
+						}
+						break;
+					case 2:
+						if(instry < instrument[currinstr].length - 1) instry++;
+						break;
+				}
+				break;
+			case ACT_VIEWPHRASEINC:
+				break;
+			case ACT_VIEWPHRASEDEC:
+				break;
+			case ACT_VIEWINSTRINC:
+				break;
+			case ACT_VIEWINSTRDEC:
+				break;
+			case ACT_ALTNOTEINC:
+				break;
+			case ACT_ALTNOTEDEC:
+				break;
+			case ACT_ALTINSTRINC:
+				break;
+			case ACT_ALTINSTRDEC:
+				break;
+		}
+	}
+}
+
 // waits for next char from getch and matches it with the parameter
 // Look at this stupid function.. i wish i could make it more clear and have
 // it still work.
@@ -851,26 +950,7 @@ void insertroutine() {
 						track[currtrack].line[tracky].cmd[(trackx - 3) / 3] = c;
 					}
 				}
-				if(c == 'o') {
-					if(currtab == 2) {
-						struct instrument *in = &instrument[currinstr];
-
-						if(in->length < 256) {
-							memmove(&in->line[instry + 2], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
-							instry++;
-							in->length++;
-							in->line[instry].cmd = '0';
-							in->line[instry].param = 0;
-						}
-					} else if(currtab == 0) {
-						if(songlen < 256) {
-							memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
-							songy++;
-							songlen++;
-							memset(&song[songy], 0, sizeof(struct songline));
-						}
-					}
-				} else if(c == 'I') {
+				if(c == 'I') {
 					if(currtab == 2) {
 						struct instrument *in = &instrument[currinstr];
 
@@ -938,13 +1018,30 @@ void commandroutine() {
 	}
 }
 
+int char2int(char ch) {
+	if (isdigit(ch)) {
+		return (int)ch - '0';
+	}
+	return -1;
+}
+
 /* vi mode or normal mode */
 void handleinput() {
 	int c, x;
 
 	if (vimode) {
-		if ((c = getch()) != ERR) switch(c) {
-			//case 10:  same as ^J?
+		if ((c = getch()) != ERR) {
+
+			/* Repeat? */
+			if (isdigit(c)) {
+				if (!cmdrepeat) {
+					cmdrepeatnum = char2int(c);
+				} else {
+					cmdrepeatnum = (cmdrepeatnum*10) + char2int(c);
+				}
+			}
+
+			switch(c) {
 			case 13: // Enter
 				if(currtab != 2) {
 					playmode = PM_PLAY;
@@ -1021,6 +1118,27 @@ void handleinput() {
 			case 'i':
 				insertroutine();
 				break;
+			case 'o':
+				if(currtab == 2) {
+					struct instrument *in = &instrument[currinstr];
+
+					if(in->length < 256) {
+						memmove(&in->line[instry + 2], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
+						instry++;
+						in->length++;
+						in->line[instry].cmd = '0';
+						in->line[instry].param = 0;
+					}
+				} else if(currtab == 0) {
+					if(songlen < 256) {
+						memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
+						songy++;
+						songlen++;
+						memset(&song[songy], 0, sizeof(struct songline));
+					}
+				}
+				insertroutine();
+				break;
 			case 'h':
 			case KEY_LEFT:
 				switch(currtab) {
@@ -1085,18 +1203,50 @@ void handleinput() {
 						break;
 				}
 				break;
+			case '<':
+				if(octave) octave--;
+				break;
+			case '>':
+				if(octave < 8) octave++;
+				break;
+			case 'J':
+				if(currtab == 1) {
+					if (!trackx) {
+						track[currtrack].line[tracky].note--;
+					} else {
+						//switch (trackx):
+						//	case 1: SETHI(track[currtrack].line[tracky].instr, x); break;
+						//	case 2: SETLO(track[currtrack].line[tracky].instr, x); break;
+					}
+				}
+				break;
+			case 'K':
+				if(currtab == 1 && !trackx) {
+					track[currtrack].line[tracky].note++;
+				}
+				break;
 			case CTRL('J'):
 				if (currtab == 2) {
 					if(currinstr > 1) currinstr--;
 				} else if (currtab == 1) {
-					if(currtrack > 1) currtrack--;
+					if(currtrack > 1) {
+						currtrack--;
+						if (playmode == PM_PLAY) {
+							startplaytrack(currtrack);
+						}
+					}
 				}
 				break;
 			case CTRL('K'):
 				if (currtab == 2) {
 					if(currinstr < 255) currinstr++;
 				} else if (currtab == 1) {
-					if(currtrack < 255) currtrack++;
+					if(currtrack < 255) {
+						currtrack++;
+						if (playmode == PM_PLAY) {
+							startplaytrack(currtrack);
+						}
+					}
 				}
 				break;
 			case CTRL('H'):
@@ -1160,6 +1310,7 @@ void handleinput() {
 				break;
 			default:
 				break;
+			}
 		}
 	/* normal mode */
 	} else {
