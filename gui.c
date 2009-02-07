@@ -88,6 +88,20 @@ int hexdigit(char c) {
 	return -1;
 }
 
+/* these wrap around */
+int hexinc(int x) {
+	//return (x >= 0 && x <= 14)? x+1 : 0;
+	if (x >= 0 && x <= 14) {
+		return x+1;
+	} else if (x==15) {
+		return 0;
+	}
+	return -1;
+}
+int hexdec(int x) {
+	return (x >= 1 && x <= 15)? x-1 : 15;
+}
+
 int freqkey(int c) {
 	char *s;
 	int f = -1;
@@ -682,10 +696,10 @@ enum {
 	ACT_VIEWPHRASEDEC,
 	ACT_VIEWINSTRINC,
 	ACT_VIEWINSTRDEC,
-	ACT_ALTNOTEINC,
-	ACT_ALTNOTEDEC,
-	ACT_ALTINSTRINC,
-	ACT_ALTINSTRDEC,
+	ACT_NOTEINC,
+	ACT_NOTEDEC,
+	ACT_INSTRINC,
+	ACT_INSTRDEC,
 	ACT_ADDLINE,
 	ACT_DELLINE
 };
@@ -706,6 +720,7 @@ void actexec (int act) {
 						if(instrx) instrx--;
 					break;
 				}
+				break;
 			case ACT_MVRIGHT:
 				switch(currtab) {
 					case 0:
@@ -718,6 +733,7 @@ void actexec (int act) {
 						if(instrx < 2) instrx++;
 						break;
 				}
+				break;
 			case ACT_MVUP:
 				switch(currtab) {
 					case 0:
@@ -734,6 +750,7 @@ void actexec (int act) {
 						if(instry) instry--;
 						break;
 				}
+				break;
 			case ACT_MVDOWN:
 				switch(currtab) {
 					case 0:
@@ -752,24 +769,93 @@ void actexec (int act) {
 				}
 				break;
 			case ACT_VIEWPHRASEINC:
+				if(currtrack < 255) {
+					currtrack++;
+					if (playmode == PM_PLAY) {
+						startplaytrack(currtrack);
+					}
+				}
 				break;
 			case ACT_VIEWPHRASEDEC:
+				if(currtrack > 1) {
+					currtrack--;
+					if (playmode == PM_PLAY) {
+						startplaytrack(currtrack);
+					}
+				}
 				break;
 			case ACT_VIEWINSTRINC:
+				if(currinstr < 255) currinstr++;
 				break;
 			case ACT_VIEWINSTRDEC:
+				if(currinstr > 1) currinstr--;
 				break;
-			case ACT_ALTNOTEINC:
+			case ACT_NOTEINC:
+				track[currtrack].line[tracky].note++;
 				break;
-			case ACT_ALTNOTEDEC:
+			case ACT_NOTEDEC:
+				track[currtrack].line[tracky].note--;
 				break;
-			case ACT_ALTINSTRINC:
+			case ACT_INSTRINC:
+				switch (trackx) {
+					case 1:
+						SETHI(track[currtrack].line[tracky].instr,
+								hexinc(track[currtrack].line[tracky].instr >> 4) );
+						SETLO(track[currtrack].line[tracky].instr,
+								hexdec(track[currtrack].line[tracky].instr & 0x0f) );
+					case 2:
+						SETLO(track[currtrack].line[tracky].instr,
+								hexinc(track[currtrack].line[tracky].instr & 0x0f) );
+				}
 				break;
-			case ACT_ALTINSTRDEC:
+			case ACT_INSTRDEC:
+				switch (trackx) {
+					case 1:
+						SETHI(track[currtrack].line[tracky].instr,
+								hexdec(track[currtrack].line[tracky].instr >> 4) );
+						SETLO(track[currtrack].line[tracky].instr,
+								hexinc(track[currtrack].line[tracky].instr & 0x0f) );
+					case 2:
+						SETLO(track[currtrack].line[tracky].instr,
+								hexdec(track[currtrack].line[tracky].instr & 0x0f) );
+				}
 				break;
 			case ACT_ADDLINE:
+				if(currtab == 2) {
+					struct instrument *in = &instrument[currinstr];
+
+					if(in->length < 256) {
+						memmove(&in->line[instry + 2], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
+						instry++;
+						in->length++;
+						in->line[instry].cmd = '0';
+						in->line[instry].param = 0;
+					}
+				} else if(currtab == 0) {
+					if(songlen < 256) {
+						memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
+						songy++;
+						songlen++;
+						memset(&song[songy], 0, sizeof(struct songline));
+					}
+				}
 				break;
 			case ACT_DELLINE:
+				if(currtab == 2) {
+					struct instrument *in = &instrument[currinstr];
+
+					if(in->length > 1) {
+						memmove(&in->line[instry + 0], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
+						in->length--;
+						if(instry >= in->length) instry = in->length - 1;
+					}
+				} else if(currtab == 0) {
+					if(songlen > 1) {
+						memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
+						songlen--;
+						if(songy >= songlen) songy = songlen - 1;
+					}
+				}
 				break;
 		}
 	}
@@ -804,67 +890,42 @@ void insertroutine() {
 				guiloop();
 			case 'h':
 			case KEY_LEFT:
-				switch(currtab) {
-					case 0:
-						if(songx) songx--;
-						break;
-					case 1:
-						if(trackx) trackx--;
-						break;
-					case 2:
-						if(instrx) instrx--;
-					break;
-				}
-				break;
-			case 'l':
-			case KEY_RIGHT:
-				switch(currtab) {
-					case 0:
-						if(songx < 15) songx++;
-						break;
-					case 1:
-						if(trackx < 8) trackx++;
-						break;
-					case 2:
-						if(instrx < 2) instrx++;
-						break;
-				}
-				break;
-			case 'k':
-			case KEY_UP:
-				switch(currtab) {
-					case 0:
-						if(songy) songy--;
-						break;
-					case 1:
-						if(tracky) {
-							tracky--;
-						} else {
-							tracky = tracklen - 1;
-						}
-						break;
-					case 2:
-						if(instry) instry--;
-						break;
-				}
+				actexec(ACT_MVLEFT);
 				break;
 			case 'j':
 			case KEY_DOWN:
-				switch(currtab) {
-					case 0:
-						if(songy < songlen - 1) songy++;
-						break;
-					case 1:
-						if(tracky < tracklen - 1) {
-							tracky++;
-						} else {
-							tracky = 0;
-						}
-						break;
-					case 2:
-						if(instry < instrument[currinstr].length - 1) instry++;
-						break;
+				actexec(ACT_MVDOWN);
+				break;
+			case 'k':
+			case KEY_UP:
+				actexec(ACT_MVUP);
+				break;
+			case 'l':
+			case KEY_RIGHT:
+				actexec(ACT_MVRIGHT);
+				break;
+			case CTRL('J'):
+				if (currtab == 2) {
+					actexec(ACT_VIEWINSTRDEC);
+				} else if (currtab == 1) {
+					actexec(ACT_VIEWPHRASEDEC);
 				}
+				break;
+			case CTRL('K'):
+				if (currtab == 2) {
+					actexec(ACT_VIEWINSTRINC);
+				} else if (currtab == 1) {
+					actexec(ACT_VIEWPHRASEINC);
+				}
+				break;
+			case CTRL('H'):
+				currtab--;
+				if(currtab < 0)
+					currtab = 2;
+				break;
+			case CTRL('L'):
+				currtab++;
+				currtab %= 3;
 				break;
 			case 'Z':
 				if (nextchar('Z')) {
@@ -874,18 +935,6 @@ void insertroutine() {
 					endwin();
 					exit(0);
 				}
-				break;
-			case CTRL('H'):
-				//if (currtab-- < 0)
-				//	{ currtab = 2; }
-				currtab--;
-				//currtab %= 3;
-				if(currtab < 0)
-					currtab = 2;
-				break;
-			case CTRL('L'):
-				currtab++;
-				currtab %= 3;
 				break;
 			case ' ':
 				silence();
@@ -1183,67 +1232,19 @@ void handleinput() {
 				break;
 			case 'h':
 			case KEY_LEFT:
-				switch(currtab) {
-					case 0:
-						if(songx) songx--;
-						break;
-					case 1:
-						if(trackx) trackx--;
-						break;
-					case 2:
-						if(instrx) instrx--;
-						break;
-				}
-				break;
-			case 'l':
-			case KEY_RIGHT:
-				switch(currtab) {
-					case 0:
-						if(songx < 15) songx++;
-						break;
-					case 1:
-						if(trackx < 8) trackx++;
-						break;
-					case 2:
-						if(instrx < 2) instrx++;
-						break;
-				}
-				break;
-			case 'k':
-			case KEY_UP:
-				switch(currtab) {
-					case 0:
-						if(songy) songy--;
-						break;
-					case 1:
-						if(tracky) {
-							tracky--;
-						} else {
-							tracky = tracklen - 1;
-						}
-						break;
-					case 2:
-						if(instry) instry--;
-						break;
-				}
+				actexec(ACT_MVLEFT);
 				break;
 			case 'j':
 			case KEY_DOWN:
-				switch(currtab) {
-					case 0:
-						if(songy < songlen - 1) songy++;
-						break;
-					case 1:
-						if(tracky < tracklen - 1) {
-							tracky++;
-						} else {
-							tracky = 0;
-						}
-						break;
-					case 2:
-						if(instry < instrument[currinstr].length - 1) instry++;
-						break;
-				}
+				actexec(ACT_MVDOWN);
+				break;
+			case 'k':
+			case KEY_UP:
+				actexec(ACT_MVUP);
+				break;
+			case 'l':
+			case KEY_RIGHT:
+				actexec(ACT_MVRIGHT);
 				break;
 			case '<':
 				if(octave) octave--;
@@ -1251,49 +1252,59 @@ void handleinput() {
 			case '>':
 				if(octave < 8) octave++;
 				break;
+			// TODO: 'J' and 'K' should all call the same actexec function
+			// and the code to handle where the cursor is will be in there.
 			case 'J':
 				if(currtab == 1) {
-					if (!trackx) {
-						track[currtrack].line[tracky].note--;
-					} else {
-						//switch (trackx):
-						//	case 1: SETHI(track[currtrack].line[tracky].instr, x); break;
-						//	case 2: SETLO(track[currtrack].line[tracky].instr, x); break;
+					switch (trackx) {
+						case 0:
+							actexec(ACT_NOTEDEC);
+							break;
+						case 1:
+							actexec(ACT_INSTRDEC);
+							break;
+						case 2:
+							actexec(ACT_INSTRDEC);
+							break;
+						default:
+							display("lol wut");
+							break;
 					}
 				}
 				break;
 			case 'K':
-				if(currtab == 1 && !trackx) {
-					track[currtrack].line[tracky].note++;
+				if(currtab == 1) {
+					switch (trackx) {
+						case 0:
+							actexec(ACT_NOTEINC);
+							break;
+						case 1:
+							actexec(ACT_INSTRINC);
+							break;
+						case 2:
+							actexec(ACT_INSTRINC);
+							break;
+						default:
+							display("lol wut");
+							break;
+					}
 				}
-				break;
 			case CTRL('J'):
 				if (currtab == 2) {
-					if(currinstr > 1) currinstr--;
+					actexec(ACT_VIEWINSTRDEC);
 				} else if (currtab == 1) {
-					if(currtrack > 1) {
-						currtrack--;
-						if (playmode == PM_PLAY) {
-							startplaytrack(currtrack);
-						}
-					}
+					actexec(ACT_VIEWPHRASEDEC);
 				}
 				break;
 			case CTRL('K'):
 				if (currtab == 2) {
-					if(currinstr < 255) currinstr++;
+					actexec(ACT_VIEWINSTRINC);
 				} else if (currtab == 1) {
-					if(currtrack < 255) {
-						currtrack++;
-						if (playmode == PM_PLAY) {
-							startplaytrack(currtrack);
-						}
-					}
+					actexec(ACT_VIEWPHRASEINC);
 				}
 				break;
 			case CTRL('H'):
 				currtab--;
-				//currtab %= 3;
 				if(currtab < 0)
 					currtab = 2;
 				break;
@@ -1430,64 +1441,16 @@ void handleinput() {
 				export();
 				break;
 			case KEY_LEFT:
-				switch(currtab) {
-					case 0:
-						if(songx) songx--;
-						break;
-					case 1:
-						if(trackx) trackx--;
-						break;
-					case 2:
-						if(instrx) instrx--;
-						break;
-				}
-				break;
-			case KEY_RIGHT:
-				switch(currtab) {
-					case 0:
-						if(songx < 15) songx++;
-						break;
-					case 1:
-						if(trackx < 8) trackx++;
-						break;
-					case 2:
-						if(instrx < 2) instrx++;
-						break;
-				}
-				break;
-			case KEY_UP:
-				switch(currtab) {
-					case 0:
-						if(songy) songy--;
-						break;
-					case 1:
-						if(tracky) {
-							tracky--;
-						} else {
-							tracky = tracklen - 1;
-						}
-						break;
-					case 2:
-						if(instry) instry--;
-						break;
-				}
+				actexec(ACT_MVLEFT);
 				break;
 			case KEY_DOWN:
-				switch(currtab) {
-					case 0:
-						if(songy < songlen - 1) songy++;
-						break;
-					case 1:
-						if(tracky < tracklen - 1) {
-							tracky++;
-						} else {
-							tracky = 0;
-						}
-						break;
-					case 2:
-						if(instry < instrument[currinstr].length - 1) instry++;
-						break;
-				}
+				actexec(ACT_MVDOWN);
+				break;
+			case KEY_UP:
+				actexec(ACT_MVUP);
+				break;
+			case KEY_RIGHT:
+				actexec(ACT_MVRIGHT);
 				break;
 			case 'C':
 				if(currtab == 2) {

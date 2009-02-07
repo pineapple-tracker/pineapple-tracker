@@ -18,6 +18,9 @@ i think every action should be called with the function actexec(), that way
 	we can have all the actual code for the action there and we don't have to
 	keep multiple copies of the same function in multiple modes. hey maybe
 	every action should be a function? *_* i dunno
+	*UPDATE* i did some of this and it's kinda nice as far as making
+	handleinput() more understandable but now there are like 3 nested
+	switch/case things over two routines and it's ugly
 
 control with a gamepad
 
@@ -32,3 +35,5 @@ bugs:
 ----
 right now there are at least 7 states for the mode to be in, lol. this is too many. agreed --tony.
 	problem solved by adding a new mode, lol -- jammermode
+
+octave goes to 20 when using J and K in tracktab
