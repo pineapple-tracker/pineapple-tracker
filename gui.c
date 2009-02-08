@@ -263,15 +263,16 @@ void exitgui() {
 void initgui() {
 	int i;
 
-	// recommended by the ncurses man page
 	initscr();
+	// overrides your terminal's bg color :(
+	//start_color();
 	cbreak();
 	noecho();
 	nonl();
 	intrflush(stdscr, FALSE);
 	keypad(stdscr, TRUE);
 
-	// this is so the screen updates when you're not pressing keys
+	// this makes screen update when you're not pressing keys
 	nodelay(stdscr, TRUE);
 
 	//raw();
@@ -305,8 +306,11 @@ void drawsonged(int x, int y, int height) {
 				addstr(buf);
 				if(j != 3) addch(' ');
 			}
+			if(playsong && songpos == (i + 1)) {
+				attrset(A_STANDOUT);
+				addch('*');
+			}
 			attrset(A_NORMAL);
-			if(playsong && songpos == (i + 1)) addch('*');
 		}
 	}
 }
@@ -344,10 +348,11 @@ void drawtracked(int x, int y, int height) {
 				}
 				addstr(buf);
 			}
-			attrset(A_NORMAL);
 			if(playtrack && ((i + 1) % tracklen) == trackpos) {
+				attrset(A_STANDOUT);
 				addch('*');
 			}
+			attrset(A_NORMAL);
 		}
 	}
 }
@@ -695,7 +700,9 @@ enum {
 	ACT_PARAMINC,
 	ACT_PARAMDEC,
 	ACT_ADDLINE,
-	ACT_DELLINE
+	ACT_DELLINE,
+	ACT_CLRONETHING,
+	ACT_CLRITALL
 };
 /* execute an action */
 void actexec (int act) {
@@ -803,6 +810,7 @@ void actexec (int act) {
 						if(instry < instrument[currinstr].length - 8) instry += 8;
 						break;
 				}
+				break;
 			case ACT_VIEWPHRASEINC:
 				if(currtrack < 255) {
 					currtrack++;
@@ -826,10 +834,19 @@ void actexec (int act) {
 				if(currinstr > 1) currinstr--;
 				break;
 			case ACT_NOTEINC:
-				track[currtrack].line[tracky].note++;
+						// if current note < H7
+				if ( track[currtrack].line[tracky].note < 96 ) {
+					track[currtrack].line[tracky].note++;
+				} else {
+					track[currtrack].line[tracky].note = 0;
+				}
 				break;
 			case ACT_NOTEDEC:
-				track[currtrack].line[tracky].note--;
+				if ( track[currtrack].line[tracky].note > 0 ) {
+					track[currtrack].line[tracky].note--;
+				} else {
+					track[currtrack].line[tracky].note = 96;
+				}
 				break;
 			case ACT_INSTRINC:
 				switch (trackx) {
@@ -855,18 +872,16 @@ void actexec (int act) {
 								hexdec(track[currtrack].line[tracky].instr & 0x0f) );
 				}
 				break;
+				// TODO: FXINC and FXDEC
 			case ACT_FXINC:
 				//strlen(validcmds);
 				break;
 			case ACT_FXDEC:
 				break;
-			//SETLO(track[currtrack].line[tracky].param[0], x); break;
 			case ACT_PARAMINC:
 				if (trackx==4 || trackx==7) {
 					SETHI(track[currtrack].line[tracky].param[trackx%2],
 							hexinc(track[currtrack].line[tracky].param[0] >> 4) );
-					SETLO(track[currtrack].line[tracky].param[trackx%2],
-							hexdec(track[currtrack].line[tracky].param[0] & 0x0f) );
 				} else if (trackx==5 || trackx==8) {
 					SETLO(track[currtrack].line[tracky].param[(trackx-1)%2],
 							hexinc(track[currtrack].line[tracky].param[(trackx-1)%2] & 0x0f) );
@@ -876,8 +891,6 @@ void actexec (int act) {
 				if (trackx==4 || trackx==7) {
 					SETHI(track[currtrack].line[tracky].param[trackx%2],
 							hexdec(track[currtrack].line[tracky].param[trackx%2] >> 4) );
-					SETLO(track[currtrack].line[tracky].param[trackx%2],
-							hexinc(track[currtrack].line[tracky].param[trackx%2] & 0x0f) );
 				} else if (trackx==5 || trackx==8) {
 					SETLO(track[currtrack].line[tracky].param[(trackx-1)%2],
 							hexdec(track[currtrack].line[tracky].param[(trackx-1)%2] & 0x0f) );
@@ -920,8 +933,65 @@ void actexec (int act) {
 					}
 				}
 				break;
-		}
-	}
+			case ACT_CLRONETHING:
+			// TODO: finish this
+				if(currtab == 0) {
+				} else if (currtab == 1) {
+					switch (trackx) {
+						case 0:
+							track[currtrack].line[tracky].note = 0;
+							track[currtrack].line[tracky].instr = 0;
+							break;
+						case 1:
+							SETHI(track[currtrack].line[tracky].instr, 0);
+							break;
+						case 2:
+							SETLO(track[currtrack].line[tracky].instr, 0);
+							break;
+						case 3:
+							track[currtrack].line[tracky].cmd[0] = 0;
+							break;
+						case 4:
+							SETHI(track[currtrack].line[tracky].param[0],0);
+							break;
+						case 5:
+							SETLO(track[currtrack].line[tracky].param[0],0);
+							break;
+						case 6:
+							track[currtrack].line[tracky].cmd[1] = 0;
+							break;
+						case 7:
+							SETHI(track[currtrack].line[tracky].param[1],0);
+							break;
+						case 8:
+							SETLO(track[currtrack].line[tracky].param[1],0);
+							break;
+						default:
+							display("lol wut");
+							break;
+					}
+				} else if (currtab == 2) {
+				}
+				break;
+			case ACT_CLRITALL:
+			// TODO: finish this
+				if(currtab == 0) {
+				} else if (currtab == 1) {
+					track[currtrack].line[tracky].note = 0;
+					track[currtrack].line[tracky].instr = 0;
+					SETHI(track[currtrack].line[tracky].instr, 0);
+					SETLO(track[currtrack].line[tracky].instr, 0);
+					track[currtrack].line[tracky].cmd[0] = 0;
+					SETHI(track[currtrack].line[tracky].param[0],0);
+					SETLO(track[currtrack].line[tracky].param[0],0);
+					track[currtrack].line[tracky].cmd[1] = 0;
+					SETHI(track[currtrack].line[tracky].param[1],0);
+					SETLO(track[currtrack].line[tracky].param[1],0);
+				} else if (currtab == 2) {
+				}
+			break;
+		} // end switch
+	} // end for
 	cmdrepeatnum = 1;
 	cmdrepeat = false;
 }
@@ -1007,6 +1077,18 @@ void insertroutine() {
 				insertmode = false;
 				guiloop();
 				break;
+			case 13:  // Enter key
+				if(currtab != 2) {
+					playmode = PM_PLAY;
+					if(currtab == 1) {
+						silence();
+						startplaytrack(currtrack);
+					} else if(currtab == 0) {
+						silence();
+						startplaysong(songy);
+					}
+				}
+				break;
 			case '`':
 				if(currtab == 0) {
 					int t = song[songy].track[songx / 4];
@@ -1016,8 +1098,6 @@ void insertroutine() {
 					currtab = 0;
 				}
 				break;
-
-				break;	
 			default:
 				x = hexdigit(c);
 				if(x >= 0) {
@@ -1158,7 +1238,7 @@ int char2int(char ch) {
 	return -1;
 }
 
-/* vi mode or normal mode */
+/* vi mode and non-vi mode */
 void handleinput() {
 	int c, x;
 
@@ -1219,37 +1299,19 @@ void handleinput() {
 				break;
 			/* Clear */
 			case 'x':
-				// TODO: finish and move this into actexec()
-				if(currtab == 1) {
-				} else if (currtab == 1) {
-					switch (trackx) {
-						case 0:
-							track[currtrack].line[tracky].note = 0;
-							track[currtrack].line[tracky].instr = 0;
-							break;
-						case 1:
-							SETHI(track[currtrack].line[tracky].instr, 0);
-							break;
-						case 2:
-							SETLO(track[currtrack].line[tracky].instr, 0);
-							break;
-						default:
-							display("lol wut");
-							break;
-							
-					}
-					//tracky++;
-					//tracky %= tracklen;
-					//if(x) iedplonk(x, currinstr);
-				} else if (currtab == 2) {
-				}
+				actexec(ACT_CLRONETHING);
+				break;
+			case 'X':
+				actexec(ACT_CLRITALL);
 				break;
 			case 13:  // Enter key
 				if(currtab != 2) {
 					playmode = PM_PLAY;
 					if(currtab == 1) {
+						silence();
 						startplaytrack(currtrack);
 					} else if(currtab == 0) {
+						silence();
 						startplaysong(songy);
 					}
 				}
@@ -1364,12 +1426,6 @@ void handleinput() {
 						default:
 							display("lol wut");
 							break;
-							/*
-					if(currtab == 1 && (trackx == 3 || trackx == 6 || trackx == 9)) {
-						if(strchr(validcmds, c)) {
-							if(c == '.' || c == '0') c = 0;
-							track[currtrack].line[tracky].cmd[(trackx - 3) / 3] = c;
-							*/
 						}
 					}
 				break;
@@ -1405,6 +1461,7 @@ void handleinput() {
 							break;
 					}
 				}
+				break;
 			case CTRL('J'):
 				if (currtab == 2) {
 					actexec(ACT_VIEWINSTRDEC);
@@ -1445,7 +1502,7 @@ void handleinput() {
 				break;
 			}
 		}
-	/* normal mode */
+	/* non-vi mode */
 	} else {
 		if((c = getch()) != ERR) switch(c) {
 			case 10:
@@ -1471,9 +1528,7 @@ void handleinput() {
 					playmode = PM_IDLE;
 				}
 				break;
-			case KEY_TAB: // this is tab, and it also happens to be ^i, hahhaaa
-					// that's ok though.. it's kind of a nice vi-like
-					// keycommand to switch views
+			case KEY_TAB:
 				currtab++;
 				currtab %= 3;
 				break;
@@ -1693,7 +1748,6 @@ void drawgui() {
 	erase();
 	mvaddstr(0, 0, "music chip tracker 0.1 by lft");
 	mvaddstr(1, 0, "press ^P to switch keybindings");
-	drawmodeinfo(cols - 30, 0);
 	snprintf(buf, sizeof(buf), "Octave:   %d <>", octave);
 	mvaddstr(2, cols - 14, buf);
 	mvaddstr(3, cols - 14, "^W)rite ^E)xit");
@@ -1724,8 +1778,10 @@ void drawgui() {
 	}
 
 	if (vimode) {
-		mvaddstr(2, 0, "*(escape)vimode*");
-	} 
+		mvaddstr(0, cols - 30, "*(escape)vimode*");
+	} else {
+		drawmodeinfo(cols - 30, 0);
+	}
 
 	if (insertmode) {
 		winheight = getmaxy(stdscr);

@@ -1,22 +1,16 @@
 enhancements:
 -------------
 vi-style keybindings
-	{{ normal mode }}
-	* 'x' only deletes notes in track tab.. it needs to delete any one thing in
-		any tab
-	* 'X' to clear a whole line in any tab
+	* 'x' and 'X' only work in instr tab
 	* we need to be able to select the octave and note seperately in track tab,
 		so we can change them seperately with 'J' and 'K'
 	* implement jammermode:
-		q2w3er5t6y7u will all play notes.
+		q2w3er5t6y7u will all play notes, without inserting them
 		other bindings that can stay: hjkl, ^h, ^l, ^j, ^k
 	* make comand mode
-	* Number+action, do that action that many times
 	* record mode?
 
 control with a gamepad
-
-show play position in instrument view
 
 save as.. support
 
@@ -30,9 +24,6 @@ bugs:
 right now there are at least 7 states for the mode to be in, lol. this is too many. agreed --tony.
 	problem solved by adding a new mode, lol -- jammermode
 
-octave goes to 20 when using J and K in tracktab
-
-all sounds should be stopped when pressing play again, otherwise some
-	instruments can hang...
-
 J and K on low digit of params isn't recognized
+
+pressing 'd' stops the screen from updating (noticeable while playing)
