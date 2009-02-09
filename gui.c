@@ -707,6 +707,8 @@ enum {
 /* execute an action */
 void actexec (int act) {
 	int i;
+	char currcmd;
+
 	for (i=0;i<cmdrepeatnum;i++) {
 		switch (act) {
 			case ACT_MVLEFT:
@@ -855,9 +857,11 @@ void actexec (int act) {
 								hexinc(track[currtrack].line[tracky].instr >> 4) );
 						SETLO(track[currtrack].line[tracky].instr,
 								hexdec(track[currtrack].line[tracky].instr & 0x0f) );
+						break;
 					case 2:
 						SETLO(track[currtrack].line[tracky].instr,
 								hexinc(track[currtrack].line[tracky].instr & 0x0f) );
+						break;
 				}
 				break;
 			case ACT_INSTRDEC:
@@ -867,33 +871,69 @@ void actexec (int act) {
 								hexdec(track[currtrack].line[tracky].instr >> 4) );
 						SETLO(track[currtrack].line[tracky].instr,
 								hexinc(track[currtrack].line[tracky].instr & 0x0f) );
+						break;
 					case 2:
 						SETLO(track[currtrack].line[tracky].instr,
 								hexdec(track[currtrack].line[tracky].instr & 0x0f) );
+						break;
 				}
 				break;
-				// TODO: FXINC and FXDEC
+			// TODO: FXINC and FXDEC
 			case ACT_FXINC:
+				currcmd = track[currtrack].line[tracky].cmd[(trackx + 1) % 2];
+				//newcmd = validcmds[0];
+				//if(strchr(validcmds, track[currtrack].line[tracky].cmd[(trackx + 1) % 2])) {
+				//	newcmd = strchr(validcmds, track[currtrack].line[tracky].cmd[(trackx + 1) % 2]) - validcmds;
+				//}
+				int z;
+				for (z = 0; z < strlen(validcmds); z++) {
+					if (currcmd == validcmds[z]) {
+						track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[z+1];
+						continue;
+					}
+				}
+				if (currcmd == validcmds[z]) {
+				// lol look at alll this shit
+				//if (strchr(validcmds,currcmd) < strchr(validcmds,validcmds[strlen(validcmds)-1])) {
+				//	track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[(int)(strchr(validcmds,validcmds[strlen(validcmds)-1]-strchr(validcmds,currcmd)))+1];
+				//	display("hii");
+				//} else {
+				//	currcmd = validcmds[0];
+				//}
+				//if(strchr(validcmds, ch)) {
+				//	return strchr(validcmds, ch) - validcmds;
+
+				//if(track[currtrack].line[i].cmd[j]) {
+
 				//strlen(validcmds);
 				break;
 			case ACT_FXDEC:
+				track[currtrack].line[tracky].cmd[(trackx+1)%2]--;
 				break;
 			case ACT_PARAMINC:
-				if (trackx==4 || trackx==7) {
-					SETHI(track[currtrack].line[tracky].param[trackx%2],
-							hexinc(track[currtrack].line[tracky].param[0] >> 4) );
-				} else if (trackx==5 || trackx==8) {
-					SETLO(track[currtrack].line[tracky].param[(trackx-1)%2],
-							hexinc(track[currtrack].line[tracky].param[(trackx-1)%2] & 0x0f) );
+				if (currtab==1) {
+					if (trackx==4 || trackx==7) {
+						SETHI(track[currtrack].line[tracky].param[trackx % 2],
+								hexinc(track[currtrack].line[tracky].param[trackx % 2] >> 4) );
+						break;
+					} else if (trackx==5 || trackx==8) {
+						SETLO(track[currtrack].line[tracky].param[(trackx - 1) % 2],
+								hexinc(track[currtrack].line[tracky].param[(trackx - 1) % 2] & 0x0f) );
+						break;
+					}
 				}
 				break;
 			case ACT_PARAMDEC:
-				if (trackx==4 || trackx==7) {
-					SETHI(track[currtrack].line[tracky].param[trackx%2],
-							hexdec(track[currtrack].line[tracky].param[trackx%2] >> 4) );
-				} else if (trackx==5 || trackx==8) {
-					SETLO(track[currtrack].line[tracky].param[(trackx-1)%2],
-							hexdec(track[currtrack].line[tracky].param[(trackx-1)%2] & 0x0f) );
+				if (currtab==1) {
+					if (trackx==4 || trackx==7) {
+						SETHI(track[currtrack].line[tracky].param[trackx % 2],
+								hexdec(track[currtrack].line[tracky].param[trackx % 2] >> 4) );
+						break;
+					} else if (trackx==5 || trackx==8) {
+						SETLO(track[currtrack].line[tracky].param[(trackx-1) % 2],
+								hexdec(track[currtrack].line[tracky].param[(trackx - 1) % 2] & 0x0f) );
+						break;
+					}
 				}
 				break;
 			case ACT_ADDLINE:
@@ -967,7 +1007,7 @@ void actexec (int act) {
 							SETLO(track[currtrack].line[tracky].param[1],0);
 							break;
 						default:
-							display("lol wut");
+							display("in ACT_CLRONETHING");
 							break;
 					}
 				} else if (currtab == 2) {
@@ -989,7 +1029,10 @@ void actexec (int act) {
 					SETLO(track[currtrack].line[tracky].param[1],0);
 				} else if (currtab == 2) {
 				}
-			break;
+				break;
+			default:
+				display("hiiiii");
+				break;
 		} // end switch
 	} // end for
 	cmdrepeatnum = 1;
@@ -1412,19 +1455,21 @@ void handleinput() {
 							actexec(ACT_FXDEC);	
 							break;
 						case 4:
+						case 5:
 							actexec(ACT_PARAMDEC);	
 							break;
 						case 6:
 							actexec(ACT_FXDEC);	
 							break;
 						case 7:
+						case 8:
 							actexec(ACT_PARAMDEC);	
 							break;
 						case 9:
 							actexec(ACT_FXDEC);	
 							break;
 						default:
-							display("lol wut");
+							display("in J");
 							break;
 						}
 					}
@@ -1445,19 +1490,21 @@ void handleinput() {
 							actexec(ACT_FXINC);	
 							break;
 						case 4:
+						case 5:
 							actexec(ACT_PARAMINC);	
 							break;
 						case 6:
 							actexec(ACT_FXINC);	
 							break;
 						case 7:
+						case 8:
 							actexec(ACT_PARAMINC);	
 							break;
 						case 9:
 							actexec(ACT_FXINC);	
 							break;
 						default:
-							display("lol wut");
+							display("in K");
 							break;
 					}
 				}

@@ -24,6 +24,4 @@ bugs:
 right now there are at least 7 states for the mode to be in, lol. this is too many. agreed --tony.
 	problem solved by adding a new mode, lol -- jammermode
 
-J and K on low digit of params isn't recognized
-
 pressing 'd' stops the screen from updating (noticeable while playing)
