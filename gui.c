@@ -892,7 +892,7 @@ void actexec (int act) {
 						continue;
 					}
 				}
-				if (currcmd == validcmds[z]) {
+				//if (currcmd == validcmds[z]) {
 				// lol look at alll this shit
 				//if (strchr(validcmds,currcmd) < strchr(validcmds,validcmds[strlen(validcmds)-1])) {
 				//	track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[(int)(strchr(validcmds,validcmds[strlen(validcmds)-1]-strchr(validcmds,currcmd)))+1];
