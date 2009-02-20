@@ -44,9 +44,9 @@ The available commands are:
 	dxx Set duty cycle (pulse width) to xx.
 	fxx Set volume fade speed to xx. So, fff is a slow fadeout, f01 is a slow fadein.
 	ixx Set channel inertia. A high inertia causes automatic slides between notes. Default 0.
-	jxx Jump to instrument line xx. Used to create arpeggio loops.
+	@xx jump to instrument line xx. Used to create arpeggio loops.
 		Warning: The loop must contain a delay element (t command), otherwise you'll crash the software.
-	lxx Set sLide. So, lff is a slow slide down, l01 is a slow slide up.
+	sxx Set Slide. So, lff is a slow slide down, l01 is a slow slide up.
 	mxx Set pulse width modulation rate to xx.
 	txx Wait xx time units.
 	vxx Set channel volume to xx.

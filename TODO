@@ -9,7 +9,8 @@ vi-style keybindings
 		other bindings that can stay: hjkl, ^h, ^l, ^j, ^k
 	* make comand mode
 	* record mode?
-	* dd, dk, dj
+	* :  ... go to line number
+	* dk, dj
 	* visual mode?
 
 control with a gamepad
