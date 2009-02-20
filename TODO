@@ -4,8 +4,7 @@ vi-style keybindings
 	* 'x' and 'X' only work in instr tab
 	* we need to be able to select the octave and note seperately in track tab,
 		so we can change them seperately with 'J' and 'K'
-	* implement jammermode:
-		q2w3er5t6y7u will all play notes, without inserting them
+	* implement jammermode: q2w3er5t6y7u will all play notes, without inserting them
 		other bindings that can stay: hjkl, ^h, ^l, ^j, ^k
 	* make comand mode
 	* record mode?
@@ -24,3 +23,8 @@ tempo control
 bugs:
 ----
 pressing 'd' stops the screen from updating (noticeable while playing)
+
+dreams:
+------
+config files
+rainbow decibel meters on each track like AHX tracker
