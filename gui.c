@@ -693,6 +693,18 @@ enum {
 	ACT_VIEWPHRASEDEC,
 	ACT_VIEWINSTRINC,
 	ACT_VIEWINSTRDEC,
+	ACT_ADDLINE,
+	ACT_DELLINE,
+	ACT_CLRONETHING,
+	ACT_CLRITALL,
+
+	// song view
+	ACT_TRACKINC,
+	ACT_TRACKDEC,
+	ACT_TRANSPINC,
+	ACT_TRANSPDEC,
+
+	// phrase view
 	ACT_NOTEINC,
 	ACT_NOTEDEC,
 	ACT_INSTRINC,
@@ -700,11 +712,7 @@ enum {
 	ACT_FXINC,
 	ACT_FXDEC,
 	ACT_PARAMINC,
-	ACT_PARAMDEC,
-	ACT_ADDLINE,
-	ACT_DELLINE,
-	ACT_CLRONETHING,
-	ACT_CLRITALL
+	ACT_PARAMDEC
 };
 /* execute an action */
 void actexec (int act) {
@@ -836,6 +844,68 @@ void actexec (int act) {
 				break;
 			case ACT_VIEWINSTRDEC:
 				if(currinstr > 1) currinstr--;
+				break;
+			// TODO: TRACKINC/DEC and TRANSPINC/DEC are all very similar... we
+			// could probably make this more concise.
+			case ACT_TRACKINC:
+				if ( (songx%2)==0 ) {
+					if (songx >= 240) {
+						song[songy].track[songx/4] -= 240;
+					} else {
+						song[songy].track[songx/4] += 16;
+					}
+				} else {
+					if ( (song[songy].track[songx/4] % 16) == 15) {
+						song[songy].track[songx/4] -= 15;
+					} else {
+						song[songy].track[songx/4]++;
+					}
+				}
+				break;
+			case ACT_TRACKDEC:
+				if ( (songx%2)==0 ) {
+					if (songx <= 15) {
+						song[songy].track[songx/4] += 240;
+					} else {
+						song[songy].track[songx/4] -= 16;
+					}
+				} else {
+					if ( (song[songy].track[songx/4] % 16) == 0) {
+						song[songy].track[songx/4] += 15;
+					} else {
+						song[songy].track[songx/4]--;
+					}
+				}
+				break;
+			case ACT_TRANSPINC:
+				if ( (songx%2)==0 ) {
+					if (songx >= 240) {
+						song[songy].transp[songx/4] -= 240;
+					} else {
+						song[songy].transp[songx/4] += 16;
+					}
+				} else {
+					if ( (song[songy].transp[songx/4] % 16) == 15) {
+						song[songy].transp[songx/4] -= 15;
+					} else {
+						song[songy].transp[songx/4]++;
+					}
+				}
+				break;
+			case ACT_TRANSPDEC:
+				if ( (songx%2)==0 ) {
+					if (songx <= 15) {
+						song[songy].transp[songx/4] += 240;
+					} else {
+						song[songy].transp[songx/4] -= 16;
+					}
+				} else {
+					if ( (song[songy].transp[songx/4] % 16) == 0) {
+						song[songy].transp[songx/4] += 15;
+					} else {
+						song[songy].transp[songx/4]--;
+					}
+				}
 				break;
 			case ACT_NOTEINC:
 						// if current note < H7
@@ -1429,10 +1499,14 @@ void handleinput() {
 			case '>':
 				if(octave < 8) octave++;
 				break;
-			// TODO: 'J' and 'K' should all call the same actexec function
-			// and the code to handle where the cursor is will be in there.
 			case 'J':
-				if(currtab == 1) {
+				if (currtab == 0) {
+					if ( (songx%4) < 2) {
+						actexec(ACT_TRACKDEC);
+					} else {
+						actexec(ACT_TRANSPDEC);
+					}
+				} else if (currtab == 1) {
 					switch (trackx) {
 						case 0:
 							actexec(ACT_NOTEDEC);
@@ -1464,10 +1538,18 @@ void handleinput() {
 							display("in J");
 							break;
 						}
-					}
+				} else if (currtab == 2) {
+					// TODO
+				}
 				break;
 			case 'K':
-				if(currtab == 1) {
+				if (currtab == 0) {
+					if ( (songx%4) < 2) {
+						actexec(ACT_TRACKINC);
+					} else {
+						actexec(ACT_TRANSPINC);
+					}
+				} else if (currtab == 1) {
 					switch (trackx) {
 						case 0:
 							actexec(ACT_NOTEINC);
@@ -1499,6 +1581,8 @@ void handleinput() {
 							display("in K");
 							break;
 					}
+				} else if (currtab == 2) {
+					// TODO
 				}
 				break;
 			case CTRL('J'):
