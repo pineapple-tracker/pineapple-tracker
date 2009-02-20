@@ -38,7 +38,7 @@ char filename[1024];
 
 char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#", "A-", "A#", "H-"};
 
-char *validcmds = "0dfijlmtvw~+=";
+char *validcmds = "0dfi@smtvw~+=";
 
 /*char *keymap[2] = {
 	";oqejkixdbhmwnvsz",
@@ -274,7 +274,7 @@ void initgui() {
 	// this prevents certain special keys from working, like ^H
 	//keypad(stdscr, TRUE);
 
-	// this makes screen update when you're not pressing keys
+	// this makes the screen update when you're not pressing keys
 	nodelay(stdscr, TRUE);
 
 	//raw();
@@ -1036,8 +1036,20 @@ void actexec (int act) {
 				}
 				break;
 			case ACT_CLRONETHING:
-			// TODO: finish this
-				if(currtab == 0) {
+				if (currtab == 0) {
+					if ( (songx%4) < 2) {
+						if ( (songx%2)==0 ) {
+							song[songy].track[songx/4] = (song[songy].track[songx/4] - song[songy].track[songx/4]) + song[songy].track[songx/4]%16;
+						} else {
+							song[songy].track[songx/4] -= song[songy].track[songx/4]%16;
+						}
+					} else {
+						if ( (songx%2)==0 ) {
+							song[songy].transp[songx/4] = (song[songy].transp[songx/4] - song[songy].transp[songx/4]) + song[songy].transp[songx/4]%16;
+						} else {
+							song[songy].transp[songx/4] -= song[songy].transp[songx/4]%16;
+						}
+					}
 				} else if (currtab == 1) {
 					switch (trackx) {
 						case 0:
@@ -1073,11 +1085,16 @@ void actexec (int act) {
 							break;
 					}
 				} else if (currtab == 2) {
+					// TODO
 				}
 				break;
 			case ACT_CLRITALL:
-			// TODO: finish this
 				if(currtab == 0) {
+					int ci;
+					for (ci = 0; ci < 4; ci++) {
+						song[songy].track[ci] = 0;
+						song[songy].transp[ci] = 0;
+					}
 				} else if (currtab == 1) {
 					track[currtrack].line[tracky].note = 0;
 					track[currtrack].line[tracky].instr = 0;
@@ -1090,10 +1107,11 @@ void actexec (int act) {
 					SETHI(track[currtrack].line[tracky].param[1],0);
 					SETLO(track[currtrack].line[tracky].param[1],0);
 				} else if (currtab == 2) {
+					// TODO
 				}
 				break;
 			default:
-				display("hiiiii");
+				display("please implement action number %d!", act);
 				break;
 		} // end switch
 	} // end for
