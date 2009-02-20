@@ -9,6 +9,8 @@ vi-style keybindings
 		other bindings that can stay: hjkl, ^h, ^l, ^j, ^k
 	* make comand mode
 	* record mode?
+	* dd, dk, dj
+	* visual mode?
 
 control with a gamepad
 
@@ -21,7 +23,4 @@ tempo control
 
 bugs:
 ----
-right now there are at least 7 states for the mode to be in, lol. this is too many. agreed --tony.
-	problem solved by adding a new mode, lol -- jammermode
-
 pressing 'd' stops the screen from updating (noticeable while playing)

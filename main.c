@@ -89,6 +89,8 @@ int main(int argc, char **argv) {
 	requested.samples = 256;
 	requested.callback = audiocb;
 	requested.channels = 1;
+
+	// comment this out to run on grace
 	if(SDL_OpenAudio(&requested, &obtained) == -1) {
 		err(1, "SDL_OpenAudio");
 	}

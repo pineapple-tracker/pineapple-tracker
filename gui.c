@@ -270,7 +270,9 @@ void initgui() {
 	noecho();
 	nonl();
 	intrflush(stdscr, FALSE);
-	keypad(stdscr, TRUE);
+
+	// this prevents certain special keys from working, like ^H
+	//keypad(stdscr, TRUE);
 
 	// this makes screen update when you're not pressing keys
 	nodelay(stdscr, TRUE);
@@ -706,7 +708,7 @@ enum {
 };
 /* execute an action */
 void actexec (int act) {
-	int i;
+	int i, z;
 	char currcmd;
 
 	for (i=0;i<cmdrepeatnum;i++) {
@@ -855,8 +857,6 @@ void actexec (int act) {
 					case 1:
 						SETHI(track[currtrack].line[tracky].instr,
 								hexinc(track[currtrack].line[tracky].instr >> 4) );
-						SETLO(track[currtrack].line[tracky].instr,
-								hexdec(track[currtrack].line[tracky].instr & 0x0f) );
 						break;
 					case 2:
 						SETLO(track[currtrack].line[tracky].instr,
@@ -869,8 +869,6 @@ void actexec (int act) {
 					case 1:
 						SETHI(track[currtrack].line[tracky].instr,
 								hexdec(track[currtrack].line[tracky].instr >> 4) );
-						SETLO(track[currtrack].line[tracky].instr,
-								hexinc(track[currtrack].line[tracky].instr & 0x0f) );
 						break;
 					case 2:
 						SETLO(track[currtrack].line[tracky].instr,
@@ -878,37 +876,31 @@ void actexec (int act) {
 						break;
 				}
 				break;
-			// TODO: FXINC and FXDEC
 			case ACT_FXINC:
 				currcmd = track[currtrack].line[tracky].cmd[(trackx + 1) % 2];
-				//newcmd = validcmds[0];
-				//if(strchr(validcmds, track[currtrack].line[tracky].cmd[(trackx + 1) % 2])) {
-				//	newcmd = strchr(validcmds, track[currtrack].line[tracky].cmd[(trackx + 1) % 2]) - validcmds;
-				//}
-				int z;
 				for (z = 0; z < strlen(validcmds); z++) {
 					if (currcmd == validcmds[z]) {
-						track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[z+1];
+						if (z == (strlen(validcmds)-1)) {
+							track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[0];
+						} else {
+							track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[z+1];
+						}
 						continue;
 					}
 				}
-				//if (currcmd == validcmds[z]) {
-				// lol look at alll this shit
-				//if (strchr(validcmds,currcmd) < strchr(validcmds,validcmds[strlen(validcmds)-1])) {
-				//	track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[(int)(strchr(validcmds,validcmds[strlen(validcmds)-1]-strchr(validcmds,currcmd)))+1];
-				//	display("hii");
-				//} else {
-				//	currcmd = validcmds[0];
-				//}
-				//if(strchr(validcmds, ch)) {
-				//	return strchr(validcmds, ch) - validcmds;
-
-				//if(track[currtrack].line[i].cmd[j]) {
-
-				//strlen(validcmds);
 				break;
 			case ACT_FXDEC:
-				track[currtrack].line[tracky].cmd[(trackx+1)%2]--;
+				currcmd = track[currtrack].line[tracky].cmd[(trackx + 1) % 2];
+				for (z = 0; z < strlen(validcmds); z++) {
+					if (currcmd == validcmds[z]) {
+						if (z==0) {
+							track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[strlen(validcmds)-1];
+						} else {
+							track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[z-1];
+						}
+						continue;
+					}
+				}
 				break;
 			case ACT_PARAMINC:
 				if (currtab==1) {
