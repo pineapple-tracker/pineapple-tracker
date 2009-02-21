@@ -1440,12 +1440,21 @@ void handleinput() {
 				}
 				break;
 			case 'Z':
-				if (nextchar('Z')) {
-					savefile(filename);
-					erase();
-					refresh();
-					endwin();
-					exit(0);
+				while((c = getch()) == ERR){
+					//mvaddstr(winheight-2, 0, "heyheywhileloop");
+					if((c = getch()) != ERR) switch(c){
+						case 'Z':
+							savefile(filename);
+							erase();
+							refresh();
+							endwin();
+							exit(0);
+						case 'Q':
+							erase();
+							refresh();
+							endwin();
+							exit(0);
+					}
 				}
 				break;
 			/* Enter command mode */

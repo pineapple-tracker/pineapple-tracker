@@ -6,7 +6,7 @@ songline 01 02 00 06 00 00 00 00 00
 songline 02 03 00 05 00 00 00 00 00
 songline 03 04 00 06 00 00 00 00 00
 
-trackline 01 00 29 01 00 00 00 00
+trackline 01 00 29 01 76 ff 00 00
 trackline 01 08 2c 01 00 00 00 00
 trackline 01 10 2e 01 00 00 00 00
 trackline 01 1c 2e 01 00 00 00 00
