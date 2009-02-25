@@ -271,8 +271,8 @@ void initgui() {
 	nonl();
 	intrflush(stdscr, FALSE);
 
-	// this prevents certain special keys from working, like ^H
-	//keypad(stdscr, TRUE);
+	// make sure behaviour for special keys like ^H isn't overridden
+	keypad(stdscr, FALSE);
 
 	// this makes the screen update when you're not pressing keys
 	nodelay(stdscr, TRUE);
@@ -1119,19 +1119,16 @@ void actexec (int act) {
 	cmdrepeat = false;
 }
 
-// waits for next char from getch and matches it with the parameter
-// Look at this stupid function.. i wish i could make it more clear and have
-// it still work.
-bool nextchar(char ch) {
-	char newch;
-	newch = getch();
-	while (newch == ERR) {
-		if (getch() == ch || newch == ch) {
-			return true;
+char nextchar() {
+	char ch;
+	ch = getch();
+	while (ch == ERR) {
+		ch = getch();
+		if (ch != ERR ) {
+			return ch;
 		}
-		newch = getch();
 	}
-	return (newch == ch);
+	return ch;
 }
 
 /* vi insert mode */
@@ -1186,13 +1183,22 @@ void insertroutine() {
 				currtab %= 3;
 				break;
 			case 'Z':
-				if (nextchar('Z')) {
-					savefile(filename);
-					erase();
-					refresh();
-					endwin();
-					exit(0);
-				}
+				c = nextchar();
+				switch (c) {
+					case 'Z':
+						savefile(filename);
+						erase();
+						refresh();
+						endwin();
+						exit(0);
+						break;
+					case 'Q':
+						erase();
+						refresh();
+						endwin();
+						exit(0);
+						break;
+					}
 				break;
 			case ' ':
 				silence();
@@ -1400,24 +1406,75 @@ void handleinput() {
 				}
 				break;
 			/* delete line */
-			// TODO: 'd' then direction
+			// TODO: clean this SHIT up
+			// TODO: add an ACT_ function for delete
 			case 'd':
-				if (nextchar('d')) {
-					if(currtab == 2) {
-						struct instrument *in = &instrument[currinstr];
+				c = nextchar();
+				switch (c) {
+					case 'd':
+						if(currtab == 2) {
+							struct instrument *in = &instrument[currinstr];
 
-						if(in->length > 1) {
-							memmove(&in->line[instry + 0], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
-							in->length--;
-							if(instry >= in->length) instry = in->length - 1;
+							if(in->length > 1) {
+								memmove(&in->line[instry + 0], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
+								in->length--;
+								if(instry >= in->length) instry = in->length - 1;
+							}
+						} else if(currtab == 0) {
+							if(songlen > 1) {
+								memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
+								songlen--;
+								if(songy >= songlen) songy = songlen - 1;
+							}
 						}
-					} else if(currtab == 0) {
-						if(songlen > 1) {
-							memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
-							songlen--;
-							if(songy >= songlen) songy = songlen - 1;
+						break;
+					case 'k':
+						if(currtab == 2) {
+							struct instrument *in = &instrument[currinstr];
+							currinstr--;
+							int i;
+							for (i=0; i<2; i++) {
+								if(in->length > 1) {
+									memmove(&in->line[instry + 0], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
+									in->length--;
+									if(instry >= in->length) instry = in->length - 1;
+								}
+							}
+						} else if(currtab == 0) {
+							songy--;
+							int i;
+							for (i=0; i<2; i++) {
+								if(songlen > 1) {
+									memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
+									songlen--;
+									if(songy >= songlen) songy = songlen - 1;
+								}
+							}
 						}
-					}
+						break;
+					case 'j':
+						if(currtab == 2) {
+							struct instrument *in = &instrument[currinstr];
+
+							int i;
+							for (i=0; i<2; i++) {
+								if(in->length > 1) {
+									memmove(&in->line[instry + 0], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
+									in->length--;
+									if(instry >= in->length) instry = in->length - 1;
+								}
+							}
+						} else if(currtab == 0) {
+							int i;
+							for (i=0; i<2; i++) {
+								if(songlen > 1) {
+									memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
+									songlen--;
+									if(songy >= songlen) songy = songlen - 1;
+								}
+							}
+						}
+						break;
 				}
 				break;
 			/* Clear */
@@ -1440,22 +1497,22 @@ void handleinput() {
 				}
 				break;
 			case 'Z':
-				while((c = getch()) == ERR){
-					//mvaddstr(winheight-2, 0, "heyheywhileloop");
-					if((c = getch()) != ERR) switch(c){
-						case 'Z':
-							savefile(filename);
-							erase();
-							refresh();
-							endwin();
-							exit(0);
-						case 'Q':
-							erase();
-							refresh();
-							endwin();
-							exit(0);
+				c = nextchar();
+				switch (c) {
+					case 'Z':
+						savefile(filename);
+						erase();
+						refresh();
+						endwin();
+						exit(0);
+						break;
+					case 'Q':
+						erase();
+						refresh();
+						endwin();
+						exit(0);
+						break;
 					}
-				}
 				break;
 			/* Enter command mode */
 			case ':':
