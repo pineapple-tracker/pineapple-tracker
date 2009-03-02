@@ -38,6 +38,7 @@ char filename[1024];
 
 char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#", "A-", "A#", "H-"};
 
+// i wonder why 0 is in here...
 char *validcmds = "0dfi@smtvw~+=";
 
 /*char *keymap[2] = {
@@ -924,18 +925,34 @@ void actexec (int act) {
 				}
 				break;
 			case ACT_NOTEINC:
-						// if current note < H7
-				if ( track[currtrack].line[tracky].note < 96 ) {
-					track[currtrack].line[tracky].note++;
-				} else {
-					track[currtrack].line[tracky].note = 0;
+				if (currtab==1) {
+					// if current note < H7
+					if ( track[currtrack].line[tracky].note < 96 ) {
+						track[currtrack].line[tracky].note++;
+					} else {
+						track[currtrack].line[tracky].note = 0;
+					}
+				} else if (currtab==2) {
+					if ( instrument[currinstr].line[instry].param < 96 ) {
+						instrument[currinstr].line[instry].param++;
+					} else {
+						instrument[currinstr].line[instry].param = 0;
+					}
 				}
 				break;
 			case ACT_NOTEDEC:
-				if ( track[currtrack].line[tracky].note > 0 ) {
-					track[currtrack].line[tracky].note--;
-				} else {
-					track[currtrack].line[tracky].note = 96;
+				if (currtab==1) {
+					if ( track[currtrack].line[tracky].note > 0 ) {
+						track[currtrack].line[tracky].note--;
+					} else {
+						track[currtrack].line[tracky].note = 96;
+					}
+				} else if (currtab==2) {
+					if ( instrument[currinstr].line[instry].param > 0 ) {
+						instrument[currinstr].line[instry].param--;
+					} else {
+						instrument[currinstr].line[instry].param = 96;
+					}
 				}
 				break;
 			case ACT_INSTRINC:
@@ -963,28 +980,56 @@ void actexec (int act) {
 				}
 				break;
 			case ACT_FXINC:
-				currcmd = track[currtrack].line[tracky].cmd[(trackx + 1) % 2];
-				for (z = 0; z < strlen(validcmds); z++) {
-					if (currcmd == validcmds[z]) {
-						if (z == (strlen(validcmds)-1)) {
-							track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[0];
-						} else {
-							track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[z+1];
+				if (currtab==1) {
+					currcmd = track[currtrack].line[tracky].cmd[(trackx + 1) % 2];
+					for (z = 0; z < strlen(validcmds); z++) {
+						if (currcmd == validcmds[z]) {
+							if (z == (strlen(validcmds)-1)) {
+								track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[0];
+							} else {
+								track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[z+1];
+							}
+							continue;
 						}
-						continue;
+					}
+				} else if (currtab==2) {
+					currcmd = instrument[currinstr].line[instry].cmd;
+					for (z = 0; z < strlen(validcmds); z++) {
+						if (currcmd == validcmds[z]) {
+							if (z == (strlen(validcmds)-1)) {
+								instrument[currinstr].line[instry].cmd = validcmds[0];
+							} else {
+								instrument[currinstr].line[instry].cmd = validcmds[z+1];
+							}
+							continue;
+						}
 					}
 				}
 				break;
 			case ACT_FXDEC:
-				currcmd = track[currtrack].line[tracky].cmd[(trackx + 1) % 2];
-				for (z = 0; z < strlen(validcmds); z++) {
-					if (currcmd == validcmds[z]) {
-						if (z==0) {
-							track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[strlen(validcmds)-1];
-						} else {
-							track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[z-1];
+				if (currtab==1) {
+					currcmd = track[currtrack].line[tracky].cmd[(trackx + 1) % 2];
+					for (z = 0; z < strlen(validcmds); z++) {
+						if (currcmd == validcmds[z]) {
+							if (z==0) {
+								track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[strlen(validcmds)-1];
+							} else {
+								track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[z-1];
+							}
+							continue;
 						}
-						continue;
+					}
+				} else if (currtab==2) {
+					currcmd = instrument[currinstr].line[instry].cmd;
+					for (z = 0; z < strlen(validcmds); z++) {
+						if (currcmd == validcmds[z]) {
+							if (z==0) {
+								instrument[currinstr].line[instry].cmd = validcmds[strlen(validcmds)-1];
+							} else {
+								instrument[currinstr].line[instry].cmd = validcmds[z-1];
+							}
+							continue;
+						}
 					}
 				}
 				break;
@@ -999,6 +1044,16 @@ void actexec (int act) {
 								hexinc(track[currtrack].line[tracky].param[(trackx - 1) % 2] & 0x0f) );
 						break;
 					}
+				} else if (currtab == 2) {
+					if (instrx == 1) {
+						SETHI(instrument[currinstr].line[instry].param,
+								hexinc(instrument[currinstr].line[instry].param >> 4) );
+						break;
+					} else if (instrx == 2) {
+						SETLO(instrument[currinstr].line[instry].param,
+								hexinc(instrument[currinstr].line[instry].param & 0x0f) );
+						break;
+					}
 				}
 				break;
 			case ACT_PARAMDEC:
@@ -1010,6 +1065,16 @@ void actexec (int act) {
 					} else if (trackx==5 || trackx==8) {
 						SETLO(track[currtrack].line[tracky].param[(trackx-1) % 2],
 								hexdec(track[currtrack].line[tracky].param[(trackx - 1) % 2] & 0x0f) );
+						break;
+					}
+				} else if (currtab == 2) {
+					if (instrx == 1) {
+						SETHI(instrument[currinstr].line[instry].param,
+								hexdec(instrument[currinstr].line[instry].param >> 4) );
+						break;
+					} else if (instrx == 2) {
+						SETLO(instrument[currinstr].line[instry].param,
+								hexdec(instrument[currinstr].line[instry].param & 0x0f) );
 						break;
 					}
 				}
@@ -1449,24 +1514,6 @@ void handleinput() {
 						break;
 				}
 				break;
-			/*case ACT_MVDOWN:
-				switch(currtab) {
-					case 0:
-						if(songy < songlen - 1) songy++;
-						break;
-					case 1:
-						if(tracky < tracklen - 1) {
-							tracky++;
-						} else {
-							tracky = 0;
-						}
-						break;
-					case 2:
-						if(instry < instrument[currinstr].length - 1) instry++;
-						break;
-				}
-				break;
-				*/
 			/* delete line */
 			// TODO: clean this SHIT up
 			// TODO: add an ACT_ function for delete
@@ -1685,7 +1732,25 @@ void handleinput() {
 							break;
 						}
 				} else if (currtab == 2) {
-					// TODO
+					switch (instrx) {
+						case 0:
+							actexec(ACT_FXDEC);	
+							break;
+						case 1:
+							if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=') {
+								actexec(ACT_NOTEDEC);
+							} else {
+								actexec(ACT_PARAMDEC);	
+							}
+							break;
+						case 2:
+							if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=') {
+								actexec(ACT_NOTEDEC);
+							} else {
+								actexec(ACT_PARAMDEC);	
+							}
+							break;
+					}
 				}
 				break;
 			case 'K':
@@ -1728,7 +1793,25 @@ void handleinput() {
 							break;
 					}
 				} else if (currtab == 2) {
-					// TODO
+					switch (instrx) {
+						case 0:
+							actexec(ACT_FXINC);	
+							break;
+						case 1:
+							if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=') {
+								actexec(ACT_NOTEINC);
+							} else {
+								actexec(ACT_PARAMINC);	
+							}
+							break;
+						case 2:
+							if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=') {
+								actexec(ACT_NOTEINC);
+							} else {
+								actexec(ACT_PARAMINC);	
+							}
+							break;
+					}
 				}
 				break;
 			case CTRL('J'):

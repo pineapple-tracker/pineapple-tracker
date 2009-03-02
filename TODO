@@ -7,9 +7,10 @@ vi-style keybindings
 	* implement jammermode: q2w3er5t6y7u will all play notes, without inserting them
 		other bindings that can stay: hjkl, ^h, ^l, ^j, ^k
 	* make comand mode
+		* ':num' - go to line number num
 	* record mode?
-	* :  ... go to line number
 	* visual mode for copy/paste like in lgpt
+	* u - undo
 
 control with a gamepad
 
