@@ -750,7 +750,11 @@ void actexec (int act) {
 			case ACT_MVUP:
 				switch(currtab) {
 					case 0:
-						if(songy) songy--;
+						if(songy) {
+							songy--;
+						} else {
+							songy = songlen - 1;
+						}
 						break;
 					case 1:
 						if(tracky) {
@@ -760,14 +764,22 @@ void actexec (int act) {
 						}
 						break;
 					case 2:
-						if(instry) instry--;
+						if(instry) {
+							instry--;
+						} else {
+							instry = instrument[currinstr].length - 1;
+						}
 						break;
 				}
 				break;
 			case ACT_MVDOWN:
 				switch(currtab) {
 					case 0:
-						if(songy < songlen - 1) songy++;
+						if(songy < songlen - 1) {
+							songy++;
+						} else {
+							songy = 0;
+						}
 						break;
 					case 1:
 						if(tracky < tracklen - 1) {
@@ -777,7 +789,11 @@ void actexec (int act) {
 						}
 						break;
 					case 2:
-						if(instry < instrument[currinstr].length - 1) instry++;
+						if(instry < instrument[currinstr].length - 1) {
+							instry++;
+						} else {
+							instry = 0;
+						}
 						break;
 				}
 				break;
@@ -1198,7 +1214,7 @@ void insertroutine() {
 						endwin();
 						exit(0);
 						break;
-					}
+				}
 				break;
 			case ' ':
 				silence();
@@ -1405,6 +1421,52 @@ void handleinput() {
 					}
 				}
 				break;
+			case 'g':
+				if (nextchar() == 'g') {
+					switch(currtab) {
+						case 0:
+							songy = 0;
+							break;
+						case 1:
+							tracky = 0;
+							break;
+						case 2:
+							instry = 0;
+							break;
+					}
+				}
+				break;
+			case 'G':
+				switch(currtab) {
+					case 0:
+						songy = songlen - 1;
+						break;
+					case 1:
+						tracky = tracklen - 1;
+						break;
+					case 2:
+						instry = instrument[currinstr].length - 1;
+						break;
+				}
+				break;
+			/*case ACT_MVDOWN:
+				switch(currtab) {
+					case 0:
+						if(songy < songlen - 1) songy++;
+						break;
+					case 1:
+						if(tracky < tracklen - 1) {
+							tracky++;
+						} else {
+							tracky = 0;
+						}
+						break;
+					case 2:
+						if(instry < instrument[currinstr].length - 1) instry++;
+						break;
+				}
+				break;
+				*/
 			/* delete line */
 			// TODO: clean this SHIT up
 			// TODO: add an ACT_ function for delete
@@ -1512,7 +1574,7 @@ void handleinput() {
 						endwin();
 						exit(0);
 						break;
-					}
+				}
 				break;
 			/* Enter command mode */
 			case ':':
