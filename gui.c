@@ -21,7 +21,7 @@ int instrx, instry, instroffs;
 int currtrack = 1, currinstr = 1;
 int currtab = 0;
 int octave = 4;
-bool vimode = false;
+bool vimode = true;
 bool insertmode = false;
 bool cmdmode = false;
 char *cmdstr = "";
@@ -961,10 +961,14 @@ void actexec (int act) {
 				if (currtab==1) {
 					if ( track[currtrack].line[tracky].note+12 < 97 ) {
 						track[currtrack].line[tracky].note+=12;
+					} else {
+						track[currtrack].line[tracky].note = 96;
 					}
 				} else if (currtab==2) { if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=') {
 						if ( instrument[currinstr].line[instry].param+12 < 97 ) {
 							instrument[currinstr].line[instry].param+=12;
+						} else {
+							instrument[currinstr].line[instry].param = 96;
 						}
 					}
 				}
@@ -974,11 +978,15 @@ void actexec (int act) {
 				if (currtab==1) {
 					if ( track[currtrack].line[tracky].note-12 > 0 ) {
 						track[currtrack].line[tracky].note-=12;
+					} else {
+						track[currtrack].line[tracky].note = (int)NULL;
 					}
 				} else if (currtab==2) {
 					if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=') {
 						if ( instrument[currinstr].line[instry].param-12 > 0 ) {
 							instrument[currinstr].line[instry].param-=12;
+						} else {
+							instrument[currinstr].line[instry].param = (int)NULL;
 						}
 					}
 				}
@@ -1048,7 +1056,6 @@ void actexec (int act) {
 						for (z = 0; z < strlen(validcmds); z++) {
 							if (currcmd == validcmds[z]) {
 								if (z==0) {
-									//track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[strlen(validcmds)-1];
 									track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = (int)NULL;
 								} else {
 									track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[z-1];
@@ -1204,7 +1211,22 @@ void actexec (int act) {
 							break;
 					}
 				} else if (currtab == 2) {
-					// TODO
+					if (instrx == 0) {
+						// TODO: figure out what to do here
+						//instrument[currinstr].line[instry].cmd = (int)NULL;
+					} else if (instrx == 1) {
+						if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=') {
+							instrument[currinstr].line[instry].param = 0;
+						} else {
+							SETHI(instrument[currinstr].line[instry].param,0);
+						}
+					} else if (instrx == 2) {
+						if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=') {
+							instrument[currinstr].line[instry].param = 0;
+						} else {
+							SETLO(instrument[currinstr].line[instry].param,0);
+						}
+					}
 				}
 				break;
 			case ACT_CLRITALL:
@@ -1226,7 +1248,7 @@ void actexec (int act) {
 					SETHI(track[currtrack].line[tracky].param[1],0);
 					SETLO(track[currtrack].line[tracky].param[1],0);
 				} else if (currtab == 2) {
-					// TODO
+					instrument[currinstr].line[instry].param = 0;
 				}
 				break;
 			default:
@@ -1853,10 +1875,26 @@ void handleinput() {
 				}
 				break;
 			case 'H':
-				actexec(ACT_OCTAVEDEC);
+				if (currtab==1) {
+					if (trackx==0) {
+						actexec(ACT_OCTAVEDEC);
+					}
+				} else if (currtab==2) {
+					if (instrx==1 || instrx == 2) {
+						actexec(ACT_OCTAVEDEC);
+					}
+				}
 				break;
 			case 'L':
-				actexec(ACT_OCTAVEINC);
+				if (currtab==1) {
+					if (trackx==0) {
+						actexec(ACT_OCTAVEINC);
+					}
+				} else if (currtab==2) {
+					if (instrx==1 || instrx == 2) {
+						actexec(ACT_OCTAVEINC);
+					}
+				}
 				break;
 			case CTRL('J'):
 				if (currtab == 2) {
