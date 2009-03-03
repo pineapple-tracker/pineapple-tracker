@@ -708,6 +708,8 @@ enum {
 	// phrase view
 	ACT_NOTEINC,
 	ACT_NOTEDEC,
+	ACT_OCTAVEINC,
+	ACT_OCTAVEDEC,
 	ACT_INSTRINC,
 	ACT_INSTRDEC,
 	ACT_FXINC,
@@ -955,6 +957,32 @@ void actexec (int act) {
 					}
 				}
 				break;
+			case ACT_OCTAVEINC:
+				if (currtab==1) {
+					if ( track[currtrack].line[tracky].note+12 < 97 ) {
+						track[currtrack].line[tracky].note+=12;
+					}
+				} else if (currtab==2) { if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=') {
+						if ( instrument[currinstr].line[instry].param+12 < 97 ) {
+							instrument[currinstr].line[instry].param+=12;
+						}
+					}
+				}
+				break;
+				break;
+			case ACT_OCTAVEDEC:
+				if (currtab==1) {
+					if ( track[currtrack].line[tracky].note-12 > 0 ) {
+						track[currtrack].line[tracky].note-=12;
+					}
+				} else if (currtab==2) {
+					if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=') {
+						if ( instrument[currinstr].line[instry].param-12 > 0 ) {
+							instrument[currinstr].line[instry].param-=12;
+						}
+					}
+				}
+				break;
 			case ACT_INSTRINC:
 				switch (trackx) {
 					case 1:
@@ -982,14 +1010,19 @@ void actexec (int act) {
 			case ACT_FXINC:
 				if (currtab==1) {
 					currcmd = track[currtrack].line[tracky].cmd[(trackx + 1) % 2];
-					for (z = 0; z < strlen(validcmds); z++) {
-						if (currcmd == validcmds[z]) {
-							if (z == (strlen(validcmds)-1)) {
-								track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[0];
-							} else {
-								track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[z+1];
+					// there must be a better way to do this...
+					if ((int)currcmd == (int)NULL) {
+						track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[0];
+					} else {
+						for (z = 0; z < strlen(validcmds); z++) {
+							if (currcmd == validcmds[z]) {
+								if (z == (strlen(validcmds)-1)) {
+									track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = (int)NULL;
+								} else {
+									track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[z+1];
+								}
+								continue;
 							}
-							continue;
 						}
 					}
 				} else if (currtab==2) {
@@ -1009,14 +1042,19 @@ void actexec (int act) {
 			case ACT_FXDEC:
 				if (currtab==1) {
 					currcmd = track[currtrack].line[tracky].cmd[(trackx + 1) % 2];
-					for (z = 0; z < strlen(validcmds); z++) {
-						if (currcmd == validcmds[z]) {
-							if (z==0) {
-								track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[strlen(validcmds)-1];
-							} else {
-								track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[z-1];
+					if ((int)currcmd == (int)NULL) {
+						track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[strlen(validcmds)-1];
+					} else {
+						for (z = 0; z < strlen(validcmds); z++) {
+							if (currcmd == validcmds[z]) {
+								if (z==0) {
+									//track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[strlen(validcmds)-1];
+									track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = (int)NULL;
+								} else {
+									track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[z-1];
+								}
+								continue;
 							}
-							continue;
 						}
 					}
 				} else if (currtab==2) {
@@ -1540,7 +1578,7 @@ void handleinput() {
 					case 'k':
 						if(currtab == 2) {
 							struct instrument *in = &instrument[currinstr];
-							currinstr--;
+							instry--;
 							int i;
 							for (i=0; i<2; i++) {
 								if(in->length > 1) {
@@ -1813,6 +1851,12 @@ void handleinput() {
 							break;
 					}
 				}
+				break;
+			case 'H':
+				actexec(ACT_OCTAVEDEC);
+				break;
+			case 'L':
+				actexec(ACT_OCTAVEINC);
 				break;
 			case CTRL('J'):
 				if (currtab == 2) {
