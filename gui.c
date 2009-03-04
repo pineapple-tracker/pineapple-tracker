@@ -33,6 +33,8 @@ int winheight = 0;
 void drawgui();
 bool cmdrepeat = false;
 int cmdrepeatnum = 1;
+int lastaction;
+int lastrepeat;
 
 char filename[1024];
 
@@ -89,6 +91,25 @@ int hexinc(int x) {
 }
 int hexdec(int x) {
 	return (x >= 1 && x <= 15)? x-1 : 15;
+}
+
+char nextchar() {
+	char ch;
+	ch = getch();
+	while (ch == ERR) {
+		ch = getch();
+		if (ch != ERR ) {
+			return ch;
+		}
+	}
+	return ch;
+}
+
+int char2int(char ch) {
+	if (isdigit(ch)) {
+		return (int)ch - '0';
+	}
+	return -1;
 }
 
 int freqkey(int c) {
@@ -690,6 +711,7 @@ enum {
 	ACT_MVDOWN,
 	ACT_BIGMVUP,
 	ACT_BIGMVDOWN,
+
 	ACT_VIEWPHRASEINC,
 	ACT_VIEWPHRASEDEC,
 	ACT_VIEWINSTRINC,
@@ -721,6 +743,18 @@ enum {
 void actexec (int act) {
 	int i, z;
 	char currcmd;
+
+	// don't save the action if it's just a movement
+	if (act != ACT_MVLEFT &&
+		act != ACT_MVRIGHT &&
+		act != ACT_MVUP &&
+		act != ACT_MVDOWN &&
+		act != ACT_BIGMVUP &&
+		act != ACT_BIGMVDOWN) {
+
+		lastaction = act;
+		lastrepeat = cmdrepeatnum;
+	}
 
 	for (i=0;i<cmdrepeatnum;i++) {
 		switch (act) {
@@ -1260,18 +1294,6 @@ void actexec (int act) {
 	cmdrepeat = false;
 }
 
-char nextchar() {
-	char ch;
-	ch = getch();
-	while (ch == ERR) {
-		ch = getch();
-		if (ch != ERR ) {
-			return ch;
-		}
-	}
-	return ch;
-}
-
 /* vi insert mode */
 void insertroutine() {
 	int c, x;
@@ -1501,11 +1523,422 @@ void commandroutine() {
 	}
 }
 
-int char2int(char ch) {
-	if (isdigit(ch)) {
-		return (int)ch - '0';
+void executekey(int c) {
+	switch(c) {
+	/* add line */
+	case 'a':
+		if(currtab == 2) {
+			struct instrument *in = &instrument[currinstr];
+
+			if(in->length < 256) {
+				memmove(&in->line[instry + 2], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
+				instry++;
+				in->length++;
+				in->line[instry].cmd = '0';
+				in->line[instry].param = 0;
+			}
+		} else if(currtab == 0) {
+			if(songlen < 256) {
+				memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
+				songy++;
+				songlen++;
+				memset(&song[songy], 0, sizeof(struct songline));
+			}
+		}
+		break;
+	case '.':
+		cmdrepeatnum = lastrepeat;
+		actexec(lastaction);
+		break;
+	case 'g':
+		if (nextchar() == 'g') {
+			switch(currtab) {
+				case 0:
+					songy = 0;
+					break;
+				case 1:
+					tracky = 0;
+					break;
+				case 2:
+					instry = 0;
+					break;
+			}
+		}
+		break;
+	case 'G':
+		switch(currtab) {
+			case 0:
+				songy = songlen - 1;
+				break;
+			case 1:
+				tracky = tracklen - 1;
+				break;
+			case 2:
+				instry = instrument[currinstr].length - 1;
+				break;
+		}
+		break;
+	/* delete line */
+	// TODO: clean this SHIT up
+	// TODO: add an ACT_ function for delete
+	case 'd':
+		c = nextchar();
+		switch (c) {
+			case 'd':
+				if(currtab == 2) {
+					struct instrument *in = &instrument[currinstr];
+
+					if(in->length > 1) {
+						memmove(&in->line[instry + 0], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
+						in->length--;
+						if(instry >= in->length) instry = in->length - 1;
+					}
+				} else if(currtab == 0) {
+					if(songlen > 1) {
+						memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
+						songlen--;
+						if(songy >= songlen) songy = songlen - 1;
+					}
+				}
+				break;
+			case 'k':
+				if(currtab == 2) {
+					struct instrument *in = &instrument[currinstr];
+					instry--;
+					int i;
+					for (i=0; i<2; i++) {
+						if(in->length > 1) {
+							memmove(&in->line[instry + 0], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
+							in->length--;
+							if(instry >= in->length) instry = in->length - 1;
+						}
+					}
+				} else if(currtab == 0) {
+					songy--;
+					int i;
+					for (i=0; i<2; i++) {
+						if(songlen > 1) {
+							memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
+							songlen--;
+							if(songy >= songlen) songy = songlen - 1;
+						}
+					}
+				}
+				break;
+			case 'j':
+				if(currtab == 2) {
+					struct instrument *in = &instrument[currinstr];
+
+					int i;
+					for (i=0; i<2; i++) {
+						if(in->length > 1) {
+							memmove(&in->line[instry + 0], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
+							in->length--;
+							if(instry >= in->length) instry = in->length - 1;
+						}
+					}
+				} else if(currtab == 0) {
+					int i;
+					for (i=0; i<2; i++) {
+						if(songlen > 1) {
+							memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
+							songlen--;
+							if(songy >= songlen) songy = songlen - 1;
+						}
+					}
+				}
+				break;
+		}
+		break;
+	/* Clear */
+	case 'x':
+		actexec(ACT_CLRONETHING);
+		break;
+	case 'X':
+		actexec(ACT_CLRITALL);
+		break;
+	case 13:  // Enter key
+		if(currtab != 2) {
+			playmode = PM_PLAY;
+			if(currtab == 1) {
+				silence();
+				startplaytrack(currtrack);
+			} else if(currtab == 0) {
+				silence();
+				startplaysong(songy);
+			}
+		}
+		break;
+	case 'Z':
+		c = nextchar();
+		switch (c) {
+			case 'Z':
+				savefile(filename);
+				erase();
+				refresh();
+				endwin();
+				exit(0);
+				break;
+			case 'Q':
+				erase();
+				refresh();
+				endwin();
+				exit(0);
+				break;
+		}
+		break;
+	/* Enter command mode */
+	case ':':
+		commandroutine();
+		break;
+	case ' ':
+		silence();
+		if(playmode == PM_IDLE) {
+			playmode = PM_EDIT;
+		} else {
+			playmode = PM_IDLE;
+		}
+		break;
+	case '`':
+		if(currtab == 0) {
+			int t = song[songy].track[songx / 4];
+			if(t) currtrack = t;
+			currtab = 1;
+		} else if(currtab == 1) {
+			currtab = 0;
+		}
+		break;
+	/* Enter insert mode */
+	case 'i':
+		insertroutine();
+		break;
+	/* Add new line and enter insert mode */
+	case 'o':
+		if(currtab == 2) {
+			struct instrument *in = &instrument[currinstr];
+
+			if(in->length < 256) {
+				memmove(&in->line[instry + 2], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
+				instry++;
+				in->length++;
+				in->line[instry].cmd = '0';
+				in->line[instry].param = 0;
+			}
+		} else if(currtab == 0) {
+			if(songlen < 256) {
+				memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
+				songy++;
+				songlen++;
+				memset(&song[songy], 0, sizeof(struct songline));
+			}
+		}
+		insertroutine();
+		break;
+	case 'h':
+	case KEY_LEFT:
+		actexec(ACT_MVLEFT);
+		break;
+	case 'j':
+	case KEY_DOWN:
+		actexec(ACT_MVDOWN);
+		break;
+	case 'k':
+	case KEY_UP:
+		actexec(ACT_MVUP);
+		break;
+	case 'l':
+	case KEY_RIGHT:
+		actexec(ACT_MVRIGHT);
+		break;
+	case '<':
+		if(octave) octave--;
+		break;
+	case '>':
+		if(octave < 8) octave++;
+		break;
+	case 'J':
+		if (currtab == 0) {
+			if ( (songx%4) < 2) {
+				actexec(ACT_TRACKDEC);
+			} else {
+				actexec(ACT_TRANSPDEC);
+			}
+		} else if (currtab == 1) {
+			switch (trackx) {
+				case 0:
+					actexec(ACT_NOTEDEC);
+					break;
+				case 1:
+					actexec(ACT_INSTRDEC);
+					break;
+				case 2:
+					actexec(ACT_INSTRDEC);
+					break;
+				case 3:
+					actexec(ACT_FXDEC);	
+					break;
+				case 4:
+				case 5:
+					actexec(ACT_PARAMDEC);	
+					break;
+				case 6:
+					actexec(ACT_FXDEC);	
+					break;
+				case 7:
+				case 8:
+					actexec(ACT_PARAMDEC);	
+					break;
+				case 9:
+					actexec(ACT_FXDEC);	
+					break;
+				default:
+					display("in J");
+					break;
+				}
+		} else if (currtab == 2) {
+			switch (instrx) {
+				case 0:
+					actexec(ACT_FXDEC);	
+					break;
+				case 1:
+					if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=') {
+						actexec(ACT_NOTEDEC);
+					} else {
+						actexec(ACT_PARAMDEC);	
+					}
+					break;
+				case 2:
+					if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=') {
+						actexec(ACT_NOTEDEC);
+					} else {
+						actexec(ACT_PARAMDEC);	
+					}
+					break;
+			}
+		}
+		break;
+	case 'K':
+		if (currtab == 0) {
+			if ( (songx%4) < 2) {
+				actexec(ACT_TRACKINC);
+			} else {
+				actexec(ACT_TRANSPINC);
+			}
+		} else if (currtab == 1) {
+			switch (trackx) {
+				case 0:
+					actexec(ACT_NOTEINC);
+					break;
+				case 1:
+					actexec(ACT_INSTRINC);
+					break;
+				case 2:
+					actexec(ACT_INSTRINC);
+					break;
+				case 3:
+					actexec(ACT_FXINC);	
+					break;
+				case 4:
+				case 5:
+					actexec(ACT_PARAMINC);	
+					break;
+				case 6:
+					actexec(ACT_FXINC);	
+					break;
+				case 7:
+				case 8:
+					actexec(ACT_PARAMINC);	
+					break;
+				case 9:
+					actexec(ACT_FXINC);	
+					break;
+				default:
+					display("in K");
+					break;
+			}
+		} else if (currtab == 2) {
+			switch (instrx) {
+				case 0:
+					actexec(ACT_FXINC);	
+					break;
+				case 1:
+					if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=') {
+						actexec(ACT_NOTEINC);
+					} else {
+						actexec(ACT_PARAMINC);	
+					}
+					break;
+				case 2:
+					if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=') {
+						actexec(ACT_NOTEINC);
+					} else {
+						actexec(ACT_PARAMINC);	
+					}
+					break;
+			}
+		}
+		break;
+	case 'H':
+		if (currtab==1) {
+			if (trackx==0) {
+				actexec(ACT_OCTAVEDEC);
+			}
+		} else if (currtab==2) {
+			if (instrx==1 || instrx == 2) {
+				actexec(ACT_OCTAVEDEC);
+			}
+		}
+		break;
+	case 'L':
+		if (currtab==1) {
+			if (trackx==0) {
+				actexec(ACT_OCTAVEINC);
+			}
+		} else if (currtab==2) {
+			if (instrx==1 || instrx == 2) {
+				actexec(ACT_OCTAVEINC);
+			}
+		}
+		break;
+	case CTRL('J'):
+		if (currtab == 2) {
+			actexec(ACT_VIEWINSTRDEC);
+		} else if (currtab == 1) {
+			actexec(ACT_VIEWPHRASEDEC);
+		}
+		break;
+	case CTRL('K'):
+		if (currtab == 2) {
+			actexec(ACT_VIEWINSTRINC);
+		} else if (currtab == 1) {
+			actexec(ACT_VIEWPHRASEINC);
+		}
+		break;
+	case CTRL('H'):
+		currtab--;
+		if(currtab < 0)
+			currtab = 2;
+		break;
+	case CTRL('L'):
+		currtab++;
+		currtab %= 3;
+		break;
+	case KEY_TAB:
+		currtab++;
+		currtab %= 3;
+		break;
+	case CTRL('B'):
+		actexec(ACT_BIGMVUP);
+		break;
+	case CTRL('F'):
+		actexec(ACT_BIGMVDOWN);
+		break;
+	case CTRL('P'):
+		vimode = false;
+		break;
+	default:
+		break;
 	}
-	return -1;
 }
 
 /* vi mode and non-vi mode */
@@ -1515,7 +1948,7 @@ void handleinput() {
 	if (vimode) {
 		if ((c = getch()) != ERR) {
 
-			/* Repeat? */
+			/* Repeat */
 			if (isdigit(c)) {
 				if (!cmdrepeat) {
 					cmdrepeatnum = char2int(c);
@@ -1523,420 +1956,10 @@ void handleinput() {
 					cmdrepeatnum = (cmdrepeatnum*10) + char2int(c);
 				}
 			}
-
-			switch(c) {
-			/* add line */
-			case 'a':
-				if(currtab == 2) {
-					struct instrument *in = &instrument[currinstr];
-
-					if(in->length < 256) {
-						memmove(&in->line[instry + 2], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
-						instry++;
-						in->length++;
-						in->line[instry].cmd = '0';
-						in->line[instry].param = 0;
-					}
-				} else if(currtab == 0) {
-					if(songlen < 256) {
-						memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
-						songy++;
-						songlen++;
-						memset(&song[songy], 0, sizeof(struct songline));
-					}
-				}
-				break;
-			case 'g':
-				if (nextchar() == 'g') {
-					switch(currtab) {
-						case 0:
-							songy = 0;
-							break;
-						case 1:
-							tracky = 0;
-							break;
-						case 2:
-							instry = 0;
-							break;
-					}
-				}
-				break;
-			case 'G':
-				switch(currtab) {
-					case 0:
-						songy = songlen - 1;
-						break;
-					case 1:
-						tracky = tracklen - 1;
-						break;
-					case 2:
-						instry = instrument[currinstr].length - 1;
-						break;
-				}
-				break;
-			/* delete line */
-			// TODO: clean this SHIT up
-			// TODO: add an ACT_ function for delete
-			case 'd':
-				c = nextchar();
-				switch (c) {
-					case 'd':
-						if(currtab == 2) {
-							struct instrument *in = &instrument[currinstr];
-
-							if(in->length > 1) {
-								memmove(&in->line[instry + 0], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
-								in->length--;
-								if(instry >= in->length) instry = in->length - 1;
-							}
-						} else if(currtab == 0) {
-							if(songlen > 1) {
-								memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
-								songlen--;
-								if(songy >= songlen) songy = songlen - 1;
-							}
-						}
-						break;
-					case 'k':
-						if(currtab == 2) {
-							struct instrument *in = &instrument[currinstr];
-							instry--;
-							int i;
-							for (i=0; i<2; i++) {
-								if(in->length > 1) {
-									memmove(&in->line[instry + 0], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
-									in->length--;
-									if(instry >= in->length) instry = in->length - 1;
-								}
-							}
-						} else if(currtab == 0) {
-							songy--;
-							int i;
-							for (i=0; i<2; i++) {
-								if(songlen > 1) {
-									memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
-									songlen--;
-									if(songy >= songlen) songy = songlen - 1;
-								}
-							}
-						}
-						break;
-					case 'j':
-						if(currtab == 2) {
-							struct instrument *in = &instrument[currinstr];
-
-							int i;
-							for (i=0; i<2; i++) {
-								if(in->length > 1) {
-									memmove(&in->line[instry + 0], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
-									in->length--;
-									if(instry >= in->length) instry = in->length - 1;
-								}
-							}
-						} else if(currtab == 0) {
-							int i;
-							for (i=0; i<2; i++) {
-								if(songlen > 1) {
-									memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
-									songlen--;
-									if(songy >= songlen) songy = songlen - 1;
-								}
-							}
-						}
-						break;
-				}
-				break;
-			/* Clear */
-			case 'x':
-				actexec(ACT_CLRONETHING);
-				break;
-			case 'X':
-				actexec(ACT_CLRITALL);
-				break;
-			case 13:  // Enter key
-				if(currtab != 2) {
-					playmode = PM_PLAY;
-					if(currtab == 1) {
-						silence();
-						startplaytrack(currtrack);
-					} else if(currtab == 0) {
-						silence();
-						startplaysong(songy);
-					}
-				}
-				break;
-			case 'Z':
-				c = nextchar();
-				switch (c) {
-					case 'Z':
-						savefile(filename);
-						erase();
-						refresh();
-						endwin();
-						exit(0);
-						break;
-					case 'Q':
-						erase();
-						refresh();
-						endwin();
-						exit(0);
-						break;
-				}
-				break;
-			/* Enter command mode */
-			case ':':
-				commandroutine();
-				break;
-			case ' ':
-				silence();
-				if(playmode == PM_IDLE) {
-					playmode = PM_EDIT;
-				} else {
-					playmode = PM_IDLE;
-				}
-				break;
-			case '`':
-				if(currtab == 0) {
-					int t = song[songy].track[songx / 4];
-					if(t) currtrack = t;
-					currtab = 1;
-				} else if(currtab == 1) {
-					currtab = 0;
-				}
-				break;
-			/* Enter insert mode */
-			case 'i':
-				insertroutine();
-				break;
-			/* Add new line and enter insert mode */
-			case 'o':
-				if(currtab == 2) {
-					struct instrument *in = &instrument[currinstr];
-
-					if(in->length < 256) {
-						memmove(&in->line[instry + 2], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
-						instry++;
-						in->length++;
-						in->line[instry].cmd = '0';
-						in->line[instry].param = 0;
-					}
-				} else if(currtab == 0) {
-					if(songlen < 256) {
-						memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
-						songy++;
-						songlen++;
-						memset(&song[songy], 0, sizeof(struct songline));
-					}
-				}
-				insertroutine();
-				break;
-			case 'h':
-			case KEY_LEFT:
-				actexec(ACT_MVLEFT);
-				break;
-			case 'j':
-			case KEY_DOWN:
-				actexec(ACT_MVDOWN);
-				break;
-			case 'k':
-			case KEY_UP:
-				actexec(ACT_MVUP);
-				break;
-			case 'l':
-			case KEY_RIGHT:
-				actexec(ACT_MVRIGHT);
-				break;
-			case '<':
-				if(octave) octave--;
-				break;
-			case '>':
-				if(octave < 8) octave++;
-				break;
-			case 'J':
-				if (currtab == 0) {
-					if ( (songx%4) < 2) {
-						actexec(ACT_TRACKDEC);
-					} else {
-						actexec(ACT_TRANSPDEC);
-					}
-				} else if (currtab == 1) {
-					switch (trackx) {
-						case 0:
-							actexec(ACT_NOTEDEC);
-							break;
-						case 1:
-							actexec(ACT_INSTRDEC);
-							break;
-						case 2:
-							actexec(ACT_INSTRDEC);
-							break;
-						case 3:
-							actexec(ACT_FXDEC);	
-							break;
-						case 4:
-						case 5:
-							actexec(ACT_PARAMDEC);	
-							break;
-						case 6:
-							actexec(ACT_FXDEC);	
-							break;
-						case 7:
-						case 8:
-							actexec(ACT_PARAMDEC);	
-							break;
-						case 9:
-							actexec(ACT_FXDEC);	
-							break;
-						default:
-							display("in J");
-							break;
-						}
-				} else if (currtab == 2) {
-					switch (instrx) {
-						case 0:
-							actexec(ACT_FXDEC);	
-							break;
-						case 1:
-							if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=') {
-								actexec(ACT_NOTEDEC);
-							} else {
-								actexec(ACT_PARAMDEC);	
-							}
-							break;
-						case 2:
-							if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=') {
-								actexec(ACT_NOTEDEC);
-							} else {
-								actexec(ACT_PARAMDEC);	
-							}
-							break;
-					}
-				}
-				break;
-			case 'K':
-				if (currtab == 0) {
-					if ( (songx%4) < 2) {
-						actexec(ACT_TRACKINC);
-					} else {
-						actexec(ACT_TRANSPINC);
-					}
-				} else if (currtab == 1) {
-					switch (trackx) {
-						case 0:
-							actexec(ACT_NOTEINC);
-							break;
-						case 1:
-							actexec(ACT_INSTRINC);
-							break;
-						case 2:
-							actexec(ACT_INSTRINC);
-							break;
-						case 3:
-							actexec(ACT_FXINC);	
-							break;
-						case 4:
-						case 5:
-							actexec(ACT_PARAMINC);	
-							break;
-						case 6:
-							actexec(ACT_FXINC);	
-							break;
-						case 7:
-						case 8:
-							actexec(ACT_PARAMINC);	
-							break;
-						case 9:
-							actexec(ACT_FXINC);	
-							break;
-						default:
-							display("in K");
-							break;
-					}
-				} else if (currtab == 2) {
-					switch (instrx) {
-						case 0:
-							actexec(ACT_FXINC);	
-							break;
-						case 1:
-							if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=') {
-								actexec(ACT_NOTEINC);
-							} else {
-								actexec(ACT_PARAMINC);	
-							}
-							break;
-						case 2:
-							if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=') {
-								actexec(ACT_NOTEINC);
-							} else {
-								actexec(ACT_PARAMINC);	
-							}
-							break;
-					}
-				}
-				break;
-			case 'H':
-				if (currtab==1) {
-					if (trackx==0) {
-						actexec(ACT_OCTAVEDEC);
-					}
-				} else if (currtab==2) {
-					if (instrx==1 || instrx == 2) {
-						actexec(ACT_OCTAVEDEC);
-					}
-				}
-				break;
-			case 'L':
-				if (currtab==1) {
-					if (trackx==0) {
-						actexec(ACT_OCTAVEINC);
-					}
-				} else if (currtab==2) {
-					if (instrx==1 || instrx == 2) {
-						actexec(ACT_OCTAVEINC);
-					}
-				}
-				break;
-			case CTRL('J'):
-				if (currtab == 2) {
-					actexec(ACT_VIEWINSTRDEC);
-				} else if (currtab == 1) {
-					actexec(ACT_VIEWPHRASEDEC);
-				}
-				break;
-			case CTRL('K'):
-				if (currtab == 2) {
-					actexec(ACT_VIEWINSTRINC);
-				} else if (currtab == 1) {
-					actexec(ACT_VIEWPHRASEINC);
-				}
-				break;
-			case CTRL('H'):
-				currtab--;
-				if(currtab < 0)
-					currtab = 2;
-				break;
-			case CTRL('L'):
-				currtab++;
-				currtab %= 3;
-				break;
-			case KEY_TAB:
-				currtab++;
-				currtab %= 3;
-				break;
-			case CTRL('B'):
-				actexec(ACT_BIGMVUP);
-				break;
-			case CTRL('F'):
-				actexec(ACT_BIGMVDOWN);
-				break;
-			case CTRL('P'):
-				vimode = false;
-				break;
-			default:
-				break;
-			}
+			/* vi keys */
+			executekey(c);
 		}
-	/* non-vi mode */
+	/* old non-vi keys */
 	} else {
 		if((c = getch()) != ERR) switch(c) {
 			case 10:

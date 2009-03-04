@@ -13,18 +13,28 @@ vi-style keybindings
 	* u - undo
 	* document the keys
 
-control with a gamepad
+* control with a gamepad
 
-save as.. support
+* save as.. support
 
-port gui to libcaca.
+* port gui to libcaca.
 branch?
 
-tempo control
+* tempo control
 
 bugs:
 ----
-pressing 'd' stops the screen from updating (noticeable while playing)
+* pressing 'd' stops the screen from updating (noticeable while playing)
+
+* '.' sometimes doesn't work correctly if you move then use it in the new
+	place. This is because '.' calls the last action executed, which
+	doesn't necessarily coincide with what keycommand was pressed. I need to
+	fix all the ACT_* functions so they each represent a key combo. Actually,
+	this is what handleinput() already does, so I turned a lot of that into
+	executekey and I'll mess with it pretty soon.
+
+* get warnings like this when compiling on x86_64:
+	gui.c:1016: warning: cast from pointer to integer of different size
 
 dreams:
 ------
