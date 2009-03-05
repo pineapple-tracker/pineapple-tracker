@@ -1580,6 +1580,30 @@ void executekey(int c) {
 					break;
 			}
 			break;
+
+		// yank
+		case 'y':
+			c = nextchar();
+			if (c == 'y') {
+				if(currtab == 2) {
+					memcpy(&iclip, &instrument[currinstr], sizeof(struct instrument));
+				} else if(currtab == 1) {
+					memcpy(&tclip, &track[currtrack], sizeof(struct track));
+					display("copied");
+				}
+			}
+			break;
+
+		// paste
+		case 'p':
+			if(currtab == 2) {
+				memcpy(&instrument[currinstr], &iclip, sizeof(struct instrument));
+			} else if(currtab == 1) {
+				memcpy(&track[currtrack], &tclip, sizeof(struct track));
+					display("pasted");
+			}
+			break;
+
 		/* delete line */
 		// TODO: clean this SHIT up
 		// TODO: add an ACT_ function for delete

@@ -1,9 +1,10 @@
 enhancements:
 -------------
 vi-style keybindings
-	* 'x' and 'X' only work in instr tab
 	* we need to be able to select the octave and note seperately in track tab,
 		so we can change them seperately with 'J' and 'K'
+		-- this isn't so essential now that there is H and L to alter notes by
+		octave
 	* implement jammermode: q2w3er5t6y7u will all play notes, without inserting them
 		other bindings that can stay: hjkl, ^h, ^l, ^j, ^k
 	* make comand mode
@@ -32,6 +33,11 @@ bugs:
 
 * sound doesn't always stop after pressing space. e.g. try a track with
 	intrument 3 in pumpkinale and stop playback.
+
+* when switching to + or = in instrument view, the note is sometimes out of
+	range if the params are high.
+
+* copy (yy) and paste (p) isn't working
 
 dreams:
 ------
