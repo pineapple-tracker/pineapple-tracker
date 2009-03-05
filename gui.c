@@ -33,8 +33,8 @@ int winheight = 0;
 void drawgui();
 bool cmdrepeat = false;
 int cmdrepeatnum = 1;
+int lastrepeat = 1;
 int lastaction;
-int lastrepeat;
 
 char filename[1024];
 
@@ -1510,11 +1510,17 @@ void commandroutine() {
 void executekey(int c) {
 	int i;
 
-	// don't save the action if it's just a movement
+	// don't save the action if it's a movement or a repeat
 	if (c != 'h' &&
 		c != 'j' && 
 		c != 'k' && 
 		c != 'l' && 
+		c != CTRL('F') && 
+		c != CTRL('B') && 
+		c != CTRL('H') && 
+		c != CTRL('L') && 
+		c != 'g' && 
+		c != 'G' && 
 		c != '.') {
 		lastaction = c;
 	}
