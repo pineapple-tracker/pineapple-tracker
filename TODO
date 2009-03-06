@@ -13,7 +13,6 @@ vi-style keybindings
 	* visual mode for copy/paste like in lgpt
 	* u - undo
 	* document the keys
-	* r - replace
 
 * control with a gamepad
 
@@ -27,9 +26,6 @@ branch?
 bugs:
 ----
 * pressing 'd' stops the screen from updating (noticeable while playing)
-
-* get warnings like this when compiling on x86_64:
-	gui.c:1016: warning: cast from pointer to integer of different size
 
 * sound doesn't always stop after pressing space. e.g. try a track with
 	intrument 3 in pumpkinale and stop playback.
