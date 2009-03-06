@@ -98,10 +98,10 @@ void runcmd(u8 ch, u8 cmd, u8 param) {
 		case 'i':
 			channel[ch].inertia = param << 1;
 			break;
-		case 'j':
+		case '@':
 			channel[ch].iptr = param;
 			break;
-		case 'l':
+		case 's':
 			channel[ch].bendd = param;
 			break;
 		case 'm':
