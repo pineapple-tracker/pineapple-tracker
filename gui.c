@@ -1701,8 +1701,14 @@ void executekey(int c) {
 				int t = song[songy].track[songx / 4];
 				if(t) currtrack = t;
 				currtab = 1;
-			} else if(currtab == 1) {
+			} else if((currtab == 1) && ((trackx == 1) || (trackx == 2))){
+				int i = track[currtrack].line[tracky].instr;
+				if(i) currinstr = i;
+				currtab = 2;
+			}	else if(currtab == 1) {
 				currtab = 0;
+			} else if(currtab == 2) {
+				currtab = 1;
 			}
 			break;
 		/* Enter insert mode */
