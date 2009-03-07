@@ -85,7 +85,7 @@ instrumentline 02 02 74 01
 instrumentline 02 03 77 02
 instrumentline 02 04 64 90
 instrumentline 02 05 2b 31
-instrumentline 02 06 6c a0
+instrumentline 02 06 73 a0
 instrumentline 02 07 66 f0
 instrumentline 03 00 76 f1
 instrumentline 03 01 77 03
@@ -106,7 +106,7 @@ instrumentline 04 06 2b 36
 instrumentline 04 07 74 03
 instrumentline 04 08 2b 3d
 instrumentline 04 09 74 03
-instrumentline 04 0a 6a 02
+instrumentline 04 0a 40 02
 instrumentline 05 00 76 ff
 instrumentline 05 01 77 02
 instrumentline 05 02 2b 19
