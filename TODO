@@ -35,6 +35,9 @@ bugs:
 
 * copy (yy) and paste (p) isn't working
 
+* instrx is incremented when exiting from insert mode in the last line of
+	instr view, putting the cursor on the first line.
+
 dreams:
 ------
 config files
