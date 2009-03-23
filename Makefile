@@ -1,9 +1,10 @@
-LDFLAGS = $(SDL_LDFLAGS) $(NCURSES_LDFLAGS)
+LDFLAGS = $(SDL_LDFLAGS) $(NCURSES_LDFLAGS) $(CACA_LDFLAGS)
 CFLAGS = -Wall $(SDL_CFLAGS) $(NCURSES_CFLAGS)
 CC = gcc
 
 SDL_LDFLAGS := $(shell pkg-config --libs sdl)
 NCURSES_LDFLAGS := $(shell ncurses5-config --libs)
+CACA_LDFLAGS := $(shell pkg-config --libs caca)
 
 SDL_CFLAGS := $(shell pkg-config --cflags sdl)
 NCURSES_CFLAGS := $(shell ncurses5-config --cflags)
