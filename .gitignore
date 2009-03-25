@@ -1,5 +1,7 @@
 *.o
 *.swp
 tracker
+pineapple-tracker
+player
 ztlog
 songs
