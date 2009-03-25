@@ -73,7 +73,7 @@ int main(int argc, char **argv){
 		//caca_blit(cv, 55, 0, pineapple, NULL);
 		caca_put_str(cv, (xo - strlen("pineapple player")) / 2, 10, "pineapple player");
 		caca_set_color_ansi(cv, caca_rand(0, 16), caca_rand(0, 16));
-		caca_printf(cv, (xo - strlen("song pos ->   ")) / 2, 12, "song pos -> %i", songpos);
+		caca_printf(cv, (xo - strlen("song pos ->   ")) / 2, 12, "song pos -> %x", songpos);
 		//caca_clear_canvas(cv);
 
     while(caca_get_event(dp, CACA_EVENT_ANY, &ev, 0))

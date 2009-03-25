@@ -14,6 +14,10 @@ vi-style keybindings
 	* u - undo
 	* document the keys
 
+	* change instrument in track mode, or any mode
+	* copy paste/clone track
+	* change octave in any mode
+
 * control with a gamepad
 
 * save as.. support
