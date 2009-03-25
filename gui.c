@@ -866,7 +866,7 @@ void actexec (int act) {
 		case ACT_VIEWPHRASEINC:
 			if(currtrack < 255) {
 				currtrack++;
-				if (playmode == PM_PLAY) {
+				if (playmode == PM_PLAY && playtrack) {
 					startplaytrack(currtrack);
 				}
 			}
@@ -874,7 +874,7 @@ void actexec (int act) {
 		case ACT_VIEWPHRASEDEC:
 			if(currtrack > 1) {
 				currtrack--;
-				if (playmode == PM_PLAY) {
+				if (playmode == PM_PLAY && playtrack) {
 					startplaytrack(currtrack);
 				}
 			}
@@ -1447,7 +1447,7 @@ void insertroutine() {
 					tracky++;
 					tracky %= tracklen;
 				} else if (currtab == 2) {
-					instry++;
+					if (instry < instrument[currinstr].length-1) instry++;
 					instry %= instrument[currinstr].length;
 				}
 		}
@@ -1556,10 +1556,17 @@ void executekey(int c) {
 		case 'y':
 			c = nextchar();
 			if (c == 'y') {
-				if(currtab == 2) {
-					memcpy(&iclip, &instrument[currinstr], sizeof(struct instrument));
-				} else if(currtab == 1) {
-					memcpy(&tclip, &track[currtrack], sizeof(struct track));
+				// TODO
+				//if (currtab == 0) {
+				//	memcpy(&tclip, &songline[currtab], sizeof(struct songline));
+				//	display("copied");
+				//} else if (currtab == 1) {
+				//int i = track[currtrack].line[tracky].instr;
+				if (currtab == 1) {
+					memcpy(&tclip, &track[currtrack].line[tracky], sizeof(struct trackline));
+					display("copied");
+				} else if (currtab == 2) {
+					memcpy(&iclip, &instrument[currinstr].line[instry], sizeof(struct instrline));
 					display("copied");
 				}
 			}
@@ -1567,10 +1574,15 @@ void executekey(int c) {
 
 		// paste
 		case 'p':
-			if(currtab == 2) {
-				memcpy(&instrument[currinstr], &iclip, sizeof(struct instrument));
-			} else if(currtab == 1) {
-				memcpy(&track[currtrack], &tclip, sizeof(struct track));
+			// TODO
+			//if (currtab == 0) {
+			//      songline paste
+			//} else if (currtab == 1) {
+			if (currtab == 1) {
+				memcpy(&track[currtrack].line[tracky], &tclip, sizeof(struct trackline));
+					display("pasted");
+			} else if (currtab == 2) {
+				memcpy(&instrument[currinstr].line[instry], &iclip, sizeof(struct instrline));
 					display("pasted");
 			}
 			break;
