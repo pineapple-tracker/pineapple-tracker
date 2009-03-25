@@ -25,8 +25,6 @@ branch?
 
 bugs:
 ----
-* pressing 'd' stops the screen from updating (noticeable while playing)
-
 * sound doesn't always stop after pressing space. e.g. try a track with
 	intrument 3 in pumpkinale and stop playback.
 
@@ -37,6 +35,9 @@ bugs:
 
 * instrx is incremented when exiting from insert mode in the last line of
 	instr view, putting the cursor on the first line.
+
+* switching phrases while playing back a song shouldn't stop the song's
+	playback to play the phrase
 
 dreams:
 ------

@@ -1,21 +1,21 @@
-LDFLAGS = $(SDL_LDFLAGS) $(NCURSES_LDFLAGS) $(CACA_LDFLAGS)
-CFLAGS = -Wall $(SDL_CFLAGS) $(NCURSES_CFLAGS)
 CC = gcc
-
-SDL_LDFLAGS := $(shell pkg-config --libs sdl)
-NCURSES_LDFLAGS := $(shell ncurses5-config --libs)
-CACA_LDFLAGS := $(shell pkg-config --libs caca)
+CFLAGS = -O2 -Wall $(SDL_CFLAGS) $(NCURSES_CFLAGS)
 
 SDL_CFLAGS := $(shell pkg-config --cflags sdl)
 NCURSES_CFLAGS := $(shell ncurses5-config --cflags)
 
-all:	tracker player
+LIBS := -O2 $(shell sdl-config --static-libs) \
+		$(shell ncurses5-config --libs) \
+		$(shell pkg-config --libs caca) -lSDL
 
-tracker:	main.o chip.o gui.o
-	gcc -o $@ $^ ${LDFLAGS}
+
+all:	pineapple-tracker player
+
+pineapple-tracker:	main.o chip.o gui.o
+	$(CC) -o $@ $^ ${LIBS}
 
 player:		player.o chip.o gui.o
-	gcc -o $@ $^ ${LDFLAGS}
+	$(CC) -o $@ $^ ${LIBS}
 
 %.o:	%.c stuff.h Makefile
 
