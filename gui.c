@@ -93,6 +93,42 @@ int hexdec(int x) {
 	return (x >= 1 && x <= 15)? x-1 : 15;
 }
 
+int nextfreetrack() {
+	int i, j, k;
+	bool skiptherest = false;
+
+	for (i = 0; i < 0xff; i++) {
+		for (j = 0; j < tracklen; j++) {
+			if (track[i].line[j].note) skiptherest = true;
+			for (k = 0; k < 2; k++) {
+				if (track[i].line[j].cmd[k]) skiptherest = true;
+				if (track[i].line[j].param[k]) skiptherest = true;
+			}
+
+			// skip the rest of this track?
+			if (skiptherest) {
+				skiptherest = false;
+				break;
+			}
+
+			// this track is free, so return the index
+			if (j == tracklen-1) return i;
+		}
+	}
+	display("nextfreetrack() failed somehow..");
+
+	return -1;
+}
+
+/* TODO
+int nextfreeinstr() {
+	int i;
+
+	for (i = 0; i <
+
+	return -1;
+}*/
+
 char nextchar() {
 	char ch;
 	ch = getch();
@@ -1556,36 +1592,38 @@ void executekey(int c) {
 		case 'y':
 			c = nextchar();
 			if (c == 'y') {
-				// TODO
-				//if (currtab == 0) {
-				//	memcpy(&tclip, &songline[currtab], sizeof(struct songline));
-				//	display("copied");
-				//} else if (currtab == 1) {
-				//int i = track[currtrack].line[tracky].instr;
-				if (currtab == 1) {
+				if (currtab == 0) {
+					memcpy(&tclip, &song[songy], sizeof(struct songline));
+				} else if (currtab == 1) {
 					memcpy(&tclip, &track[currtrack].line[tracky], sizeof(struct trackline));
-					display("copied");
 				} else if (currtab == 2) {
 					memcpy(&iclip, &instrument[currinstr].line[instry], sizeof(struct instrline));
-					display("copied");
 				}
 			}
 			break;
 
 		// paste
 		case 'p':
-			// TODO
-			//if (currtab == 0) {
-			//      songline paste
-			//} else if (currtab == 1) {
-			if (currtab == 1) {
+			if (currtab == 0) {
+				memcpy(&song[songy], &tclip, sizeof(struct songline));
+				if (songy < songlen-1) songy++;
+			} else if (currtab == 1) {
 				memcpy(&track[currtrack].line[tracky], &tclip, sizeof(struct trackline));
-					display("pasted");
+				if (tracky < tracklen-1) tracky++;
 			} else if (currtab == 2) {
 				memcpy(&instrument[currinstr].line[instry], &iclip, sizeof(struct instrline));
-					display("pasted");
+				if (instry < instrument[currinstr].length-1) instry++;
 			}
 			break;
+
+		// copy everything in the current phrase or instrument into the next free one
+		case '^':
+				if (currtab == 1) {
+					memcpy(&track[nextfreetrack()], &track[currtrack], sizeof(struct track));
+				} /* TODO
+				else if (currtab == 2) {
+					memcpy(&instrument[nextfreeinstr()], &instrument[currinstr], sizeof(struct instrument));
+				}*/
 
 		/* delete line */
 		// TODO: clean this SHIT up

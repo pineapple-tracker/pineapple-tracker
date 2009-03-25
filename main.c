@@ -91,9 +91,9 @@ int main(int argc, char **argv) {
 	requested.channels = 1;
 
 	// comment this out to run on grace
-	/*if(SDL_OpenAudio(&requested, &obtained) == -1) {
-		err(1, "SDL_OpenAudio");
-	}*/
+	//if(SDL_OpenAudio(&requested, &obtained) == -1) {
+	//	err(1, "SDL_OpenAudio");
+	//}
 
     // Actually if we don't do error checking it just works on grace and
 	//     // locally with sound :3
