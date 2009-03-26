@@ -97,7 +97,7 @@ int nextfreetrack() {
 	int i, j, k;
 	bool skiptherest = false;
 
-	for (i = 0; i < 0xff; i++) {
+	for (i = 1; i <= 0xff; i++) {
 		for (j = 0; j < tracklen; j++) {
 			if (track[i].line[j].note) skiptherest = true;
 			for (k = 0; k < 2; k++) {
@@ -115,19 +115,22 @@ int nextfreetrack() {
 			if (j == tracklen-1) return i;
 		}
 	}
-	display("nextfreetrack() failed somehow..");
 
+	display("nextfreetrack() failed somehow..");
 	return -1;
 }
 
-/* TODO
 int nextfreeinstr() {
 	int i;
 
-	for (i = 0; i <
+	for (i = 1; i <= 0xff; i++) {
+		if (instrument[i].line[0].cmd == '0')
+			return i;
+	}
 
+	display("nextfreeinstr() failed somehow..");
 	return -1;
-}*/
+}
 
 char nextchar() {
 	char ch;
@@ -1620,10 +1623,9 @@ void executekey(int c) {
 		case '^':
 				if (currtab == 1) {
 					memcpy(&track[nextfreetrack()], &track[currtrack], sizeof(struct track));
-				} /* TODO
-				else if (currtab == 2) {
+				} else if (currtab == 2) {
 					memcpy(&instrument[nextfreeinstr()], &instrument[currinstr], sizeof(struct instrument));
-				}*/
+				}
 
 		/* delete line */
 		// TODO: clean this SHIT up
