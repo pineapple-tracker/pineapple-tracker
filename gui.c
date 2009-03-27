@@ -905,17 +905,23 @@ void actexec (int act) {
 		case ACT_VIEWPHRASEINC:
 			if(currtrack < 255) {
 				currtrack++;
-				if (playmode == PM_PLAY && playtrack) {
-					startplaytrack(currtrack);
-				}
+			}
+			if(currtrack == 0xff){
+				currtrack = 1;
+			}
+			if (playmode == PM_PLAY && playtrack) {
+				startplaytrack(currtrack);
 			}
 			break;
 		case ACT_VIEWPHRASEDEC:
 			if(currtrack > 1) {
 				currtrack--;
-				if (playmode == PM_PLAY && playtrack) {
-					startplaytrack(currtrack);
-				}
+			}
+			if(currtrack == 1){
+				currtrack = 0xff;
+			}
+			if (playmode == PM_PLAY && playtrack) {
+				startplaytrack(currtrack);
 			}
 			break;
 		case ACT_VIEWINSTRINC:
@@ -1412,6 +1418,12 @@ void insertroutine() {
 			case KEY_RIGHT:
 				actexec(ACT_MVRIGHT);
 				break;
+			case '<':
+				if(octave) octave--;
+				break;
+			case '>':
+				if(octave < 8) octave++;
+				break;
 			case CTRL('J'):
 				if (currtab == 2) {
 					actexec(ACT_VIEWINSTRDEC);
@@ -1626,7 +1638,7 @@ void executekey(int c) {
 				} else if (currtab == 2) {
 					memcpy(&instrument[nextfreeinstr()], &instrument[currinstr], sizeof(struct instrument));
 				}
-
+			break;
 		/* delete line */
 		// TODO: clean this SHIT up
 		// TODO: add an ACT_ function for delete
