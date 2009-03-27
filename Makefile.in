@@ -1,5 +1,5 @@
-CC = gcc
-VERSION = alpha-mega
+CC = @CC@
+VERSION = @VERSION@
 CFLAGS = -O2 -Wall $(SDL_CFLAGS) $(NCURSES_CFLAGS)
 
 SDL_CFLAGS := $(shell pkg-config --cflags sdl)

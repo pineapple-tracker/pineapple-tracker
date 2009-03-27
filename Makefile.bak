@@ -1,5 +1,4 @@
 CC = gcc
-VERSION = alpha-mega
 CFLAGS = -O2 -Wall $(SDL_CFLAGS) $(NCURSES_CFLAGS)
 
 SDL_CFLAGS := $(shell pkg-config --cflags sdl)
@@ -9,7 +8,8 @@ LIBS := -O2 $(shell sdl-config --static-libs) \
 		$(shell ncurses5-config --libs) \
 		$(shell pkg-config --libs caca) -lSDL
 
-all: pineapple-tracker player
+
+all:	pineapple-tracker player
 
 pineapple-tracker:	main.o chip.o gui.o
 	$(CC) -o $@ $^ ${LIBS}
