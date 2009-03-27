@@ -327,6 +327,7 @@ void initgui() {
 	initscr();
 	// overrides your terminal's bg color :(
 	//start_color();
+	//raw();
 	cbreak();
 	noecho();
 	nonl();
@@ -337,10 +338,6 @@ void initgui() {
 
 	// this makes the screen update when you're not pressing keys
 	nodelay(stdscr, TRUE);
-
-	//raw();
-	//halfdelay(1);
-	//curs_set(2);
 
 	for(i = 1; i < 256; i++) {
 		instrument[i].length = 1;
@@ -1418,12 +1415,14 @@ void insertroutine() {
 			case KEY_RIGHT:
 				actexec(ACT_MVRIGHT);
 				break;
+			/* change octave */
 			case '<':
 				if(octave) octave--;
 				break;
 			case '>':
 				if(octave < 8) octave++;
 				break;
+			/* change instrument */
 			case CTRL('J'):
 				if (currtab == 2) {
 					actexec(ACT_VIEWINSTRDEC);
@@ -1437,6 +1436,12 @@ void insertroutine() {
 				} else if (currtab == 1) {
 					actexec(ACT_VIEWPHRASEINC);
 				}
+				break;
+			case '[':
+				actexec(ACT_VIEWINSTRDEC);
+				break;
+			case ']':
+				actexec(ACT_VIEWINSTRINC);
 				break;
 			case CTRL('H'):
 				currtab--;
@@ -1980,6 +1985,12 @@ void executekey(int c) {
 			} else if (currtab == 1) {
 				actexec(ACT_VIEWPHRASEINC);
 			}
+			break;
+		case '[':
+			actexec(ACT_VIEWINSTRDEC);
+			break;
+		case ']':
+			actexec(ACT_VIEWINSTRINC);
 			break;
 		case CTRL('H'):
 			currtab--;
