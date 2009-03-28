@@ -900,10 +900,9 @@ void actexec (int act) {
 			}
 			break;
 		case ACT_VIEWPHRASEINC:
-			if(currtrack < 255) {
+			if(currtrack < 0xff) {
 				currtrack++;
-			}
-			if(currtrack == 0xff){
+			} else if(currtrack == 0xff){
 				currtrack = 1;
 			}
 			if (playmode == PM_PLAY && playtrack) {
@@ -913,8 +912,7 @@ void actexec (int act) {
 		case ACT_VIEWPHRASEDEC:
 			if(currtrack > 1) {
 				currtrack--;
-			}
-			if(currtrack == 1){
+			} else if(currtrack == 1){
 				currtrack = 0xff;
 			}
 			if (playmode == PM_PLAY && playtrack) {
@@ -922,7 +920,7 @@ void actexec (int act) {
 			}
 			break;
 		case ACT_VIEWINSTRINC:
-			if(currinstr < 255) currinstr++;
+			if(currinstr < 0xff) currinstr++;
 			break;
 		case ACT_VIEWINSTRDEC:
 			if(currinstr > 1) currinstr--;
@@ -1275,8 +1273,7 @@ void actexec (int act) {
 				}
 			} else if (currtab == 2) {
 				if (instrx == 0) {
-					// TODO: figure out what to do here
-					//instrument[currinstr].line[instry].cmd = (int)NULL;
+					instrument[currinstr].line[instry].cmd = '0';
 				} else if (instrx == 1) {
 					if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=') {
 						instrument[currinstr].line[instry].param = 0;
@@ -1311,6 +1308,7 @@ void actexec (int act) {
 				SETHI(track[currtrack].line[tracky].param[1],0);
 				SETLO(track[currtrack].line[tracky].param[1],0);
 			} else if (currtab == 2) {
+				instrument[currinstr].line[instry].cmd = '0';
 				instrument[currinstr].line[instry].param = 0;
 			}
 			break;
@@ -1644,6 +1642,25 @@ void executekey(int c) {
 					memcpy(&instrument[nextfreeinstr()], &instrument[currinstr], sizeof(struct instrument));
 				}
 			break;
+
+		// TODO: Y and P can be removed after we make visual mode
+		// copy whole phrase or instrument
+		case 'Y':
+			if (currtab == 1) {
+				memcpy(&tclip, &track[currtrack], sizeof(struct track));
+			} else if (currtab == 2) {
+				memcpy(&iclip, &instrument[currinstr], sizeof(struct instrument));
+			}
+			break;
+		// paste whole phrase or instrument
+		case 'P':
+			if (currtab == 1) {
+				memcpy(&track[currtrack], &tclip, sizeof(struct track));
+			} else if (currtab == 2) {
+				memcpy(&instrument[currinstr], &iclip, sizeof(struct instrument));
+			}
+			break;
+
 		/* delete line */
 		// TODO: clean this SHIT up
 		// TODO: add an ACT_ function for delete
@@ -2294,10 +2311,8 @@ void drawgui() {
 	mvaddstr(1, 0, "press ^P to switch keybindings");
 	snprintf(buf, sizeof(buf), "Octave:   %d <>", octave);
 	mvaddstr(2, cols - 14, buf);
-	mvaddstr(3, cols - 14, "^W)rite ^E)xit");
-
-	//snprintf(buf, sizeof(buf), "^F)ilename:        %s", filename);
-	//mvaddstr(2, 15, buf);
+	mvaddstr(3, cols - 13, "ZZ: save&quit");
+	mvaddstr(4, cols - 13, "ZQ: just quit");
 
 	mvaddstr(5, 0, "Song");
 	drawsonged(0, 6, lines - 12);
