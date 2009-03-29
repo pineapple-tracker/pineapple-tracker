@@ -6,5 +6,5 @@ player
 ztlog
 songs
 autom4te.cache
-config.log
+*.log
 config.status
