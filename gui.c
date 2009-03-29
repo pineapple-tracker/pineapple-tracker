@@ -36,6 +36,7 @@ int cmdrepeatnum = 1;
 int lastrepeat = 1;
 int lastaction;
 int f;
+bool saved = false;
 
 char filename[1024];
 
@@ -329,6 +330,7 @@ void initgui() {
 	// overrides your terminal's bg color :(
 	//start_color();
 	//raw();
+	init_pair(1, COLOR_BLACK, COLOR_WHITE);
 	cbreak();
 	noecho();
 	nonl();
@@ -2319,10 +2321,13 @@ void drawgui() {
 	erase();
 	mvaddstr(0, 0, "music chip tracker 0.1 by lft");
 	mvaddstr(1, 0, "press ^P to switch keybindings");
+	mvaddstr(getmaxy(stdscr)-2, 0, filename);
+	if(!saved) addstr("[+]");
 	snprintf(buf, sizeof(buf), "Octave:   %d <>", octave);
 	mvaddstr(2, cols - 14, buf);
 	mvaddstr(3, cols - 13, "ZZ: save&quit");
 	mvaddstr(4, cols - 13, "ZQ: just quit");
+
 
 	mvaddstr(5, 0, "Song");
 	drawsonged(0, 6, lines - 12);
