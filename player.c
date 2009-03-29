@@ -65,6 +65,7 @@ int main(int argc, char **argv){
 	silence();
 	startplaysong(0);
 
+
 	while(!quit)
 	{
 		caca_event_t ev;
@@ -75,6 +76,10 @@ int main(int argc, char **argv){
 		caca_set_color_ansi(cv, caca_rand(0, 16), caca_rand(0, 16));
 		caca_printf(cv, (xo - strlen("song pos ->   ")) / 2, 12, "song pos -> %x", songpos);
 		//caca_clear_canvas(cv);
+		
+		/* note visualizer */
+		//if(track[i].line[j].note)
+		//caca_put_str(cv, 0, 0, '!');
 
     while(caca_get_event(dp, CACA_EVENT_ANY, &ev, 0))
     {

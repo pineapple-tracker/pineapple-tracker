@@ -35,6 +35,7 @@ bool cmdrepeat = false;
 int cmdrepeatnum = 1;
 int lastrepeat = 1;
 int lastaction;
+int f;
 
 char filename[1024];
 
@@ -1239,16 +1240,21 @@ void actexec (int act) {
 						song[songy].transp[songx/4] -= song[songy].transp[songx/4]%16;
 					}
 				}
+				//memcpy(&tclip, &song[songy], sizeof(struct songline));
 			} else if (currtab == 1) {
 				switch (trackx) {
 					case 0:
+						memcpy(&tclip, &track[currtrack].line[tracky], sizeof(struct trackline));
 						track[currtrack].line[tracky].note = 0;
 						track[currtrack].line[tracky].instr = 0;
+						//memmove
 						break;
 					case 1:
+						memcpy(&tclip, &track[currtrack].line[tracky].instr, sizeof(struct trackline));
 						SETHI(track[currtrack].line[tracky].instr, 0);
 						break;
 					case 2:
+						memcpy(&tclip, &track[currtrack].line[tracky].instr, sizeof(struct trackline));
 						SETLO(track[currtrack].line[tracky].instr, 0);
 						break;
 					case 3:
@@ -1628,7 +1634,7 @@ void executekey(int c) {
 				memcpy(&song[songy], &tclip, sizeof(struct songline));
 				if (songy < songlen-1) songy++;
 			} else if (currtab == 1) {
-				memcpy(&track[currtrack].line[tracky], &tclip, sizeof(struct trackline));
+					memcpy(&track[currtrack].line[tracky], &tclip, sizeof(struct trackline));
 				if (tracky < tracklen-1) tracky++;
 			} else if (currtab == 2) {
 				memcpy(&instrument[currinstr].line[instry], &iclip, sizeof(struct instrline));
@@ -1638,11 +1644,15 @@ void executekey(int c) {
 
 		// copy everything in the current phrase or instrument into the next free one
 		case '^':
-				if (currtab == 1) {
-					memcpy(&track[nextfreetrack()], &track[currtrack], sizeof(struct track));
-				} else if (currtab == 2) {
-					memcpy(&instrument[nextfreeinstr()], &instrument[currinstr], sizeof(struct instrument));
-				}
+			if (currtab == 1) {
+				f = nextfreetrack();
+				memcpy(&track[f], &track[currtrack], sizeof(struct track));
+				currtrack = f;
+			} else if (currtab == 2) {
+				f = nextfreeinstr();
+				memcpy(&instrument[f], &instrument[currinstr], sizeof(struct instrument));
+				currinstr = f;
+			}
 			break;
 		/* delete line */
 		// TODO: clean this SHIT up
