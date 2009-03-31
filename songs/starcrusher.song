@@ -1,0 +1,77 @@
+musicchip tune
+version 1
+
+songline 00 02 00 00 00 00 00 00 00
+songline 01 00 00 00 00 00 00 00 00
+songline 02 03 00 00 00 00 00 00 00
+songline 03 00 00 00 00 00 00 00 00
+
+trackline 01 00 23 01 00 00 00 00
+trackline 01 01 23 01 00 00 00 00
+trackline 01 02 23 01 00 00 00 00
+trackline 01 03 23 01 00 00 00 00
+trackline 01 04 23 01 00 00 00 00
+trackline 01 05 23 01 00 00 00 00
+trackline 01 06 27 01 00 00 00 00
+trackline 01 07 25 01 00 00 00 00
+trackline 01 08 22 01 00 00 00 00
+trackline 01 09 20 01 00 00 00 00
+trackline 01 0a 27 01 00 00 00 00
+trackline 01 0b 25 01 00 00 00 00
+trackline 01 0c 22 01 00 00 00 00
+trackline 01 0d 20 01 00 00 00 00
+trackline 01 0e 27 01 00 00 00 00
+trackline 01 0f 25 01 00 00 00 00
+trackline 01 10 22 01 00 00 00 00
+trackline 01 11 20 01 00 00 00 00
+trackline 01 12 27 01 00 00 00 00
+trackline 01 13 25 01 00 00 00 00
+trackline 01 14 22 01 00 00 00 00
+trackline 01 15 20 01 00 00 00 00
+trackline 01 16 27 01 00 00 00 00
+trackline 01 17 25 01 00 00 00 00
+trackline 01 18 22 01 00 00 00 00
+trackline 01 19 27 01 00 00 00 00
+trackline 01 1a 20 01 00 00 00 00
+trackline 01 1b 25 01 00 00 00 00
+trackline 01 1c 22 01 00 00 00 00
+trackline 01 1d 25 01 00 00 00 00
+trackline 01 1e 23 01 00 00 00 00
+trackline 01 1f 23 01 00 00 00 00
+trackline 02 00 21 01 00 00 00 00
+trackline 03 00 21 02 00 00 00 00
+
+instrumentline 01 00 76 ff
+instrumentline 01 01 77 02
+instrumentline 01 02 6d 2f
+instrumentline 01 03 2b 31
+instrumentline 01 04 74 04
+instrumentline 01 05 2b 34
+instrumentline 01 06 74 04
+instrumentline 01 07 2b 38
+instrumentline 01 08 74 04
+instrumentline 01 09 2b 3d
+instrumentline 01 0a 74 04
+instrumentline 01 0b 2b 38
+instrumentline 01 0c 74 04
+instrumentline 01 0d 2b 36
+instrumentline 01 0e 74 04
+instrumentline 01 0f 66 ff
+instrumentline 01 10 40 03
+instrumentline 02 00 76 ff
+instrumentline 02 01 77 02
+instrumentline 02 02 6d 2f
+instrumentline 02 03 2b 31
+instrumentline 02 04 74 04
+instrumentline 02 05 2b 36
+instrumentline 02 06 74 04
+instrumentline 02 07 2b 38
+instrumentline 02 08 74 04
+instrumentline 02 09 2b 3d
+instrumentline 02 0a 74 04
+instrumentline 02 0b 2b 36
+instrumentline 02 0c 74 04
+instrumentline 02 0d 2b 36
+instrumentline 02 0e 74 04
+instrumentline 02 0f 66 ff
+instrumentline 02 10 40 03
