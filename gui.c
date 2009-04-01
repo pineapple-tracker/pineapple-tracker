@@ -1649,14 +1649,34 @@ void executekey(int c) {
 		// paste
 		case 'p':
 			if (currtab == 0) {
-				memcpy(&song[songy], &tclip, sizeof(struct songline));
-				if (songy < songlen-1) songy++;
+				if(songlen < 256) {
+					// insert new line
+					memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
+					songy++;
+					songlen++;
+					memset(&song[songy], 0, sizeof(struct songline));
+
+					// paste to new line
+					memcpy(&song[songy], &tclip, sizeof(struct songline));
+				}
 			} else if (currtab == 1) {
 					memcpy(&track[currtrack].line[tracky], &tclip, sizeof(struct trackline));
 				if (tracky < tracklen-1) tracky++;
 			} else if (currtab == 2) {
-				memcpy(&instrument[currinstr].line[instry], &iclip, sizeof(struct instrline));
-				if (instry < instrument[currinstr].length-1) instry++;
+				if(instrument[currinstr].length < 256) {
+					// insert new line
+					struct instrument *in = &instrument[currinstr];
+
+					instry++;
+					memmove(&in->line[instry + 1], &in->line[instry + 0], sizeof(struct instrline) * (in->length - instry));
+					in->length++;
+					in->line[instry].cmd = '0';
+					in->line[instry].param = 0;
+
+					// paste to new line
+					memcpy(&instrument[currinstr].line[instry], &iclip, sizeof(struct instrline));
+				}
+				//if (instry < instrument[currinstr].length-1) instry++;
 			}
 			break;
 
