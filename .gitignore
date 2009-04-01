@@ -8,3 +8,4 @@ songs
 autom4te.cache
 *.log
 config.status
+tags
