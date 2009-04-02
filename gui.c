@@ -31,7 +31,6 @@ char *dispmesg = "";
 int disptick = 0;
 bool sdl_finished = false;
 int currbutt = -1;
-int winheight = 0;
 void drawgui();
 bool cmdrepeat = false;
 int cmdrepeatnum = 1;
@@ -134,6 +133,16 @@ int nextfreeinstr() {
 
 	display("nextfreeinstr() failed somehow..");
 	return -1;
+}
+
+/* convert a string to a string of blanks of the same length */
+static char *blanks(char *string) {
+	char newstr[1024];
+	int i;
+	for(i=0; i<strlen(string); i++) {
+		newstr[i] = ' ';
+	}
+	return newstr;
 }
 
 char nextchar() {
@@ -1551,9 +1560,8 @@ void commandroutine() {
 				cmdmode = false;
 				break;
 			default:
-				winheight = getmaxy(stdscr);
 				//cmdstr = strcat(cmdstr,c);
-				//mvaddstr(winheight-1, strlen(cmdstr)+1, c);
+				//mvaddstr(getmaxy(stdscr)-1, strlen(cmdstr)+1, c);
 				break;
 		}
 	drawgui();
@@ -2382,25 +2390,25 @@ void drawgui() {
 	snprintf(buf, sizeof(buf), "Octave:   %d <>", octave);
 	mvaddstr(0, cols - 14, buf);
 
-	mvaddstr(getmaxy(stdscr)-2, 0, filename);
-	if(!saved) addstr(" [+]");
+	mvaddstr(getmaxy(stdscr)-1, 0, filename);
+	if(!saved && !insertmode) addstr(" [+]");
 
 
 	mvaddstr(1, 0, "Song");
-	drawsonged(0, 1, lines - 12);
+	drawsonged(0, 1, lines - 2);
 
 	snprintf(buf, sizeof(buf), "Track %02x {}", currtrack);
 	mvaddstr(1, 29, buf);
-	drawtracked(29, 1, lines - 8);
+	drawtracked(29, 1, lines - 2);
 
 	snprintf(buf, sizeof(buf), "Instr. %02x []", currinstr);
 	mvaddstr(1, 49, buf);
-	drawinstred(49, 1, lines - 12);
+	drawinstred(49, 1, lines - 2);
 
-	if (currbutt > -1) {
+	/*if (currbutt > -1) {
 		snprintf(buf, sizeof(buf), "joybutton: %d", currbutt);
 		mvaddstr(2, 0, buf);
-	}
+	}*/
 
 	// display
 	if (disptick > 0) {
@@ -2409,14 +2417,13 @@ void drawgui() {
 	}
 
 	if (insertmode) {
-		winheight = getmaxy(stdscr);
-		mvaddstr(winheight-1, 0, "-- INSERT --");
+		mvaddstr(getmaxy(stdscr)-1, 0, blanks(filename));
+		mvaddstr(getmaxy(stdscr)-1, 0, "-- INSERT --");
 	}
 
-	if (cmdmode) {
-		winheight = getmaxy(stdscr);
-		mvaddstr(winheight-1, 0, cmdstr);
-	}
+	/*if (cmdmode) {
+		mvaddstr(getmaxy(stdscr)-1, 0, cmdstr);
+	}*/
     
 	switch(currtab) {
 		case 0:
