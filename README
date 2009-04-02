@@ -4,6 +4,96 @@ the project: http://www.linusakesson.net/hardware/chiptune.php
 I hope he doesn't mind us using the code.. right now we are just trying to make
 it usable to the average vi-user :-)
 
+If you are used to vi you will be quite comfortable. Beware that we have not
+implemented some features (like undo!) that may seem second nature to you,
+and living without them might be hard for a while. We also have a number of
+keys that aren't in vi but we have tried to make them vi-like enough to be
+included in pineapple tracker.
+
+Here is an incomplete reference to our user interface. Many of the commands
+themselves are also incomplete, i.e. they don't work in all the cases that
+they should.
+
+
+hjkl
+move around
+
+gg
+move to the top of the column
+
+G
+move to the bottom of the column
+
+ctrl-b and ctrl-f
+mode up and down by 8 rows
+
+a
+add a line
+
+.
+repeat last action
+
+yy
+copy a line
+
+p
+paste a line
+
+Y
+copy a column
+
+P
+paste a column
+
+^
+copy a column and paste it into the next free one
+
+dd
+delete a line. (dj and dk also work)
+
+x
+clear one thing
+
+X
+clear a whole line
+
+i
+go into insert mode
+
+o
+insert a new line and go into insert mode
+
+< >
+change octave
+
+( )
+change tempo
+
+ctrl-j and ctrl-k
+switch the current phrase or instrument
+
+ctrl-h and ctrl-l
+change column
+
+J K
+decrement or increment whatever is under the cursor
+
+H L
+decrement or increment by octave if there is a note under the cursor
+
+enter key
+play song or phrase, depending on what column you're in
+
+space bar
+stop playback
+
+ZZ
+save and quit
+
+ZQ
+quit
+
+
 
 below is the original README:
 

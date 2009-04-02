@@ -22,9 +22,9 @@ vi-style keybindings
 * port gui to libcaca.
 branch?
 
-* tempo control
-
 * clean up gui.c someday
+
+* save tempo info in song format
 
 bugs:
 ----

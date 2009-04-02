@@ -1560,6 +1560,7 @@ void commandroutine() {
 	}
 }
 
+/* main mode */
 void executekey(int c) {
 	int i;
 
