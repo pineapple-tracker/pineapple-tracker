@@ -93,6 +93,11 @@ save and quit
 ZQ
 quit
 
+* While in insert mode you can enter notes, here is a map of the valid keys, starting at C:
+
+ 2 3   5 6 7   9 0
+q	w	e	r	t	y	u	i	o	p
+
 
 
 below is the original README:
