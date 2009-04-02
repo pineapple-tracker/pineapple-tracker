@@ -1,3 +1,4 @@
+/* vi:set ts=4 sts=4 sw=4: */
 #define TRACKLEN 32
 
 typedef unsigned char u8;
@@ -5,6 +6,8 @@ typedef unsigned short u16;
 typedef char s8;
 typedef short s16;
 typedef unsigned long u32;
+
+u8 callbacktime;
 
 enum {
 	WF_TRI,

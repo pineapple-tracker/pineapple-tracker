@@ -1,3 +1,5 @@
+/* vi:set ts=4 sts=4 sw=4: */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,7 +38,7 @@ int cmdrepeatnum = 1;
 int lastrepeat = 1;
 int lastaction;
 int f;
-bool saved = false;
+bool saved = true;
 
 char filename[1024];
 
@@ -1530,6 +1532,7 @@ void insertroutine() {
 					if (instry < instrument[currinstr].length-1) instry++;
 					instry %= instrument[currinstr].length;
 				}
+				saved = false;
 		}
 		drawgui();
 	}
@@ -2059,6 +2062,12 @@ void executekey(int c) {
 		case ']':
 			act_viewinstrinc();
 			break;
+		case '(':
+			callbacktime++;
+			break;
+		case ')':
+			callbacktime--;
+			break;
 		case CTRL('H'):
 			currtab--;
 			if(currtab < 0)
@@ -2152,6 +2161,7 @@ void handleinput() {
 			case CTRL('W'):
 				savefile(filename);
 				display("*saved*");
+				saved = true;
 				break;
 			case '<':
 				if(octave) octave--;
@@ -2355,28 +2365,36 @@ void drawgui() {
 	int songcols[] = {0, 1, 3, 4, 6, 7, 9, 10, 12, 13, 15, 16, 18, 19, 21, 22};
 	int trackcols[] = {0, 4, 5, 7, 8, 9, 11, 12, 13};
 	int instrcols[] = {0, 2, 3};
+	u8 tempo;
 
 	erase();
-	mvaddstr(0, 0, "music chip tracker 0.1 by lft");
-	mvaddstr(1, 0, "press ^P to switch keybindings");
-	mvaddstr(getmaxy(stdscr)-2, 0, filename);
-	if(!saved) addstr("[+]");
+
+	attrset(A_UNDERLINE);
+	mvaddstr(0, 0, "PINEAPPLEtRACKER");
+	attrset(A_NORMAL);
+
+	// just a wild guess here..
+	tempo = callbacktime * (-1) + 300;
+	snprintf(buf, sizeof(buf), "Tempo:   %d ()", tempo);
+	mvaddstr(0, cols - 32, buf);
+
 	snprintf(buf, sizeof(buf), "Octave:   %d <>", octave);
-	mvaddstr(2, cols - 14, buf);
-	mvaddstr(3, cols - 13, "ZZ: save&quit");
-	mvaddstr(4, cols - 13, "ZQ: just quit");
+	mvaddstr(0, cols - 14, buf);
+
+	mvaddstr(getmaxy(stdscr)-2, 0, filename);
+	if(!saved) addstr(" [+]");
 
 
-	mvaddstr(5, 0, "Song");
-	drawsonged(0, 6, lines - 12);
+	mvaddstr(1, 0, "Song");
+	drawsonged(0, 1, lines - 12);
 
 	snprintf(buf, sizeof(buf), "Track %02x {}", currtrack);
-	mvaddstr(5, 29, buf);
-	drawtracked(29, 6, lines - 8);
+	mvaddstr(1, 29, buf);
+	drawtracked(29, 1, lines - 8);
 
 	snprintf(buf, sizeof(buf), "Instr. %02x []", currinstr);
-	mvaddstr(5, 49, buf);
-	drawinstred(49, 6, lines - 12);
+	mvaddstr(1, 49, buf);
+	drawinstred(49, 1, lines - 12);
 
 	if (currbutt > -1) {
 		snprintf(buf, sizeof(buf), "joybutton: %d", currbutt);
@@ -2385,14 +2403,8 @@ void drawgui() {
 
 	// display
 	if (disptick > 0) {
-		mvaddstr(3, 0, dispmesg);
+		mvaddstr(0, getmaxx(stdscr)-strlen(dispmesg), dispmesg);
 		disptick--;
-	}
-
-	if (vimode) {
-		mvaddstr(0, cols - 30, "*(escape)vimode*");
-	} else {
-		drawmodeinfo(cols - 30, 0);
 	}
 
 	if (insertmode) {
@@ -2407,13 +2419,13 @@ void drawgui() {
     
 	switch(currtab) {
 		case 0:
-			move(6 + songy - songoffs, 0 + 4 + songcols[songx]);
+			move(1 + songy - songoffs, 0 + 4 + songcols[songx]);
 			break;
 		case 1:
-			move(6 + tracky - trackoffs, 29 + 4 + trackcols[trackx]);
+			move(1 + tracky - trackoffs, 29 + 4 + trackcols[trackx]);
 			break;
 		case 2:
-			move(6 + instry - instroffs, 49 + 4 + instrcols[instrx]);
+			move(1 + instry - instroffs, 49 + 4 + instrcols[instrx]);
 			break;
 	}
 

@@ -1,3 +1,4 @@
+/* vi:set ts=4 sts=4 sw=4: */
 #include <stdio.h>
 #include <err.h>
 #include <SDL/SDL.h>
@@ -63,24 +64,24 @@ void audiocb(void *userdata, Uint8 *buf, int len) {
 
 int main(int argc, char **argv) {
 	SDL_AudioSpec requested, obtained;
-	FILE *ztlog;
+	//FILE *ztlog;
 
-	ztlog = fopen("ztlog","w");
+	//ztlog = fopen("ztlog","w");
 
 	if (SDL_Init( SDL_INIT_AUDIO | SDL_INIT_JOYSTICK ) < 0) {
-		fprintf(ztlog, "Couldn't initialize SDL: %s\n", SDL_GetError());
+		fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
 		exit(1);
 	}
 
-	initjoystick();
+	//initjoystick();
 
-	fprintf(ztlog, "%i joysticks were found.\n\n", SDL_NumJoysticks() );
-	fprintf(ztlog, "The names of the joysticks are:\n");
+	//fprintf(ztlog, "%i joysticks were found.\n\n", SDL_NumJoysticks() );
+	//fprintf(ztlog, "The names of the joysticks are:\n");
 
-	int i;
-	for( i=0; i < SDL_NumJoysticks(); i++ ) {
-		fprintf(ztlog,"    %s\n", SDL_JoystickName(i));
-	}
+	//int i;
+	//for( i=0; i < SDL_NumJoysticks(); i++ ) {
+	//	fprintf(ztlog,"    %s\n", SDL_JoystickName(i));
+	//}
 
 	atexit(SDL_Quit);
 

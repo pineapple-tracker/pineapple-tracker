@@ -37,6 +37,12 @@ bugs:
 * '.' doesn't work with replace
 
 * pineapple-tracker uses lots of cpu! this isn't very vi-like at all.
+	UPDATE: tony's player doesnt take all the cpu, this is specific to gui.c
+
+* song view and phrase view don't use all the vertical space that they could
+
+* tempo gets really fast if you set it too low... and weird things happen if
+	you set it too high as well.
 
 dreams:
 ------

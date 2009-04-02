@@ -1,9 +1,8 @@
+/* vi:set ts=4 sts=4 sw=4: */
 #include "stuff.h"
 
 volatile u8 callbackwait;
-
-volatile u8 test;
-volatile u8 testwait;
+u8 callbacktime = 180;
 
 u8 trackwait;
 u8 trackpos;
@@ -311,7 +310,7 @@ u8 interrupthandler()
 		callbackwait--;
 	} else {
 		playroutine();
-		callbackwait = 180 - 1;
+		callbackwait = callbacktime - 1;
 	}
 
 	acc = 0;
