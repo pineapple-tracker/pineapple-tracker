@@ -463,7 +463,9 @@ void drawinstred(int x, int y, int height) {
 	}
 }
 
-void drawmodeinfo(int x, int y) {
+/* not using this... */
+
+/*void drawmodeinfo(int x, int y) {
 	switch(playmode) {
 		case PM_IDLE:
 			if(currtab == 2) {
@@ -488,7 +490,7 @@ void drawmodeinfo(int x, int y) {
 			attrset(A_NORMAL);
 			break;
 	}
-}
+}*/
 
 void optimize() {
 	u8 used[256], replace[256];
@@ -1008,11 +1010,13 @@ void act_viewphrasedec(void){
 }
 
 void act_viewinstrinc(void){
-	if(currinstr < 0xff) currinstr++;
+	if(currinstr == 0xff) currinstr = 0x01;
+	else currinstr++;
 }
 
 void act_viewinstrdec(void){
-	if(currinstr > 1) currinstr--;
+	if(currinstr == 1) currinstr = 0xff;
+	else currinstr--;
 }
 
 void act_trackinc(void){
@@ -2382,6 +2386,9 @@ void drawgui() {
 	mvaddstr(0, 0, "PINEAPPLEtRACKER");
 	attrset(A_NORMAL);
 
+	snprintf(buf, sizeof(buf), "Track: %x", currtrack);
+	mvaddstr(0, cols - 50, buf);
+
 	// just a wild guess here..
 	tempo = callbacktime * (-1) + 300;
 	snprintf(buf, sizeof(buf), "Tempo:   %d ()", tempo);
@@ -2393,16 +2400,15 @@ void drawgui() {
 	mvaddstr(getmaxy(stdscr)-1, 0, filename);
 	if(!saved && !insertmode) addstr(" [+]");
 
-
 	mvaddstr(1, 0, "Song");
 	drawsonged(0, 1, lines - 2);
 
-	snprintf(buf, sizeof(buf), "Track %02x {}", currtrack);
-	mvaddstr(1, 29, buf);
+	/*snprintf(buf, sizeof(buf), "Track %02x {}", currtrack);
+	mvaddstr(1, 29, buf);*/
 	drawtracked(29, 1, lines - 2);
 
 	snprintf(buf, sizeof(buf), "Instr. %02x []", currinstr);
-	mvaddstr(1, 49, buf);
+	mvaddstr(1, 58, buf);
 	drawinstred(49, 1, lines - 2);
 
 	/*if (currbutt > -1) {
