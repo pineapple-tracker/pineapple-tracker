@@ -222,7 +222,7 @@ void savefile(char *fname) {
 	fprintf(f, "musicchip tune\n");
 	fprintf(f, "version 1\n");
 	fprintf(f, "\n");
-	fprintf(f, "tempo: %x\n", callbacktime);
+	fprintf(f, "tempo: %d\n", callbacktime);
 	for(i = 0; i < songlen; i++) {
 		fprintf(f, "songline %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
 			i,
@@ -285,7 +285,7 @@ void loadfile(char *fname) {
 
 	songlen = 1;
 	while(!feof(f) && fgets(buf, sizeof(buf), f)) {
-		if(1 = sscanf(buf, "tempo: %x", &callbacktime)){
+		if(1 == sscanf(buf, "tempo: %d", &callbacktime)){
 
 		}else if(9 == sscanf(buf, "songline %x %x %x %x %x %x %x %x %x",
 			&i1,
