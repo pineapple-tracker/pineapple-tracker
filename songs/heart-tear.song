@@ -1,6 +1,7 @@
 musicchip tune
 version 1
 
+tempo: 150
 songline 00 00 00 03 00 01 00 0d 00
 songline 01 00 00 04 00 02 00 0e 00
 songline 02 00 00 03 00 07 00 0f 00
