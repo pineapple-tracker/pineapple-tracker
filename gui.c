@@ -83,6 +83,9 @@ enum {
 };
 int playmode = PM_IDLE;
 
+// ** LOCAL VARS ** //
+static char blankstr[1024];
+
 // ** LOCAL FUNCTIONS ** //
 static int hexdigit(char c);
 static int hexinc(int x);
@@ -147,15 +150,14 @@ static int nextfreeinstr() {
 	return -1;
 }
 
-/* returns a blank string of length len where len is at least 1 */
+/* returns a blank string of length len */
 static char *blanks(int len) {
-	char *newstr;
 	int i;
-	newstr = " ";
+
 	for(i=0; i<len; i++) {
-		newstr[i] = ' ';
+		blankstr[i] = ' ';
 	}
-	return newstr;
+	return blankstr;
 }
 
 static char nextchar() {
@@ -297,7 +299,7 @@ void loadfile(char *fname) {
 
 	songlen = 1;
 	while(!feof(f) && fgets(buf, sizeof(buf), f)) {
-		if(1 == sscanf(buf, "tempo: %d", &callbacktime)){
+		if(1 == sscanf(buf, "tempo: %hhd", &callbacktime)){
 			fprintf(stderr, "hey");
 			callbacktime = (u8)callbacktime;
 		}else if(9 == sscanf(buf, "songline %x %x %x %x %x %x %x %x %x",
