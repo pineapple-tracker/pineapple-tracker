@@ -135,11 +135,12 @@ int nextfreeinstr() {
 	return -1;
 }
 
-/* convert a string to a string of blanks of the same length */
-static char *blanks(char *string) {
-	char newstr[1024];
+/* returns a blank string of length len where len is at least 1 */
+static char *blanks(int len) {
+	char *newstr;
 	int i;
-	for(i=0; i<strlen(string); i++) {
+	newstr = " ";
+	for(i=0; i<len; i++) {
 		newstr[i] = ' ';
 	}
 	return newstr;
@@ -1024,7 +1025,7 @@ void act_viewinstrdec(void){
 
 void act_trackinc(void){
 	if ( (songx%2)==0 ) {
-		if (songx >= 240) {
+		if (songx >= 240 && songx < 256) {
 			song[songy].track[songx/4] -= 240;
 		} else {
 			song[songy].track[songx/4] += 16;
@@ -1040,7 +1041,7 @@ void act_trackinc(void){
 
 void act_trackdec(void){
 	if ( (songx%2)==0 ) {
-		if (songx <= 15) {
+		if (songx <= 15 && songx >= 0) {
 			song[songy].track[songx/4] += 240;
 		} else {
 			song[songy].track[songx/4] -= 16;
@@ -1056,7 +1057,7 @@ void act_trackdec(void){
 
 void act_transpinc(void){
 	if ( (songx%2)==0 ) {
-		if (songx >= 240) {
+		if (songx >= 240 && songx < 256) {
 			song[songy].transp[songx/4] -= 240;
 		} else {
 			song[songy].transp[songx/4] += 16;
@@ -1072,7 +1073,7 @@ void act_transpinc(void){
 
 void act_transpdec(void){
 	if ( (songx%2)==0 ) {
-		if (songx <= 15) {
+		if (songx <= 15 && songx >= 0) {
 			song[songy].transp[songx/4] += 240;
 		} else {
 			song[songy].transp[songx/4] -= 16;
@@ -2427,7 +2428,7 @@ void drawgui() {
 	}
 
 	if (insertmode) {
-		mvaddstr(getmaxy(stdscr)-1, 0, blanks(filename));
+		mvaddstr(getmaxy(stdscr)-1, 0, blanks(strlen(filename)));
 		mvaddstr(getmaxy(stdscr)-1, 0, "-- INSERT --");
 	}
 

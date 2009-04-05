@@ -5,7 +5,7 @@ CFLAGS = -O2 -Wall $(SDL_CFLAGS) $(NCURSES_CFLAGS)
 SDL_CFLAGS := $(shell pkg-config --cflags sdl)
 NCURSES_CFLAGS := $(shell ncurses5-config --cflags)
 
-LIBS := -O2 $(shell sdl-config --static-libs) \
+LIBS := -O2 $(shell pkg-config --libs sdl) \
 		$(shell ncurses5-config --libs) \
 		$(shell pkg-config --libs caca) -lSDL
 
