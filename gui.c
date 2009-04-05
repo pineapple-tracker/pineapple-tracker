@@ -221,6 +221,7 @@ void savefile(char *fname) {
 	fprintf(f, "musicchip tune\n");
 	fprintf(f, "version 1\n");
 	fprintf(f, "\n");
+	fprintf(f, "tempo: %x\n", callbacktime);
 	for(i = 0; i < songlen; i++) {
 		fprintf(f, "songline %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
 			i,
@@ -283,7 +284,9 @@ void loadfile(char *fname) {
 
 	songlen = 1;
 	while(!feof(f) && fgets(buf, sizeof(buf), f)) {
-		if(9 == sscanf(buf, "songline %x %x %x %x %x %x %x %x %x",
+		if(1 = sscanf(buf, "tempo: %x", &callbacktime)){
+
+		}else if(9 == sscanf(buf, "songline %x %x %x %x %x %x %x %x %x",
 			&i1,
 			&trk[0],
 			&transp[0],
@@ -1558,18 +1561,19 @@ void commandroutine() {
 	cmdmode = true;
 	drawgui();
 	for(;;) {
-		if ((c = getch()) != ERR) switch(c) {
+		c = nextchar();
+		switch(c) {
 			case KEY_ESCAPE:
 				cmdstr = "";
 				cmdmode = false;
-				break;
+				goto end;
 			default:
-				//cmdstr = strcat(cmdstr,c);
-				//mvaddstr(getmaxy(stdscr)-1, strlen(cmdstr)+1, c);
-				break;
+				cmdstr = strcat(cmdstr,c);
+				mvaddstr(getmaxy(stdscr)-2, strlen(cmdstr)+1, c);
 		}
-	drawgui();
 	}
+end:
+	return;
 }
 
 /* main mode */
