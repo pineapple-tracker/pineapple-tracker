@@ -17,6 +17,7 @@
 #define KEY_TAB 9   // this also happens to be ^i...
 
 
+// ** GLOBAL VARS ** //
 int songx, songy, songoffs, songlen = 1;
 int trackx, tracky, trackoffs, tracklen = TRACKLEN;
 int instrx, instry, instroffs;
@@ -82,21 +83,32 @@ enum {
 };
 int playmode = PM_IDLE;
 
-int hexdigit(char c) {
+// ** LOCAL FUNCTIONS ** //
+static int hexdigit(char c);
+static int hexinc(int x);
+static int hexdec(int x);
+static int nextfreetrack();
+static int nextfreeinstr();
+static char *blanks(int len);
+static char nextchar();
+static int char2int(char ch);
+static int freqkey(int c);
+
+static int hexdigit(char c) {
 	if(c >= '0' && c <= '9') return c - '0';
 	if(c >= 'a' && c <= 'f') return c - 'a' + 10;
 	return -1;
 }
 
-/* these wrap around */
-int hexinc(int x) {
+/* hexinc and hexdec wrap around */
+static int hexinc(int x) {
 	return (x >= 0 && x <= 14)? x+1 : 0;
 }
-int hexdec(int x) {
+static int hexdec(int x) {
 	return (x >= 1 && x <= 15)? x-1 : 15;
 }
 
-int nextfreetrack() {
+static int nextfreetrack() {
 	int i, j, k;
 	bool skiptherest = false;
 
@@ -123,7 +135,7 @@ int nextfreetrack() {
 	return -1;
 }
 
-int nextfreeinstr() {
+static int nextfreeinstr() {
 	int i;
 
 	for (i = 1; i <= 0xff; i++) {
@@ -146,7 +158,7 @@ static char *blanks(int len) {
 	return newstr;
 }
 
-char nextchar() {
+static char nextchar() {
 	char ch;
 	ch = getch();
 	while (ch == ERR) {
@@ -158,14 +170,14 @@ char nextchar() {
 	return ch;
 }
 
-int char2int(char ch) {
+static int char2int(char ch) {
 	if (isdigit(ch)) {
 		return (int)ch - '0';
 	}
 	return -1;
 }
 
-int freqkey(int c) {
+static int freqkey(int c) {
 	char *s;
 	int f = -1;
 
@@ -286,7 +298,6 @@ void loadfile(char *fname) {
 	songlen = 1;
 	while(!feof(f) && fgets(buf, sizeof(buf), f)) {
 		if(1 == sscanf(buf, "tempo: %d", &callbacktime)){
-
 		}else if(9 == sscanf(buf, "songline %x %x %x %x %x %x %x %x %x",
 			&i1,
 			&trk[0],
