@@ -199,6 +199,10 @@ static int freqkey(int c) {
 	return f;
 }
 
+void jammermode(){
+
+}
+
 void readsong(int pos, int ch, u8 *dest) {
 	dest[0] = song[pos].track[ch];
 	dest[1] = song[pos].transp[ch];
@@ -299,13 +303,9 @@ void loadfile(char *fname) {
 
 	songlen = 1;
 	while(!feof(f) && fgets(buf, sizeof(buf), f)) {
-<<<<<<< HEAD:gui.c
-		if(1 == sscanf(buf, "tempo: %d", &callbacktime)){
-=======
 		if(1 == sscanf(buf, "tempo: %hhd", &callbacktime)){
 			fprintf(stderr, "hey");
 			callbacktime = (u8)callbacktime;
->>>>>>> 792e454518135ce065c37923c52cb8dc65d38e1c:gui.c
 		}else if(9 == sscanf(buf, "songline %x %x %x %x %x %x %x %x %x",
 			&i1,
 			&trk[0],
