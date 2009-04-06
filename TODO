@@ -12,7 +12,6 @@ vi-style keybindings
 	* record mode?
 	* visual mode for copy/paste like in lgpt
 	* u - undo
-	* document the keys
 	* find&replace
 
 * control with a gamepad
@@ -23,8 +22,6 @@ vi-style keybindings
 branch?
 
 * clean up gui.c someday
-
-* save tempo info in song format
 
 bugs:
 ----

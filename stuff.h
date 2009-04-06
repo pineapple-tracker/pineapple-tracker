@@ -41,8 +41,8 @@ void iedplonk(int, int);
 void initgui();
 void guiloop();
 
-void initjoystick();
-void sdlmainloop();
+//void initjoystick();
+//void sdlmainloop();
 void display();
 
 void startplaysong(int);

@@ -1,7 +1,10 @@
 /* vi:set ts=4 sts=4 sw=4: */
 #include <stdio.h>
-#include <err.h>
 #include <SDL/SDL.h>
+
+#ifndef D_WINDOWS
+#include <err.h>
+#endif
 
 #include "stuff.h"
 
@@ -68,7 +71,8 @@ int main(int argc, char **argv) {
 
 	//ztlog = fopen("ztlog","w");
 
-	if (SDL_Init( SDL_INIT_AUDIO | SDL_INIT_JOYSTICK ) < 0) {
+	//if (SDL_Init( SDL_INIT_AUDIO | SDL_INIT_JOYSTICK ) < 0) {
+	if (SDL_Init( SDL_INIT_AUDIO ) < 0) {
 		fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
 		exit(1);
 	}

@@ -3,10 +3,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ncurses.h>
 #include <math.h>
-#include <err.h>
 #include <SDL/SDL.h>
+#include <curses.h>
+
+#ifndef D_WINDOWS
+#include <err.h>
+#endif
 
 #include "stuff.h"
 
@@ -73,8 +76,6 @@ static char blankstr[1024];
 static char *cmdstr = "";
 static char *dispmesg = "";
 static int disptick = 0;
-static bool sdl_finished = false;
-static int currbutt = -1;
 static bool cmdrepeat = false;
 static int cmdrepeatnum = 1;
 static int lastrepeat = 1;
@@ -494,35 +495,6 @@ void drawinstred(int x, int y, int height) {
 	}
 }
 
-/* not using this... */
-
-/*void drawmodeinfo(int x, int y) {
-	switch(playmode) {
-		case PM_IDLE:
-			if(currtab == 2) {
-				mvaddstr(y, x, "PLAY         IDLE space-> EDIT");
-			} else {
-				mvaddstr(y, x, "PLAY <-enter IDLE space-> EDIT");
-			}
-			attrset(A_REVERSE);
-			mvaddstr(y, x + 13, "IDLE");
-			attrset(A_NORMAL);
-			break;
-		case PM_PLAY:
-			mvaddstr(y, x, "PLAY space-> IDLE         EDIT");
-			attrset(A_REVERSE);
-			mvaddstr(y, x + 0, "PLAY");
-			attrset(A_NORMAL);
-			break;
-		case PM_EDIT:
-			mvaddstr(y, x, "PLAY         IDLE <-space EDIT");
-			attrset(A_REVERSE);
-			mvaddstr(y, x + 26, "EDIT");
-			attrset(A_NORMAL);
-			break;
-	}
-}*/
-
 void optimize() {
 	u8 used[256], replace[256];
 	int i, j;
@@ -724,10 +696,7 @@ void export() {
 	fclose(hf);
 }
 
-//void vicmd() {
-//}
-
-void initjoystick() {
+/*void initjoystick() {
 	SDL_Event event;
 	SDL_Joystick *joystick = NULL;
 
@@ -784,7 +753,7 @@ void sdlmainloop(SDL_Event event, SDL_Joystick *joystick) {
 				break;
 		}
 	}
-}
+}*/
 
 /* actions are anything that can be repeated by entering a number beforehand */
 enum {
