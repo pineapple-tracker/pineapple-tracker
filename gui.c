@@ -16,36 +16,14 @@
 #define KEY_ESCAPE 27
 #define KEY_TAB 9   // this also happens to be ^i...
 
-
+/*                   */
 // ** GLOBAL VARS ** //
+/*                   */
 int songx, songy, songoffs, songlen = 1;
 int trackx, tracky, trackoffs, tracklen = TRACKLEN;
 int instrx, instry, instroffs;
-int currtrack = 1, currinstr = 1;
-int currtab = 0;
-int octave = 4;
-bool vimode = true;
-bool insertmode = false;
-bool cmdmode = false;
-char *cmdstr = "";
-char *dispmesg = "";
-int disptick = 0;
-bool sdl_finished = false;
-int currbutt = -1;
-void drawgui();
-bool cmdrepeat = false;
-int cmdrepeatnum = 1;
-int lastrepeat = 1;
-int lastaction;
-int f;
-bool saved = true;
-bool jammode = false;
 
-char filename[1024];
-
-char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#", "A-", "A#", "H-"};
-
-// i wonder why 0 is in here...
+// 0 is like a blank command
 char *validcmds = "0dfi@smtvw~+=";
 
 /*char *keymap[2] = {
@@ -77,17 +55,44 @@ struct instrument instrument[256], iclip;
 struct track track[256], tclip;
 struct songline song[256];
 
+/* pineapple modes */
 enum {
-	PM_IDLE,
-	PM_PLAY,
-	PM_EDIT
+	PM_NORMAL,
+	PM_CMDLINE,
+	PM_INSERT,
+	PM_JAMMER
 };
-int playmode = PM_IDLE;
 
+/*                  */
 // ** LOCAL VARS ** //
+/*                  */
+static int currtrack = 1, currinstr = 1;
+static int currtab = 0;
+static int octave = 4;
 static char blankstr[1024];
+static char *cmdstr = "";
+static char *dispmesg = "";
+static int disptick = 0;
+static bool sdl_finished = false;
+static int currbutt = -1;
+static bool cmdrepeat = false;
+static int cmdrepeatnum = 1;
+static int lastrepeat = 1;
+static int lastaction;
+static int f;
+static bool saved = true;
 
+static int currmode = PM_NORMAL;
+static bool soundplaying = false;
+
+static char filename[1024];
+
+static char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#", "A-", "A#", "H-"};
+
+/*                       */
 // ** LOCAL FUNCTIONS ** //
+/*                       */
+static void drawgui();
 static int hexdigit(char c);
 static int hexinc(int x);
 static int hexdec(int x);
@@ -97,6 +102,11 @@ static char *blanks(int len);
 static char nextchar();
 static int char2int(char ch);
 static int freqkey(int c);
+
+
+/*                           */
+// ** end of declarations ** //
+/*                           */
 
 static int hexdigit(char c) {
 	if(c >= '0' && c <= '9') return c - '0';
@@ -1014,7 +1024,7 @@ void act_viewphraseinc(void){
 	} else if(currtrack == 0xff){
 		currtrack = 1;
 	}
-	if (playmode == PM_PLAY && playtrack) {
+	if (soundplaying && playtrack) {
 		startplaytrack(currtrack);
 	}
 }
@@ -1025,7 +1035,7 @@ void act_viewphrasedec(void){
 	} else if(currtrack == 1){
 		currtrack = 0xff;
 	}
-	if (playmode == PM_PLAY && playtrack) {
+	if (soundplaying && playtrack) {
 		startplaytrack(currtrack);
 	}
 }
@@ -1450,14 +1460,12 @@ void act_clritall(void){
 /* vi insert mode */
 void insertroutine() {
 	int c;
-	playmode = PM_EDIT;
-	insertmode = true;
+	currmode = PM_INSERT;
 	drawgui();
 	for(;;) {
 		if ((c = getch()) != ERR) switch(c) {
 			case KEY_ESCAPE:
-				playmode = PM_IDLE;
-				insertmode = false;
+				currmode = PM_NORMAL;
 				guiloop();
 			case 'h':
 			case KEY_LEFT:
@@ -1532,13 +1540,12 @@ void insertroutine() {
 				break;
 			case ' ':
 				silence();
-				playmode = PM_IDLE;
-				insertmode = false;
+				currmode = PM_NORMAL;
 				guiloop();
 				break;
 			case 13:  // Enter key
 				if(currtab != 2) {
-					playmode = PM_PLAY;
+					soundplaying = true;
 					if(currtab == 1) {
 						silence();
 						startplaytrack(currtrack);
@@ -1572,18 +1579,18 @@ void insertroutine() {
 	}
 }
 
-/* vi command mode */
-void commandroutine() {
+/* vi cmdline mode */
+void cmdlineroutine() {
 	int c;
 	cmdstr = ":";
-	cmdmode = true;
+	currmode = PM_CMDLINE;
 	drawgui();
 	for(;;) {
 		c = nextchar();
 		switch(c) {
 			case KEY_ESCAPE:
 				cmdstr = "";
-				cmdmode = false;
+				currmode = PM_NORMAL;
 				goto end;
 			default:
 				/* SEGFAULT
@@ -1601,11 +1608,11 @@ end:
 void jammermode(void){
 		//playmode = PM_PLAY;
 		int c, x;
-		while(jammode){
+		while(currmode == PM_JAMMER){
 			drawgui();
 			if ((c = getch()) != ERR) switch(c){
 				case KEY_ESCAPE:
-					jammode = false;
+					currmode = PM_NORMAL;
 					break;
 				case '[':
 					act_viewinstrdec();
@@ -1864,7 +1871,7 @@ void executekey(int c) {
 			break;
 		case 13:  // Enter key
 			if(currtab != 2) {
-				playmode = PM_PLAY;
+				soundplaying = true;
 				if(currtab == 1) {
 					silence();
 					startplaytrack(currtrack);
@@ -1894,14 +1901,14 @@ void executekey(int c) {
 			break;
 		/* Enter command mode */
 		case ':':
-			commandroutine();
+			cmdlineroutine();
 			break;
 		case ' ':
 			silence();
-			if(playmode == PM_IDLE) {
-				playmode = PM_EDIT;
+			if(currmode == PM_NORMAL){
+				currmode = PM_INSERT;
 			} else {
-				playmode = PM_IDLE;
+				currmode = PM_NORMAL;
 			}
 			break;
 		case '`':
@@ -1925,7 +1932,7 @@ void executekey(int c) {
 			break;
 		/* enter jammer mode */
 		case CTRL('A'):
-			jammode = true;
+			currmode = PM_JAMMER;
 			jammermode();
 			break;
 		/* Add new line and enter insert mode */
@@ -2161,9 +2168,9 @@ void executekey(int c) {
 		case CTRL('F'):
 			act_bigmvdown();
 			break;
-		case CTRL('P'):
+		/*case CTRL('P'):
 			vimode = false;
-			break;
+			break;*/
 
 		// replace
 		case 'r':
@@ -2182,7 +2189,7 @@ void executekey(int c) {
 void handleinput() {
 	int c, x;
 
-	if (vimode) {
+	if (currmode == PM_NORMAL) {
 		if ((c = getch()) != ERR) {
 
 			/* Repeat */
@@ -2203,7 +2210,7 @@ void handleinput() {
 			case 10:
 			case 13:
 				if(currtab != 2) {
-					playmode = PM_PLAY;
+					soundplaying = true;
 					if(currtab == 1) {
 						startplaytrack(currtrack);
 					} else if(currtab == 0) {
@@ -2212,15 +2219,14 @@ void handleinput() {
 				}
 				break;
 			case CTRL('P'):
-				playmode = PM_IDLE;
-				vimode = true;
+				currmode = PM_NORMAL;
 				break;
 			case ' ':
 				silence();
-				if(playmode == PM_IDLE) {
-					playmode = PM_EDIT;
+				if(currmode == PM_NORMAL) {
+					currmode = PM_INSERT;
 				} else {
-					playmode = PM_IDLE;
+					currmode = PM_NORMAL;
 				}
 				break;
 			case KEY_TAB:
@@ -2299,7 +2305,7 @@ void handleinput() {
 				}
 				break;
 			default:
-				if(playmode == PM_EDIT) {
+				if(currmode == PM_INSERT) {
 					x = hexdigit(c);
 					if(x >= 0) {
 						if(currtab == 2
@@ -2417,7 +2423,7 @@ void handleinput() {
 							}
 						}
 					}
-				} else if(playmode == PM_IDLE) {
+				} else if(currmode == PM_NORMAL) {
 					x = freqkey(c);
 
 					if(x > 0) {
@@ -2460,7 +2466,7 @@ void drawgui() {
 	mvaddstr(0, cols - 14, buf);
 
 	mvaddstr(getmaxy(stdscr)-1, 0, filename);
-	if(!saved && !insertmode) addstr(" [+]");
+	if(!saved && currmode != PM_INSERT) addstr(" [+]");
 
 	mvaddstr(1, 0, "Song");
 	drawsonged(0, 1, lines - 2);
@@ -2484,12 +2490,12 @@ void drawgui() {
 		disptick--;
 	}
 
-	if (insertmode) {
+	if (currmode == PM_INSERT) {
 		mvaddstr(getmaxy(stdscr)-1, 0, blanks(strlen(filename)));
 		mvaddstr(getmaxy(stdscr)-1, 0, "-- INSERT --");
 	}
 
-	if (jammode) {
+	if (currmode == PM_JAMMER) {
 		mvaddstr(getmaxy(stdscr)-1, 0, blanks(strlen(filename)));
 		mvaddstr(getmaxy(stdscr)-1, 0, "-- JAMMER --");
 	}
