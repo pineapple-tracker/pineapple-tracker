@@ -39,6 +39,7 @@ int lastrepeat = 1;
 int lastaction;
 int f;
 bool saved = true;
+bool jammode = false;
 
 char filename[1024];
 
@@ -199,9 +200,6 @@ static int freqkey(int c) {
 	return f;
 }
 
-void jammermode(){
-
-}
 
 void readsong(int pos, int ch, u8 *dest) {
 	dest[0] = song[pos].track[ch];
@@ -1596,6 +1594,38 @@ end:
 	return;
 }
 
+/* jammer mode */
+
+void jammermode(void){
+		//playmode = PM_PLAY;
+		int c, x;
+		while(jammode){
+			drawgui();
+			if ((c = getch()) != ERR) switch(c){
+				case KEY_ESCAPE:
+					jammode = false;
+					break;
+				case '[':
+					act_viewinstrdec();
+					break;
+				case ']':
+					act_viewinstrinc();
+					break;
+				case '<':
+					if(octave) octave--;
+					break;
+				case '>':
+					if(octave < 8) octave++;
+					break;
+				default:
+					x = hexdigit(c);
+					x = freqkey(c);
+					if(x) iedplonk(x, currinstr);
+					break;
+			}
+		}
+}
+
 /* main mode */
 void executekey(int c) {
 	int i;
@@ -1891,6 +1921,11 @@ void executekey(int c) {
 		case 'i':
 			insertroutine();
 			break;
+		/* enter jammer mode */
+		case CTRL('A'):
+			jammode = true;
+			jammermode();
+			break;
 		/* Add new line and enter insert mode */
 		case 'o':
 			if(currtab == 2) {
@@ -2160,6 +2195,7 @@ void handleinput() {
 				executekey(c);
 			}
 		}
+	/* linus' original commands */
 	} else {
 		if((c = getch()) != ERR) switch(c) {
 			case 10:
@@ -2451,6 +2487,11 @@ void drawgui() {
 		mvaddstr(getmaxy(stdscr)-1, 0, "-- INSERT --");
 	}
 
+	if (jammode) {
+		mvaddstr(getmaxy(stdscr)-1, 0, blanks(strlen(filename)));
+		mvaddstr(getmaxy(stdscr)-1, 0, "-- JAMMER --");
+	}
+
 	/*if (cmdmode) {
 		mvaddstr(getmaxy(stdscr)-1, 0, cmdstr);
 	}*/
@@ -2473,6 +2514,7 @@ void drawgui() {
 		disptick--;
 	}
 }
+
 
 void guiloop() {
 	// don't treat the escape key like a meta key
