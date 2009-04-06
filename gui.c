@@ -918,21 +918,21 @@ void act_mvup(void){
 			if(songy) {
 				songy--;
 			} else {
-				songy = songlen - 1;
+				songy = 0;
 			}
 			break;
 		case 1:
 			if(tracky) {
 				tracky--;
 			} else {
-				tracky = tracklen - 1;
+				tracky = 0;
 			}
 			break;
 		case 2:
 			if(instry) {
 				instry--;
 			} else {
-				instry = instrument[currinstr].length - 1;
+				instry = 0;
 			}
 			break;
 	}
@@ -944,21 +944,21 @@ void act_mvdown(void){
 			if(songy < songlen - 1) {
 				songy++;
 			} else {
-				songy = 0;
+				songy = songlen - 1;
 			}
 			break;
 		case 1:
 			if(tracky < tracklen - 1) {
 				tracky++;
 			} else {
-				tracky = 0;
+				tracky = tracklen - 1;
 			}
 			break;
 		case 2:
 			if(instry < instrument[currinstr].length - 1) {
 				instry++;
 			} else {
-				instry = 0;
+				instry = instrument[currinstr].length - 1;
 			}
 			break;
 	}
@@ -1586,8 +1586,10 @@ void commandroutine() {
 				cmdmode = false;
 				goto end;
 			default:
+				/* SEGFAULT
 				cmdstr = strcat(cmdstr,c);
-				mvaddstr(getmaxy(stdscr)-2, strlen(cmdstr)+1, c);
+				mvaddstr(getmaxy(stdscr)-2, strlen(cmdstr)+1, c); */
+				return;
 		}
 	}
 end:
