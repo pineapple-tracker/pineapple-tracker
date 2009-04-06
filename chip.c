@@ -231,7 +231,7 @@ void playroutine() {			// called at 50 Hz
 		u16 duty;
 		u16 slur;
 
-		while(channel[ch].inum && !channel[ch].iwait) {
+		while(channel[ch].inum && !channel[ch].iwait && (playsong || playtrack)) {
 			u8 il[2];
 
 			readinstr(channel[ch].inum, channel[ch].iptr, il);
