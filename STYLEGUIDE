@@ -5,7 +5,7 @@ Because good looking code==easy to maintain code.
 
 Functions:
 ----------
-Put opening curly-bracket on the same line, and no space between the closing paren and the opening curly bracket:
+Put opening curly-bracket on the same line, and no space between the closing paren and the opening curly br
 
 static int void freqkey(int x){
 

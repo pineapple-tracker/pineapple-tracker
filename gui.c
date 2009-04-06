@@ -76,15 +76,14 @@ static char blankstr[1024];
 static char *cmdstr = "";
 static char *dispmesg = "";
 static int disptick = 0;
-static bool cmdrepeat = false;
+static int cmdrepeat = 0;
 static int cmdrepeatnum = 1;
 static int lastrepeat = 1;
 static int lastaction;
 static int f;
-static bool saved = true;
+static int saved = 1;
 
 static int currmode = PM_NORMAL;
-static bool soundplaying = false;
 
 static char filename[1024];
 
@@ -125,7 +124,7 @@ static int hexdec(int x) {
 
 static int nextfreetrack() {
 	int i, j, k;
-	bool skiptherest = false;
+	int skiptherest = 0;
 
 	for (i = 1; i <= 0xff; i++) {
 		for (j = 0; j < tracklen; j++) {
@@ -993,7 +992,7 @@ void act_viewphraseinc(void){
 	} else if(currtrack == 0xff){
 		currtrack = 1;
 	}
-	if (soundplaying && playtrack) {
+	if (playtrack) {
 		startplaytrack(currtrack);
 	}
 }
@@ -1004,7 +1003,7 @@ void act_viewphrasedec(void){
 	} else if(currtrack == 1){
 		currtrack = 0xff;
 	}
-	if (soundplaying && playtrack) {
+	if (playtrack) {
 		startplaytrack(currtrack);
 	}
 }
@@ -1514,7 +1513,6 @@ void insertroutine() {
 				break;
 			case 13:  // Enter key
 				if(currtab != 2) {
-					soundplaying = true;
 					if(currtab == 1) {
 						silence();
 						startplaytrack(currtrack);
@@ -1840,7 +1838,6 @@ void executekey(int c) {
 			break;
 		case 13:  // Enter key
 			if(currtab != 2) {
-				soundplaying = true;
 				if(currtab == 1) {
 					silence();
 					startplaytrack(currtrack);
@@ -1874,11 +1871,6 @@ void executekey(int c) {
 			break;
 		case ' ':
 			silence();
-			if(currmode == PM_NORMAL){
-				currmode = PM_INSERT;
-			} else {
-				currmode = PM_NORMAL;
-			}
 			break;
 		case '`':
 			if(currtab == 0) {
@@ -2179,7 +2171,6 @@ void handleinput() {
 			case 10:
 			case 13:
 				if(currtab != 2) {
-					soundplaying = true;
 					if(currtab == 1) {
 						startplaytrack(currtrack);
 					} else if(currtab == 0) {
