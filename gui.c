@@ -199,6 +199,10 @@ static int freqkey(int c) {
 	return f;
 }
 
+void jammermode(){
+
+}
+
 void readsong(int pos, int ch, u8 *dest) {
 	dest[0] = song[pos].track[ch];
 	dest[1] = song[pos].transp[ch];
