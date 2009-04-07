@@ -18,9 +18,13 @@ int main(int argc, char **argv){
 
 	int quit = 0;
 	int xo, yo;
+	int i, j, k;
+	int meter[3];
 
-	//struct track track[256];
-	//struct songline song[256];
+	static char chars[10] =
+	{
+			'+', '-', '*', '#', 'X', '@', '%', '$', 'M', 'W'
+	};
 
 	caca_display_t *dp;
 	caca_canvas_t *cv;
@@ -59,12 +63,10 @@ int main(int argc, char **argv){
 	}
 
 	initchip();
-	//initgui();
 
 	loadfile(argv[1]);
 
 	SDL_PauseAudio(0);
-	//playmode = PM_PLAY;
 	silence();
 	startplaysong(0);
 
@@ -77,19 +79,26 @@ int main(int argc, char **argv){
 		xo = caca_get_canvas_width(cv);
 		yo = caca_get_canvas_height(cv);
 		//caca_blit(cv, 0, 0, pineapple, NULL);
-		//caca_blit(cv, 55, 0, pineapple, NULL);
+		caca_blit(cv, 55, 0, pineapple, NULL);
 		caca_set_color_ansi(cv, caca_rand(0, 16), caca_rand(0, 16));
-		caca_put_str(cv, (xo - strlen("pineapple player")) / 2, yo / 2, "pineapple player");
+		caca_put_str(cv, (xo - strlen("pineapple player")) / 2, (yo / 2) - 5, "pineapple player");
 		caca_set_color_ansi(cv, caca_rand(0, 16), caca_rand(0, 16));
-		caca_printf(cv, (xo - strlen("song pos ->   ")) / 2, (yo / 2) + 2, "song pos -> %x", songpos);
-		//caca_clear_canvas(cv);
+		caca_printf(cv, (xo - strlen("song pos ->   ")) / 2, (yo / 2) - 3, "song pos -> %x", songpos);
 		
+		for(i = 0; i < 4; i ++)
+			meter[i] = (osc[i].volume*20)/255;
 		/* note visualizer */
-		/*if(track[0].line[0].note != 0){
-			caca_put_str(cv, 0, 0, "!");
-		}*/
-		//readsong(songpos, ch, tmp);
-			
+		i = 0;
+		for(j = 0; j < 25; j=j+6){
+				for(k = 0; k < 4; k++){
+				caca_draw_line(cv, (((xo/2)+10)-j)-k, yo, (((xo/2)+10)-j)-k, yo - meter[i], 
+					chars[caca_rand(0, 9)]);
+				}
+			i++;
+		}
+
+		for(i = 0; i < 4; i ++)
+			caca_printf(cv, 0, i, "%0x", osc[i].volume);
 
     while(caca_get_event(dp, CACA_EVENT_ANY, &ev, 0))
     {

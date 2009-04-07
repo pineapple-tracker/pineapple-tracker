@@ -45,13 +45,14 @@ const s8 sinetable[] = {
 	-71, -60, -49, -37, -25, -12
 };
 
-volatile struct oscillator {
+/*volatile struct oscillator {
 	u16	freq;
 	u16	phase;
 	u16	duty;
 	u8	waveform;
 	u8	volume;	// 0-255
 } osc[4];
+*/
 
 struct channel {
 	u8	tnum;

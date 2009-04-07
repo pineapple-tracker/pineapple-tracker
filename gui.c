@@ -39,7 +39,7 @@ char *keymap[2] = {
 	"q2w3er5t6y7ui9o0p"
 };
 
-struct instrline {
+/*struct instrline {
 	u8			cmd;
 	u8			param;
 };
@@ -53,6 +53,7 @@ struct songline {
 	u8			track[4];
 	u8			transp[4];
 };
+*/
 
 struct instrument instrument[256], iclip;
 struct track track[256], tclip;
@@ -211,7 +212,7 @@ static int freqkey(int c) {
 }
 
 
-void readsong(int pos, int ch, u8 *dest) {
+void readsong(int pos, int ch, u8 *dest) { 
 	dest[0] = song[pos].track[ch];
 	dest[1] = song[pos].transp[ch];
 }

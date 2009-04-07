@@ -1,4 +1,6 @@
 /* vi:set ts=4 sts=4 sw=4: */
+#ifndef STUFF_H
+#define STUFF_H
 #define TRACKLEN 32
 
 typedef unsigned char u8;
@@ -28,6 +30,29 @@ struct track {
 	struct trackline	line[TRACKLEN];
 };
 
+struct instrline {
+	u8			cmd;
+	u8			param;
+};
+
+struct instrument {
+	int			length;
+	struct instrline	line[256];
+};
+
+struct songline {
+	u8			track[4];
+	u8			transp[4];
+};
+
+volatile struct oscillator {
+	u16	freq;
+	u16	phase;
+	u16	duty;
+	u8	waveform;
+	u8	volume;	// 0-255
+} osc[4];
+
 void initchip();
 u8 interrupthandler();
 
@@ -54,3 +79,9 @@ extern u8 playtrack;
 extern u8 playsong;
 extern u8 songpos;
 extern int songlen;
+
+extern struct instrument instrument[256], iclip;
+extern struct track track[256], tclip;
+extern struct songline song[256];
+
+#endif /* STUFF_H */
