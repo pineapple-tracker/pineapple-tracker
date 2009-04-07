@@ -22,7 +22,7 @@ struct trackline {
 	u8	instr;
 	u8	cmd[2];
 	u8	param[2];
-	};
+};
 
 struct track {
 	struct trackline	line[TRACKLEN];

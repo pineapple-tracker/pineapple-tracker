@@ -8,6 +8,11 @@
 
 #include "stuff.h"
 
+/* These arrays don't appear to be used for anything...
+consider removal?
+*/
+
+/*
 const u16 instrptr[] = {
 	0, 1
 };
@@ -19,6 +24,7 @@ const u8 instrdata[] = {
 	'v', 255, 'w', WF_NOI, 't', 2, 'm', 0x11, '+', 12, 'w', WF_PUL, 'f', 0xfc, 't', 2, '+', 7, 't', 2, '+', 3, 't', 2, '+', 0, 't', 2, 'j', 5, 0, 0, // arp
 	'v', 255, 'w', WF_NOI, 't', 2, 'd', 0x80, '+', 0, 'w', WF_PUL, 'l', 0x80, 't', 12, 'v', 0, 0, 0	// bass drum
 };
+
 
 const struct track trackdata = {
 	{
@@ -56,6 +62,7 @@ const struct track trackdata = {
 		{12*3+2,	1,	{0,	0},	{0,	0}},
 	}
 };
+*/
 
 void audiocb(void *userdata, Uint8 *buf, int len) {
 	int i;

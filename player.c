@@ -17,7 +17,11 @@ int main(int argc, char **argv){
 	SDL_AudioSpec requested, obtained;
 
 	int quit = 0;
-	int xo;
+	int xo, yo;
+
+	//struct track track[256];
+	//struct songline song[256];
+
 	caca_display_t *dp;
 	caca_canvas_t *cv;
 	caca_canvas_t *pineapple;
@@ -33,7 +37,6 @@ int main(int argc, char **argv){
 		printf("failed to create canvas\n");
 		return 1;
 	}
-	xo = caca_get_canvas_width(cv) - 2;
 	dp = caca_create_display(cv);
 	caca_set_display_time(dp, 20000);
 	if(dp == NULL){
@@ -69,17 +72,24 @@ int main(int argc, char **argv){
 	while(!quit)
 	{
 		caca_event_t ev;
-		caca_set_color_ansi(cv, caca_rand(0, 16), caca_rand(0, 16));
+		caca_set_color_ansi(cv, CACA_DEFAULT, CACA_DEFAULT);
+		caca_clear_canvas(cv);
+		xo = caca_get_canvas_width(cv);
+		yo = caca_get_canvas_height(cv);
 		//caca_blit(cv, 0, 0, pineapple, NULL);
 		//caca_blit(cv, 55, 0, pineapple, NULL);
-		caca_put_str(cv, (xo - strlen("pineapple player")) / 2, 10, "pineapple player");
 		caca_set_color_ansi(cv, caca_rand(0, 16), caca_rand(0, 16));
-		caca_printf(cv, (xo - strlen("song pos ->   ")) / 2, 12, "song pos -> %x", songpos);
+		caca_put_str(cv, (xo - strlen("pineapple player")) / 2, yo / 2, "pineapple player");
+		caca_set_color_ansi(cv, caca_rand(0, 16), caca_rand(0, 16));
+		caca_printf(cv, (xo - strlen("song pos ->   ")) / 2, (yo / 2) + 2, "song pos -> %x", songpos);
 		//caca_clear_canvas(cv);
 		
 		/* note visualizer */
-		//if(track[i].line[j].note)
-		//caca_put_str(cv, 0, 0, '!');
+		/*if(track[0].line[0].note != 0){
+			caca_put_str(cv, 0, 0, "!");
+		}*/
+		readsong(songpos, ch, tmp);
+			
 
     while(caca_get_event(dp, CACA_EVENT_ANY, &ev, 0))
     {
