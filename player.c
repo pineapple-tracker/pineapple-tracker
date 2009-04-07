@@ -88,7 +88,7 @@ int main(int argc, char **argv){
 		/*if(track[0].line[0].note != 0){
 			caca_put_str(cv, 0, 0, "!");
 		}*/
-		readsong(songpos, ch, tmp);
+		//readsong(songpos, ch, tmp);
 			
 
     while(caca_get_event(dp, CACA_EVENT_ANY, &ev, 0))
