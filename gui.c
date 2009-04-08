@@ -1,5 +1,7 @@
 /* vi:set ts=4 sts=4 sw=4: */
 
+/* welcome to gui.c, enjoy your stay 8-) */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
