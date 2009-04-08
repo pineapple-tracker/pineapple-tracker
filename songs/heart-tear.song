@@ -222,10 +222,11 @@ trackline 1d 0e 4b 0d 00 00 00 00
 
 instrumentline 01 00 77 02
 instrumentline 01 01 76 ff
-instrumentline 01 02 2b 25
-instrumentline 01 03 64 80
-instrumentline 01 04 6d 03
-instrumentline 01 05 69 00
+instrumentline 01 02 66 ff
+instrumentline 01 03 2b 25
+instrumentline 01 04 64 80
+instrumentline 01 05 6d 03
+instrumentline 01 06 69 00
 instrumentline 02 00 77 02
 instrumentline 02 01 76 ff
 instrumentline 02 02 64 80
@@ -257,9 +258,10 @@ instrumentline 03 0d 40 03
 instrumentline 04 00 77 02
 instrumentline 04 01 76 80
 instrumentline 04 02 2b 25
-instrumentline 04 03 64 80
-instrumentline 04 04 6d 03
-instrumentline 04 05 69 00
+instrumentline 04 03 66 ff
+instrumentline 04 04 64 80
+instrumentline 04 05 6d 03
+instrumentline 04 06 69 00
 instrumentline 05 00 77 03
 instrumentline 05 01 76 ff
 instrumentline 05 02 74 01
