@@ -232,7 +232,8 @@ void playroutine() {			// called at 50 Hz
 		u16 duty;
 		u16 slur;
 
-		while(channel[ch].inum && !channel[ch].iwait && (playsong || playtrack)) {
+		// i dunno if that last condition is correct...........................................................................
+		while(channel[ch].inum && !channel[ch].iwait || channel[0].iptr == 0) {
 			u8 il[2];
 
 			readinstr(channel[ch].inum, channel[ch].iptr, il);

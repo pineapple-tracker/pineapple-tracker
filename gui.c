@@ -383,7 +383,7 @@ void initgui() {
 	// make sure behaviour for special keys like ^H isn't overridden
 	keypad(stdscr, FALSE);
 
-	// nodelay() makes getch() non-blocking. This will cause the cpud to spin
+	// nodelay() makes getch() non-blocking. This will cause the cpu to spin
 	// whenever we use getch() in a loop. This is necessary so the screen will
 	// update when you aren't pressing keys. halfdelay()'s minimun timeout time
 	// is one tenth of a second, which is too long for our purposes.
@@ -1590,10 +1590,9 @@ end:
 /* jammer mode */
 
 void jammermode(void){
-		//playmode = PM_PLAY;
 		int c, x;
+		currmode = PM_JAMMER;
 		while(currmode == PM_JAMMER){
-			drawgui();
 			if ((c = getch()) != ERR) switch(c){
 				case KEY_ESCAPE:
 					currmode = PM_NORMAL;
@@ -1611,11 +1610,15 @@ void jammermode(void){
 					if(octave < 8) octave++;
 					break;
 				default:
-					x = hexdigit(c);
 					x = freqkey(c);
-					if(x) iedplonk(x, currinstr);
+
+					if(x > 0){
+						iedplonk(x, currinstr);
+					}
+
 					break;
 			}
+			drawgui();
 			usleep(10000);
 		}
 }
@@ -1911,7 +1914,6 @@ void executekey(int c) {
 			break;
 		/* enter jammer mode */
 		case CTRL('A'):
-			currmode = PM_JAMMER;
 			jammermode();
 			break;
 		/* Add new line and enter insert mode */
@@ -2168,23 +2170,23 @@ void executekey(int c) {
 void handleinput() {
 	int c, x;
 
-	if (currmode == PM_NORMAL) {
-		if ((c = getch()) != ERR) {
+	/*if (currmode == PM_NORMAL) {*/
+	if ((c = getch()) != ERR) {
 
-			/* Repeat */
-			if (isdigit(c)) {
-				if (!cmdrepeat) {
-					cmdrepeat = true;
-					cmdrepeatnum = char2int(c);
-				} else {
-					cmdrepeatnum = (cmdrepeatnum*10) + char2int(c);
-				}
+		/* Repeat */
+		if (isdigit(c)) {
+			if (!cmdrepeat) {
+				cmdrepeat = true;
+				cmdrepeatnum = char2int(c);
 			} else {
-				executekey(c);
+				cmdrepeatnum = (cmdrepeatnum*10) + char2int(c);
 			}
+		} else {
+			executekey(c);
 		}
+	}
 	/* linus' original commands */
-	} else {
+	/*} else {
 		if((c = getch()) != ERR) switch(c) {
 			case 10:
 			case 13:
@@ -2401,7 +2403,7 @@ void handleinput() {
 							}
 						}
 					}
-				} else if(currmode == PM_NORMAL) {
+				} else if(currmode == PM_INSERT || currmode == PM_JAMMER) {
 					x = freqkey(c);
 
 					if(x > 0) {
@@ -2410,7 +2412,7 @@ void handleinput() {
 				}
 				break;
 		}
-	}
+	}*/
 	usleep(10000);
 }
 

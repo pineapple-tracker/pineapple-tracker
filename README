@@ -76,6 +76,9 @@ clear a whole line
 i
 go into insert mode
 
+ctrl-a
+go to jammer mode
+
 o
 insert a new line and go into insert mode
 

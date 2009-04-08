@@ -24,8 +24,6 @@ branch?
 
 bugs:
 ----
-* can't hear anything when entering notes in insert mode or jammer mode! this used to work fine...
-
 * when switching to + or = in instrument view, the note is sometimes out of
 	range if the params are high.
 
