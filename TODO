@@ -1,18 +1,17 @@
 enhancements:
 -------------
-vi-style keybindings
+Keybindings:
 	* we need to be able to select the octave and note seperately in track tab,
 		so we can change them seperately with 'J' and 'K'
 		-- this isn't so essential now that there is H and L to alter notes by
 		octave
-	* implement jammermode: q2w3er5t6y7u will all play notes, without inserting them
-		other bindings that can stay: hjkl, ^h, ^l, ^j, ^k
 	* make comand mode
 		* ':num' - go to line number num
 	* record mode?
 	* visual mode for copy/paste like in lgpt
 	* u - undo
 	* find&replace
+	* porous paste
 
 * control with a gamepad
 
@@ -29,9 +28,6 @@ bugs:
 	range if the params are high.
 
 * '.' doesn't work with insert/replace
-
-* pineapple-tracker uses lots of cpu! this isn't very vi-like at all.
-	UPDATE: tony's player doesnt take all the cpu, this is specific to gui.c
 
 * tempo gets really fast if you set it too low... and weird things happen if
 	you set it too high as well.

@@ -19,7 +19,7 @@ int main(int argc, char **argv){
 	int quit = 0;
 	int xo, yo;
 	int i, j, k;
-	int meter[3];
+	int meter[4];
 
 	static char chars[10] =
 	{

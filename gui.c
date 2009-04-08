@@ -6,6 +6,8 @@
 #include <math.h>
 #include <SDL/SDL.h>
 #include <curses.h>
+#include <locale.h>
+#include <unistd.h>
 
 #ifndef D_WINDOWS
 #include <err.h>
@@ -180,6 +182,7 @@ static char nextchar() {
 		if (ch != ERR ) {
 			return ch;
 		}
+		usleep(10000);
 	}
 	return ch;
 }
@@ -370,19 +373,31 @@ void initgui() {
 	int i;
 
 	initscr();
-	// overrides your terminal's bg color :(
-	//start_color();
-	//raw();
-	init_pair(1, COLOR_BLACK, COLOR_WHITE);
-	cbreak();
-	noecho();
+
+	if (setlocale(LC_CTYPE,"en_US.utf8") != NULL) display("UTF-8 enabled!");
+
+	// don't send newline on Enter key, and don't echo chars to the screen.
 	nonl();
-	intrflush(stdscr, FALSE);
+	noecho();
 
 	// make sure behaviour for special keys like ^H isn't overridden
 	keypad(stdscr, FALSE);
 
-	// this makes the screen update when you're not pressing keys
+	// nodelay() makes getch() non-blocking. This will cause the cpud to spin
+	// whenever we use getch() in a loop. This is necessary so the screen will
+	// update when you aren't pressing keys. halfdelay()'s minimun timeout time
+	// is one tenth of a second, which is too long for our purposes.
+	//
+	// Right now we are calling usleep() whenever we use getch() in a loop so
+	// the cpu won't spin. This solution isn't the best, for two reasons:
+	//    1. We're still wasting a little bit of cpu!!!!!
+	//    2. It is possible to enter keys faster than the usleep time. It's
+	//       especially easy to do this by setting your key repeat rate really
+	//       high and moving up or down, and the screen will lag a little.
+	// 
+	// Because of these two small problems, maybe we should eventually use
+	// keyboard interrupts to gui events. I haven't done any research on that
+	// yet.
 	nodelay(stdscr, TRUE);
 
 	for(i = 1; i < 256; i++) {
@@ -1544,6 +1559,7 @@ void insertroutine() {
 				saved = false;
 		}
 		drawgui();
+		usleep(10000);
 	}
 }
 
@@ -1600,6 +1616,7 @@ void jammermode(void){
 					if(x) iedplonk(x, currinstr);
 					break;
 			}
+			usleep(10000);
 		}
 }
 
@@ -2394,6 +2411,7 @@ void handleinput() {
 				break;
 		}
 	}
+	usleep(10000);
 }
 
 void display(char *str) {
