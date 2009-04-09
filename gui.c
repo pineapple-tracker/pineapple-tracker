@@ -43,22 +43,6 @@ char *keymap[2] = {
 	"q2w3er5t6y7ui9o0p"
 };
 
-/*struct instrline {
-	u8			cmd;
-	u8			param;
-};
-
-struct instrument {
-	int			length;
-	struct instrline	line[256];
-};
-
-struct songline {
-	u8			track[4];
-	u8			transp[4];
-};
-*/
-
 struct instrument instrument[256], iclip;
 struct track track[256], tclip;
 struct songline song[256];
@@ -459,7 +443,8 @@ void drawtracked(int x, int y, int height){
 			snprintf(buf, sizeof(buf), "%02x", i);
 			addstr(buf);
 
-			if(i == 0){ addch(ACS_ULCORNER); }
+			if(i == 0){ addch(ACS_LLCORNER); }
+			else if(i == 1){ addch(ACS_ULCORNER); }
 			else if(i%4 == 0){ addch(ACS_LTEE); }
 			else if(i < tracklen-1){ addch(ACS_VLINE); }
 			else{ addch(ACS_LLCORNER); }
@@ -510,7 +495,8 @@ void drawinstred(int x, int y, int height){
 			snprintf(buf, sizeof(buf), "%02x", i);
 			addstr(buf);
 
-			if(i == 0){ addch(ACS_ULCORNER); }
+			if(i == 0){ addch(ACS_LLCORNER); }
+			else if(i == 1){ addch(ACS_ULCORNER); }
 			else if(i < instrument[currinstr].length-1){ addch(ACS_VLINE); }
 			else{ addch(ACS_LLCORNER); }
 			addch(' ');
@@ -1984,6 +1970,12 @@ void executekey(int c){
 		case '>':
 			if(octave < 8) octave++;
 			break;
+		case '{':
+			if(currtrack > 1) currtrack--;
+			break;
+		case '}':
+			if(currtrack < 255) currtrack++;
+			break;
 		case 'J':
 			if(currtab == 0){
 				if( (songx%4) < 2){
@@ -2447,7 +2439,7 @@ void display(char *str){
 
 void drawgui(){
 	char buf[1024];
-	int lines = LINES, cols = 79;
+	int lines = LINES;
 	int songcols[] = {0, 1, 3, 4, 6, 7, 9, 10, 12, 13, 15, 16, 18, 19, 21, 22};
 	int trackcols[] = {0, 4, 5, 7, 8, 9, 11, 12, 13};
 	int instrcols[] = {0, 2, 3};
@@ -2459,16 +2451,29 @@ void drawgui(){
 	mvaddstr(0, 0, "PINEAPPLEtRACKER");
 	attrset(A_NORMAL);
 
-	snprintf(buf, sizeof(buf), "Track: %x", currtrack);
-	mvaddstr(0, cols - 50, buf);
+	// display track num
+	mvaddch(0, 31, ACS_ULCORNER);
+	snprintf(buf, sizeof(buf), "%02x{}", currtrack);
+	mvaddstr(0, 32, buf);
+	drawtracked(29, 1, lines - 2);
+
+	// display instrument num
+	mvaddch(0, 51, ACS_ULCORNER);
+	snprintf(buf, sizeof(buf), "%02x[]", currinstr);
+	mvaddstr(0, 52, buf);
+	drawinstred(49, 1, lines - 2);
 
 	// just a wild guess here..
 	tempo = callbacktime * (-1) + 300;
-	snprintf(buf, sizeof(buf), "Tempo:   %d ()", tempo);
-	mvaddstr(0, cols - 32, buf);
+	// display tempo
+	mvaddch(0, 17, ACS_DEGREE);
+	snprintf(buf, sizeof(buf), "%d()", tempo);
+	mvaddstr(0, 18, buf);
 
-	snprintf(buf, sizeof(buf), "Octave:   %d <>", octave);
-	mvaddstr(0, cols - 14, buf);
+	// display octave
+	mvaddch(0, 24, ACS_BULLET);
+	snprintf(buf, sizeof(buf), "%d<>", octave);
+	mvaddstr(0, 25, buf);
 
 	mvaddstr(getmaxy(stdscr)-1, 0, filename);
 	if(!saved && currmode != PM_INSERT) addstr(" [+]");
@@ -2478,11 +2483,7 @@ void drawgui(){
 
 	/*snprintf(buf, sizeof(buf), "Track %02x {}", currtrack);
 	mvaddstr(1, 29, buf);*/
-	drawtracked(29, 1, lines - 2);
 
-	snprintf(buf, sizeof(buf), "Instr. %02x []", currinstr);
-	mvaddstr(1, 58, buf);
-	drawinstred(49, 1, lines - 2);
 
 	/*if(currbutt > -1){
 		snprintf(buf, sizeof(buf), "joybutton: %d", currbutt);

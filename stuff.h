@@ -18,7 +18,6 @@ enum {
 	WF_NOI
 };
 
-
 struct trackline {
 	u8	note;
 	u8	instr;
