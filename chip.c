@@ -74,18 +74,18 @@ struct channel {
 	u16	slur;
 } channel[4];
 
-void silence() {
+void silence(){
 	u8 i;
 
-	for(i = 0; i < 4; i++) {
+	for(i = 0; i < 4; i++){
 		osc[i].volume = 0;
 	}
 	playsong = 0;
 	playtrack = 0;
 }
 
-void runcmd(u8 ch, u8 cmd, u8 param) {
-	switch(cmd) {
+void runcmd(u8 ch, u8 cmd, u8 param){
+	switch(cmd){
 		case 0:
 			channel[ch].inum = 0;
 			break;
@@ -123,7 +123,7 @@ void runcmd(u8 ch, u8 cmd, u8 param) {
 			channel[ch].inote = param;
 			break;
 		case '~':
-			if(channel[ch].vdepth != (param >> 4)) {
+			if(channel[ch].vdepth != (param >> 4)){
 				channel[ch].vpos = 0;
 			}
 			channel[ch].vdepth = param >> 4;
@@ -132,7 +132,7 @@ void runcmd(u8 ch, u8 cmd, u8 param) {
 	}
 }
 
-void iedplonk(int note, int instr) {
+void iedplonk(int note, int instr){
 	channel[0].tnote = note;
 	channel[0].inum = instr;
 	channel[0].iptr = 0;
@@ -144,7 +144,7 @@ void iedplonk(int note, int instr) {
 	channel[0].vdepth = 0;
 }
 
-void startplaytrack(int t) {
+void startplaytrack(int t){
 	channel[0].tnum = t;
 	channel[1].tnum = 0;
 	channel[2].tnum = 0;
@@ -155,7 +155,7 @@ void startplaytrack(int t) {
 	playsong = 0;
 }
 
-void startplaysong(int p) {
+void startplaysong(int p){
 	songpos = p;
 	trackpos = 0;
 	trackwait = 0;
@@ -163,21 +163,21 @@ void startplaysong(int p) {
 	playsong = 1;
 }
 
-void playroutine() {			// called at 50 Hz
+void playroutine(){			// called at 50 Hz
 	u8 ch;
 
-	if(playtrack || playsong) {
-		if(trackwait) {
+	if(playtrack || playsong){
+		if(trackwait){
 			trackwait--;
-		} else {
+		}else{
 			trackwait = 4;
 
-			if(!trackpos) {
-				if(playsong) {
-					if(songpos >= songlen) {
+			if(!trackpos){
+				if(playsong){
+					if(songpos >= songlen){
 						playsong = 0;
-					} else {
-						for(ch = 0; ch < 4; ch++) {
+					}else{
+						for(ch = 0; ch < 4; ch++){
 							u8 tmp[2];
 
 							readsong(songpos, ch, tmp);
@@ -189,21 +189,21 @@ void playroutine() {			// called at 50 Hz
 				}
 			}
 
-			if(playtrack || playsong) {
-				for(ch = 0; ch < 4; ch++) {
-					if(channel[ch].tnum) {
+			if(playtrack || playsong){
+				for(ch = 0; ch < 4; ch++){
+					if(channel[ch].tnum){
 						struct trackline tl;
 						u8 instr = 0;
 
 						readtrack(channel[ch].tnum, trackpos, &tl);
-						if(tl.note) {
+						if(tl.note){
 							channel[ch].tnote = tl.note + channel[ch].transp;
 							instr = channel[ch].lastinstr;
 						}
-						if(tl.instr) {
+						if(tl.instr){
 							instr = tl.instr;
 						}
-						if(instr) {
+						if(instr){
 							channel[ch].lastinstr = instr;
 							channel[ch].inum = instr;
 							channel[ch].iptr = 0;
@@ -227,13 +227,13 @@ void playroutine() {			// called at 50 Hz
 		}
 	}
 
-	for(ch = 0; ch < 4; ch++) {
+	for(ch = 0; ch < 4; ch++){
 		s16 vol;
 		u16 duty;
 		u16 slur;
 
 		// i dunno if that last condition is correct...........................................................................
-		while(channel[ch].inum && !channel[ch].iwait || channel[0].iptr == 0) {
+		while((channel[ch].inum && !channel[ch].iwait) || channel[0].iptr == 0){
 			u8 il[2];
 
 			readinstr(channel[ch].inum, channel[ch].iptr, il);
@@ -243,20 +243,20 @@ void playroutine() {			// called at 50 Hz
 		}
 		if(channel[ch].iwait) channel[ch].iwait--;
 
-		if(channel[ch].inertia) {
+		if(channel[ch].inertia){
 			s16 diff;
 
 			slur = channel[ch].slur;
 			diff = freqtable[channel[ch].inote] - slur;
 			//diff >>= channel[ch].inertia;
-			if(diff > 0) {
+			if(diff > 0){
 				if(diff > channel[ch].inertia) diff = channel[ch].inertia;
-			} else if(diff < 0) {
+			}else if(diff < 0){
 				if(diff < -channel[ch].inertia) diff = -channel[ch].inertia;
 			}
 			slur += diff;
 			channel[ch].slur = slur;
-		} else {
+		}else{
 			slur = freqtable[channel[ch].inote];
 		}
 		osc[ch].freq =
@@ -278,7 +278,7 @@ void playroutine() {			// called at 50 Hz
 	}
 }
 
-void initchip() {
+void initchip(){
 	trackwait = 0;
 	trackpos = 0;
 	playsong = 0;
@@ -308,22 +308,22 @@ u8 interrupthandler()
 	if(noiseseed & 0x00000200L) newbit ^= 1;
 	noiseseed = (noiseseed << 1) | newbit;
 
-	if(callbackwait) {
+	if(callbackwait){
 		callbackwait--;
-	} else {
+	}else{
 		playroutine();
 		callbackwait = callbacktime - 1;
 	}
 
 	acc = 0;
-	for(i = 0; i < 4; i++) {
+	for(i = 0; i < 4; i++){
 		s8 value; // [-32,31]
 
-		switch(osc[i].waveform) {
+		switch(osc[i].waveform){
 			case WF_TRI:
-				if(osc[i].phase < 0x8000) {
+				if(osc[i].phase < 0x8000){
 					value = -32 + (osc[i].phase >> 9);
-				} else {
+				}else{
 					value = 31 - ((osc[i].phase - 0x8000) >> 9);
 				}
 				break;

@@ -64,22 +64,22 @@ const struct track trackdata = {
 };
 */
 
-void audiocb(void *userdata, Uint8 *buf, int len) {
+void audiocb(void *userdata, Uint8 *buf, int len){
 	int i;
 
-	for(i = 0; i < len; i++) {
+	for(i = 0; i < len; i++){
 		buf[i] = interrupthandler();
 	}
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv){
 	SDL_AudioSpec requested, obtained;
 	//FILE *ztlog;
 
 	//ztlog = fopen("ztlog","w");
 
-	//if (SDL_Init( SDL_INIT_AUDIO | SDL_INIT_JOYSTICK ) < 0) {
-	if (SDL_Init( SDL_INIT_AUDIO ) < 0) {
+	//if (SDL_Init( SDL_INIT_AUDIO | SDL_INIT_JOYSTICK ) < 0){
+	if(SDL_Init( SDL_INIT_AUDIO ) < 0){
 		fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
 		exit(1);
 	}
@@ -90,7 +90,7 @@ int main(int argc, char **argv) {
 	//fprintf(ztlog, "The names of the joysticks are:\n");
 
 	//int i;
-	//for( i=0; i < SDL_NumJoysticks(); i++ ) {
+	//for( i=0; i < SDL_NumJoysticks(); i++ ){
 	//	fprintf(ztlog,"    %s\n", SDL_JoystickName(i));
 	//}
 
@@ -103,7 +103,7 @@ int main(int argc, char **argv) {
 	requested.channels = 1;
 
 	// comment this out to run on grace
-	//if(SDL_OpenAudio(&requested, &obtained) == -1) {
+	//if(SDL_OpenAudio(&requested, &obtained) == -1){
 	//	err(1, "SDL_OpenAudio");
 	//}
 
@@ -117,9 +117,9 @@ int main(int argc, char **argv) {
 	initchip();
 	initgui();
 
-	if(argc != 2) {
+	if(argc != 2){
 		loadfile("untitled.song");
-	} else {
+	}else{
 		loadfile(argv[1]);
 	}
 
