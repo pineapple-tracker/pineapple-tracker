@@ -15,7 +15,8 @@ enum {
 	WF_TRI,
 	WF_SAW,
 	WF_PUL,
-	WF_NOI
+	WF_NOI,
+	WF_SINE
 };
 
 struct trackline {

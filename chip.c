@@ -297,6 +297,7 @@ void initchip(){
 u8 interrupthandler()
 {
 	u8 i;
+	u8 j = 0;
 	s16 acc;
 	static u32 noiseseed = 1;
 	u8 newbit;
@@ -336,6 +337,10 @@ u8 interrupthandler()
 			case WF_NOI:
 				value = (noiseseed & 63) - 32;
 				break;
+			case WF_SINE:
+				value = sinetable[j];
+				if(j == 64) j = 0;
+				else j++;
 			default:
 				value = 0;
 				break;

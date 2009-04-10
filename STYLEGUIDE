@@ -5,8 +5,12 @@ Because good looking code==easy to maintain code.
 
 Functions:
 ----------
-Put opening curly-bracket on the same line, and no space between the closing paren and the opening curly br
+Put opening curly-bracket on the same line, and no space between the closing paren and the opening curly bracket.
 
 static int void freqkey(int x){
 
 }
+
+No space between the closing paren and the curly bracket either.
+
+vi:set ts=4 sts=4 sw=4
