@@ -92,6 +92,7 @@ static char nextchar(void);
 static int char2int(char ch);
 static int freqkey(int c);
 static void _display(void);
+void _setdisplay(char *str);
 
 
 /*                           */
@@ -135,7 +136,7 @@ static int nextfreetrack(){
 		}
 	}
 
-	display("nextfreetrack() failed somehow..");
+	_setdisplay("nextfreetrack() failed somehow..");
 	return -1;
 }
 
@@ -147,7 +148,7 @@ static int nextfreeinstr(){
 			return i;
 	}
 
-	display("nextfreeinstr() failed somehow..");
+	_setdisplay("nextfreeinstr() failed somehow..");
 	return -1;
 }
 
@@ -158,6 +159,8 @@ static char *blanks(int len){
 	for(i=0; i<len; i++){
 		blankstr[i] = ' ';
 	}
+	blankstr[i+1] = '\0';
+
 	return blankstr;
 }
 
@@ -361,7 +364,7 @@ void initgui(){
 
 	initscr();
 
-	if(setlocale(LC_CTYPE,"en_US.utf8") != NULL) display("UTF-8 enabled!");
+	if(setlocale(LC_CTYPE,"en_US.utf8") != NULL) _setdisplay("UTF-8 enabled!");
 
 	// don't send newline on Enter key, and don't echo chars to the screen.
 	nonl();
@@ -836,17 +839,17 @@ void insertc (int c){
 				case 2: SETLO(instrument[currinstr].line[instry].param, x); break;
 			}
 		}
-		if(currtab == 1 && trackx > 0){
+		if(currtab == 1 && trackx > 1){
 			switch(trackx){
-				case 1: SETHI(track[currtrack].line[tracky].instr, x); break;
-				case 2: SETLO(track[currtrack].line[tracky].instr, x); break;
-				case 4: if(track[currtrack].line[tracky].cmd[0])
-					SETHI(track[currtrack].line[tracky].param[0], x); break;
+				case 2: SETHI(track[currtrack].line[tracky].instr, x); break;
+				case 3: SETLO(track[currtrack].line[tracky].instr, x); break;
 				case 5: if(track[currtrack].line[tracky].cmd[0])
+					SETHI(track[currtrack].line[tracky].param[0], x); break;
+				case 6: if(track[currtrack].line[tracky].cmd[0])
 					SETLO(track[currtrack].line[tracky].param[0], x); break;
-				case 7: if(track[currtrack].line[tracky].cmd[1])
-					SETHI(track[currtrack].line[tracky].param[1], x); break;
 				case 8: if(track[currtrack].line[tracky].cmd[1])
+					SETHI(track[currtrack].line[tracky].param[1], x); break;
+				case 9: if(track[currtrack].line[tracky].cmd[1])
 					SETLO(track[currtrack].line[tracky].param[1], x); break;
 			}
 		}
@@ -909,7 +912,7 @@ void act_mvright(void){
 			if(songx < 15) songx++;
 			break;
 		case 1:
-			if(trackx < 8) trackx++;
+			if(trackx < 9) trackx++;
 			break;
 		case 2:
 			if(instrx < 2) instrx++;
@@ -1179,11 +1182,11 @@ void act_octavedec(void){
 
 void act_instrinc(void){
 	switch(trackx){
-		case 1:
+		case 2:
 			SETHI(track[currtrack].line[tracky].instr,
 					hexinc(track[currtrack].line[tracky].instr >> 4) );
 			break;
-		case 2:
+		case 3:
 			SETLO(track[currtrack].line[tracky].instr,
 					hexinc(track[currtrack].line[tracky].instr & 0x0f) );
 			break;
@@ -1192,11 +1195,11 @@ void act_instrinc(void){
 
 void act_instrdec(void){
 	switch(trackx){
-		case 1:
+		case 2:
 			SETHI(track[currtrack].line[tracky].instr,
 					hexdec(track[currtrack].line[tracky].instr >> 4) );
 			break;
-		case 2:
+		case 3:
 			SETLO(track[currtrack].line[tracky].instr,
 					hexdec(track[currtrack].line[tracky].instr & 0x0f) );
 			break;
@@ -1205,17 +1208,17 @@ void act_instrdec(void){
 
 void act_fxinc(void){
 	if(currtab==1){
-		currcmd = track[currtrack].line[tracky].cmd[(trackx + 1) % 2];
+		currcmd = track[currtrack].line[tracky].cmd[trackx % 2];
 		// there must be a better way to do this...
 		if((unsigned long)currcmd == (unsigned long)NULL){
-			track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[0];
+			track[currtrack].line[tracky].cmd[trackx % 2] = validcmds[0];
 		}else{
 			for(z = 0; z < strlen(validcmds); z++){
 				if(currcmd == validcmds[z]){
 					if(z == (strlen(validcmds)-1)){
-						track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = (unsigned long)NULL;
+						track[currtrack].line[tracky].cmd[trackx % 2] = (unsigned long)NULL;
 					}else{
-						track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[z+1];
+						track[currtrack].line[tracky].cmd[trackx % 2] = validcmds[z+1];
 					}
 					continue;
 				}
@@ -1238,16 +1241,16 @@ void act_fxinc(void){
 
 void act_fxdec(void){
 	if(currtab==1){
-		currcmd = track[currtrack].line[tracky].cmd[(trackx + 1) % 2];
+		currcmd = track[currtrack].line[tracky].cmd[trackx % 2];
 		if((unsigned long)currcmd == (unsigned long)NULL){
-			track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[strlen(validcmds)-1];
+			track[currtrack].line[tracky].cmd[trackx % 2] = validcmds[strlen(validcmds)-1];
 		}else{
 			for(z = 0; z < strlen(validcmds); z++){
 				if(currcmd == validcmds[z]){
 					if(z==0){
-						track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = (unsigned long)NULL;
+						track[currtrack].line[tracky].cmd[trackx % 2] = (unsigned long)NULL;
 					}else{
-						track[currtrack].line[tracky].cmd[(trackx + 1) % 2] = validcmds[z-1];
+						track[currtrack].line[tracky].cmd[trackx % 2] = validcmds[z-1];
 					}
 					continue;
 				}
@@ -1270,13 +1273,13 @@ void act_fxdec(void){
 
 void act_paraminc(void){
 	if(currtab==1){
-		if(trackx==4 || trackx==7){
-			SETHI(track[currtrack].line[tracky].param[trackx % 2],
-					hexinc(track[currtrack].line[tracky].param[trackx % 2] >> 4) );
+		if(trackx==5 || trackx==8){
+			SETHI(track[currtrack].line[tracky].param[(trackx - 1) % 2],
+					hexinc(track[currtrack].line[tracky].param[(trackx - 1) % 2] >> 4) );
 			return;
-		}else if(trackx==5 || trackx==8){
-			SETLO(track[currtrack].line[tracky].param[(trackx - 1) % 2],
-					hexinc(track[currtrack].line[tracky].param[(trackx - 1) % 2] & 0x0f) );
+		}else if(trackx==6 || trackx==9){
+			SETLO(track[currtrack].line[tracky].param[trackx % 2],
+					hexinc(track[currtrack].line[tracky].param[trackx % 2] & 0x0f) );
 			return;
 		}
 	}else if(currtab == 2){
@@ -1294,13 +1297,13 @@ void act_paraminc(void){
 
 void act_paramdec(void){
 	if(currtab==1){
-		if(trackx==4 || trackx==7){
-			SETHI(track[currtrack].line[tracky].param[trackx % 2],
-					hexdec(track[currtrack].line[tracky].param[trackx % 2] >> 4) );
+		if(trackx==5 || trackx==8){
+			SETHI(track[currtrack].line[tracky].param[(trackx-1) % 2],
+					hexdec(track[currtrack].line[tracky].param[(trackx-1) % 2] >> 4) );
 			return;
-		}else if(trackx==5 || trackx==8){
-			SETLO(track[currtrack].line[tracky].param[(trackx-1) % 2],
-					hexdec(track[currtrack].line[tracky].param[(trackx - 1) % 2] & 0x0f) );
+		}else if(trackx==6 || trackx==9){
+			SETLO(track[currtrack].line[tracky].param[trackx % 2],
+					hexdec(track[currtrack].line[tracky].param[trackx % 2] & 0x0f) );
 			return;
 		}
 	}else if(currtab == 2){
@@ -1379,34 +1382,34 @@ void act_clronething(void){
 				track[currtrack].line[tracky].instr = 0;
 				//memmove
 				break;
-			case 1:
+			case 2:
 				memcpy(&tclip, &track[currtrack].line[tracky].instr, sizeof(struct trackline));
 				SETHI(track[currtrack].line[tracky].instr, 0);
 				break;
-			case 2:
+			case 3:
 				memcpy(&tclip, &track[currtrack].line[tracky].instr, sizeof(struct trackline));
 				SETLO(track[currtrack].line[tracky].instr, 0);
 				break;
-			case 3:
+			case 4:
 				track[currtrack].line[tracky].cmd[0] = 0;
 				break;
-			case 4:
+			case 5:
 				SETHI(track[currtrack].line[tracky].param[0],0);
 				break;
-			case 5:
+			case 6:
 				SETLO(track[currtrack].line[tracky].param[0],0);
 				break;
-			case 6:
+			case 7:
 				track[currtrack].line[tracky].cmd[1] = 0;
 				break;
-			case 7:
+			case 8:
 				SETHI(track[currtrack].line[tracky].param[1],0);
 				break;
-			case 8:
+			case 9:
 				SETLO(track[currtrack].line[tracky].param[1],0);
 				break;
 			default:
-				display("in ACT_CLRONETHING");
+				_setdisplay("in ACT_CLRONETHING");
 				break;
 		}
 	}else if(currtab == 2){
@@ -1909,7 +1912,7 @@ void executekey(int c){
 				int t = song[songy].track[songx / 4];
 				if(t) currtrack = t;
 				currtab = 1;
-			}else if((currtab == 1) && ((trackx == 1) || (trackx == 2))){
+			}else if((currtab == 1) && ((trackx == 2) || (trackx == 3))){
 				int i = track[currtrack].line[tracky].instr;
 				if(i) currinstr = i;
 				currtab = 2;
@@ -1990,30 +1993,30 @@ void executekey(int c){
 						act_notedec();
 						break;
 					case 1:
-						act_instrdec();
+						act_octavedec();
 						break;
 					case 2:
 						act_instrdec();
 						break;
 					case 3:
-						act_fxdec();	
+						act_instrdec();
 						break;
 					case 4:
-					case 5:
-						act_paramdec();	
-						break;
-					case 6:
 						act_fxdec();	
+						break;
+					case 5:
+					case 6:
+						act_paramdec();	
 						break;
 					case 7:
-					case 8:
-						act_paramdec();	
-						break;
-					case 9:
 						act_fxdec();	
 						break;
+					case 8:
+					case 9:
+						act_paramdec();	
+						break;
 					default:
-						display("in J");
+						_setdisplay("in J");
 						break;
 					}
 			}else if(currtab == 2){
@@ -2051,30 +2054,30 @@ void executekey(int c){
 						act_noteinc();
 						break;
 					case 1:
-						act_instrinc();
+						act_octaveinc();	
 						break;
 					case 2:
 						act_instrinc();
 						break;
 					case 3:
-						act_fxinc();	
+						act_instrinc();
 						break;
 					case 4:
-					case 5:
-						act_paraminc();	
-						break;
-					case 6:
 						act_fxinc();	
+						break;
+					case 5:
+					case 6:
+						act_paraminc();	
 						break;
 					case 7:
-					case 8:
-						act_paraminc();	
-						break;
-					case 9:
 						act_fxinc();	
 						break;
+					case 8:
+					case 9:
+						act_paraminc();	
+						break;
 					default:
-						display("in K");
+						_setdisplay("in K");
 						break;
 				}
 			}else if(currtab == 2){
@@ -2238,7 +2241,7 @@ void handleinput(){
 				break;
 			case CTRL('W'):
 				savefile(filename);
-				display("*saved*");
+				setdisplay("*saved*");
 				saved = true;
 				break;
 			case '<':
@@ -2433,8 +2436,8 @@ void handleinput(){
 	usleep(10000);
 }
 
-void display(char *str){
-	disptick = 200;
+void _setdisplay(char *str){
+	disptick = 250;
 	dispmesg = str;
 }
 
@@ -2442,22 +2445,28 @@ void display(char *str){
 static void _display(void){
 	int cx = (getmaxx(stdscr)/2)-(strlen(dispmesg)/2);
 	int cy = getmaxy(stdscr)/2;
-	char *ttt;
+	char *dstring;
 
-	ttt = blanks(strlen(dispmesg)+2);
-	ttt = strcat(ttt,dispmesg);
-	//ttt = strcat(dispmesg," ");
+	dstring = " ";
+	dstring = blanks(strlen(dispmesg)+2);
+	//int i;
+	//i = 0;
+	//while(dispmesg[i] != '\0'){
+	for(int i=0; i<strlen(dispmesg); i++) {
+		dstring[i+1] = dispmesg[i];
+		//i++;
+	}
 
-	mvaddstr(cy-1, cx-1, blanks(strlen(dispmesg)));
-	//mvaddstr(cy, cx, ttt);
-	mvaddstr(cy+1, cx-1, blanks(strlen(dispmesg)));
+	mvaddstr(cy-1, cx-1, blanks(strlen(dstring)));
+	mvaddstr(cy, cx, dstring);
+	mvaddstr(cy+1, cx-1, blanks(strlen(dstring)));
 }
 
 void drawgui(){
 	char buf[1024];
 	int lines = LINES;
 	int songcols[] = {0, 1, 3, 4, 6, 7, 9, 10, 12, 13, 15, 16, 18, 19, 21, 22};
-	int trackcols[] = {0, 4, 5, 7, 8, 9, 11, 12, 13};
+	int trackcols[] = {0, 2, 4, 5, 7, 8, 9, 11, 12, 13};
 	int instrcols[] = {0, 2, 3};
 	u8 tempo;
 
