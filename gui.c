@@ -2479,7 +2479,7 @@ void drawgui(){
 	if(!saved && currmode != PM_INSERT) addstr(" [+]");
 
 	mvaddstr(1, 0, "Song");
-	drawsonged(0, 1, lines - 2);
+	drawsonged(0, 1, lines - 1);
 
 	/*snprintf(buf, sizeof(buf), "Track %02x {}", currtrack);
 	mvaddstr(1, 29, buf);*/

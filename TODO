@@ -1,17 +1,18 @@
 enhancements:
 -------------
 Keybindings:
+	* make comand mode
+		* ':num' - go to line number num
+		* ':w' - save ':q' - quit ':wq' - save and quit
+	* visual mode for copy/paste like in lgpt
+	* record mode?
+	* u - undo
+	* find&replace
+	* porous paste
 	* we need to be able to select the octave and note seperately in track tab,
 		so we can change them seperately with 'J' and 'K'
 		-- this isn't so essential now that there is H and L to alter notes by
 		octave
-	* make comand mode
-		* ':num' - go to line number num
-	* record mode?
-	* visual mode for copy/paste like in lgpt
-	* u - undo
-	* find&replace
-	* porous paste
 
 * control with a gamepad
 

@@ -216,8 +216,8 @@ void playroutine(){			// called at 50 Hz
 						}
 						if(tl.cmd[0])
 							runcmd(ch, tl.cmd[0], tl.param[0]);
-						/*if(tl.cmd[1])
-							runcmd(ch, tl.cmd[1], tl.param[1]);*/
+						if(tl.cmd[1])
+							runcmd(ch, tl.cmd[1], tl.param[1]);
 					}
 				}
 
