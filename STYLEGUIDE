@@ -12,5 +12,3 @@ static int void freqkey(int x){
 }
 
 No space between the closing paren and the curly bracket either.
-
-vi:set ts=4 sts=4 sw=4

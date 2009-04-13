@@ -81,16 +81,17 @@ static char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#"
 /*                       */
 // ** LOCAL FUNCTIONS ** //
 /*                       */
-static void drawgui();
+static void drawgui(void);
 static int hexdigit(char c);
 static int hexinc(int x);
 static int hexdec(int x);
-static int nextfreetrack();
-static int nextfreeinstr();
+static int nextfreetrack(void);
+static int nextfreeinstr(void);
 static char *blanks(int len);
-static char nextchar();
+static char nextchar(void);
 static int char2int(char ch);
 static int freqkey(int c);
+static void _display(void);
 
 
 /*                           */
@@ -371,7 +372,7 @@ void initgui(){
 
 	// nodelay() makes getch() non-blocking. This will cause the cpu to spin
 	// whenever we use getch() in a loop. This is necessary so the screen will
-	// update when you aren't pressing keys. halfdelay()'s minimun timeout time
+	// update when you aren't pressing keys. halfdelay()'s minimum timeout time
 	// is one tenth of a second, which is too long for our purposes.
 	//
 	// Right now we are calling usleep() whenever we use getch() in a loop so
@@ -382,8 +383,8 @@ void initgui(){
 	//       high and moving up or down, and the screen will lag a little.
 	// 
 	// Because of these two small problems, maybe we should eventually use
-	// keyboard interrupts to gui events. I haven't done any research on that
-	// yet.
+	// keyboard interrupts to trigger gui events. I haven't done any research
+	// on that yet.
 	nodelay(stdscr, TRUE);
 
 	for(i = 1; i < 256; i++){
@@ -409,9 +410,9 @@ void drawsonged(int x, int y, int height){
 			snprintf(buf, sizeof(buf), "%02x", i);
 
 			if(i == 0){ addch(ACS_ULCORNER); }
+			else if(i == songlen-1){ addch(ACS_LLCORNER); }
 			else if(i%4 == 0){ addch(ACS_LTEE); }
 			else if(i < songlen-1){ addch(ACS_VLINE); }
-			else{ addch(ACS_LLCORNER); }
 			addch(' ');
 
 			addstr(buf);
@@ -445,9 +446,9 @@ void drawtracked(int x, int y, int height){
 
 			if(i == 0){ addch(ACS_LLCORNER); }
 			else if(i == 1){ addch(ACS_ULCORNER); }
+			else if(i == tracklen-1){ addch(ACS_LLCORNER); }
 			else if(i%4 == 0){ addch(ACS_LTEE); }
 			else if(i < tracklen-1){ addch(ACS_VLINE); }
-			else{ addch(ACS_LLCORNER); }
 			addch(' ');
 
 			if(track[currtrack].line[i].note){
@@ -497,8 +498,8 @@ void drawinstred(int x, int y, int height){
 
 			if(i == 0){ addch(ACS_LLCORNER); }
 			else if(i == 1){ addch(ACS_ULCORNER); }
+			else if(i == instrument[currinstr].length-1){ addch(ACS_LLCORNER); }
 			else if(i < instrument[currinstr].length-1){ addch(ACS_VLINE); }
-			else{ addch(ACS_LLCORNER); }
 			addch(' ');
 
 			snprintf(buf, sizeof(buf), "%c ", instrument[currinstr].line[i].cmd);
@@ -2433,8 +2434,23 @@ void handleinput(){
 }
 
 void display(char *str){
-	disptick = 1000;
+	disptick = 200;
 	dispmesg = str;
+}
+
+// display dispmesg in the center of the screen
+static void _display(void){
+	int cx = (getmaxx(stdscr)/2)-(strlen(dispmesg)/2);
+	int cy = getmaxy(stdscr)/2;
+	char *ttt;
+
+	ttt = blanks(strlen(dispmesg)+2);
+	ttt = strcat(ttt,dispmesg);
+	//ttt = strcat(dispmesg," ");
+
+	mvaddstr(cy-1, cx-1, blanks(strlen(dispmesg)));
+	//mvaddstr(cy, cx, ttt);
+	mvaddstr(cy+1, cx-1, blanks(strlen(dispmesg)));
 }
 
 void drawgui(){
@@ -2471,7 +2487,7 @@ void drawgui(){
 	mvaddstr(0, 18, buf);
 
 	// display octave
-	mvaddch(0, 24, ACS_BULLET);
+	mvaddch(0, 24, ACS_PI);
 	snprintf(buf, sizeof(buf), "%d<>", octave);
 	mvaddstr(0, 25, buf);
 
@@ -2490,9 +2506,8 @@ void drawgui(){
 		mvaddstr(2, 0, buf);
 	}*/
 
-	// display
 	if(disptick > 0){
-		mvaddstr(0, getmaxx(stdscr)-strlen(dispmesg), dispmesg);
+		_display();
 		disptick--;
 	}
 
