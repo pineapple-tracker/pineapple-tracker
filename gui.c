@@ -54,7 +54,7 @@ struct songline song[256];
 static int currtrack = 1, currinstr = 1;
 static int currtab = 0;
 static int octave = 4;
-static char blankstr[1024];
+//static char blankstr[1024];
 static char cmdstr[50] = "";
 static char *dispmesg = "";
 static int disptick = 0;
@@ -74,16 +74,16 @@ static char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#"
 /*                       */
 // ** LOCAL FUNCTIONS ** //
 /*                       */
-static void drawgui(void);
-static int hexdigit(char c);
-static int hexinc(int x);
-static int hexdec(int x);
-static int nextfreetrack(void);
-static int nextfreeinstr(void);
-static void blanks(char *str);
-static char nextchar(void);
-static int char2int(char ch);
-static int freqkey(int c);
+static void _drawgui(void);
+static int _hexdigit(char c);
+static int _hexinc(int x);
+static int _hexdec(int x);
+static int _nextfreetrack(void);
+static int _nextfreeinstr(void);
+//static void _blanks(char *str);
+static char _nextchar(void);
+static int _char2int(char ch);
+static int _freqkey(int c);
 static void _display(void);
 void _setdisplay(char *str);
 
@@ -92,21 +92,21 @@ void _setdisplay(char *str);
 // ** end of declarations ** //
 /*                           */
 
-static int hexdigit(char c){
+static int _hexdigit(char c){
 	if(c >= '0' && c <= '9') return c - '0';
 	if(c >= 'a' && c <= 'f') return c - 'a' + 10;
 	return -1;
 }
 
-/* hexinc and hexdec wrap around */
-static int hexinc(int x){
+/* _hexinc and _hexdec wrap around */
+static int _hexinc(int x){
 	return (x >= 0 && x <= 14)? x+1 : 0;
 }
-static int hexdec(int x){
+static int _hexdec(int x){
 	return (x >= 1 && x <= 15)? x-1 : 15;
 }
 
-static int nextfreetrack(){
+static int _nextfreetrack(){
 	int skiptherest = 0;
 
 	for(int i = 1; i <= 0xff; i++){
@@ -128,30 +128,32 @@ static int nextfreetrack(){
 		}
 	}
 
-	_setdisplay("nextfreetrack() failed somehow..");
+	_setdisplay("_nextfreetrack() failed somehow..");
 	return -1;
 }
 
-static int nextfreeinstr(){
+static int _nextfreeinstr(){
 	for(int i = 1; i <= 0xff; i++){
 		if(instrument[i].line[0].cmd == '0')
 			return i;
 	}
 
-	_setdisplay("nextfreeinstr() failed somehow..");
+	_setdisplay("_nextfreeinstr() failed somehow..");
 	return -1;
 }
 
-static void blanks(char *str){
+/*static void _blanks(char *str){
 	int i=1;
 	while(str[i] != '\0'){
 		str[i] = ' ';
 		i++;
 	}
 	str[i] = '\0';
-}
+}*/
 
-static char nextchar(){
+/* Wait for the next keyboard char and return it.
+ * This stops the screen from being updated. */
+static char _nextchar(){
 	char ch;
 	ch = getch();
 	while (ch == ERR){
@@ -164,14 +166,14 @@ static char nextchar(){
 	return ch;
 }
 
-static int char2int(char ch){
+static int _char2int(char ch){
 	if(isdigit(ch)){
 		return (int)ch - '0';
 	}
 	return -1;
 }
 
-static int freqkey(int c){
+static int _freqkey(int c){
 	char *s;
 	int f = -1;
 
@@ -815,7 +817,7 @@ char currcmd;
 void insertc (int c){
 	int x;
 
-	x = hexdigit(c);
+	x = _hexdigit(c);
 	if(x >= 0){
 		if(currtab == 2
 		&& instrx > 0
@@ -849,7 +851,7 @@ void insertc (int c){
 			}
 		}
 	}
-	x = freqkey(c);
+	x = _freqkey(c);
 	if(x >= 0){
 		if(currtab == 2
 		&& instrx
@@ -1171,11 +1173,11 @@ void act_instrinc(void){
 	switch(trackx){
 		case 2:
 			SETHI(track[currtrack].line[tracky].instr,
-					hexinc(track[currtrack].line[tracky].instr >> 4) );
+					_hexinc(track[currtrack].line[tracky].instr >> 4) );
 			break;
 		case 3:
 			SETLO(track[currtrack].line[tracky].instr,
-					hexinc(track[currtrack].line[tracky].instr & 0x0f) );
+					_hexinc(track[currtrack].line[tracky].instr & 0x0f) );
 			break;
 	}
 }
@@ -1184,11 +1186,11 @@ void act_instrdec(void){
 	switch(trackx){
 		case 2:
 			SETHI(track[currtrack].line[tracky].instr,
-					hexdec(track[currtrack].line[tracky].instr >> 4) );
+					_hexdec(track[currtrack].line[tracky].instr >> 4) );
 			break;
 		case 3:
 			SETLO(track[currtrack].line[tracky].instr,
-					hexdec(track[currtrack].line[tracky].instr & 0x0f) );
+					_hexdec(track[currtrack].line[tracky].instr & 0x0f) );
 			break;
 	}
 }
@@ -1262,21 +1264,21 @@ void act_paraminc(void){
 	if(currtab==1){
 		if(trackx==5 || trackx==8){
 			SETHI(track[currtrack].line[tracky].param[(trackx - 1) % 2],
-					hexinc(track[currtrack].line[tracky].param[(trackx - 1) % 2] >> 4) );
+					_hexinc(track[currtrack].line[tracky].param[(trackx - 1) % 2] >> 4) );
 			return;
 		}else if(trackx==6 || trackx==9){
 			SETLO(track[currtrack].line[tracky].param[trackx % 2],
-					hexinc(track[currtrack].line[tracky].param[trackx % 2] & 0x0f) );
+					_hexinc(track[currtrack].line[tracky].param[trackx % 2] & 0x0f) );
 			return;
 		}
 	}else if(currtab == 2){
 		if(instrx == 1){
 			SETHI(instrument[currinstr].line[instry].param,
-					hexinc(instrument[currinstr].line[instry].param >> 4) );
+					_hexinc(instrument[currinstr].line[instry].param >> 4) );
 			return;
 		}else if(instrx == 2){
 			SETLO(instrument[currinstr].line[instry].param,
-					hexinc(instrument[currinstr].line[instry].param & 0x0f) );
+					_hexinc(instrument[currinstr].line[instry].param & 0x0f) );
 			return;
 		}
 	}
@@ -1286,21 +1288,21 @@ void act_paramdec(void){
 	if(currtab==1){
 		if(trackx==5 || trackx==8){
 			SETHI(track[currtrack].line[tracky].param[(trackx-1) % 2],
-					hexdec(track[currtrack].line[tracky].param[(trackx-1) % 2] >> 4) );
+					_hexdec(track[currtrack].line[tracky].param[(trackx-1) % 2] >> 4) );
 			return;
 		}else if(trackx==6 || trackx==9){
 			SETLO(track[currtrack].line[tracky].param[trackx % 2],
-					hexdec(track[currtrack].line[tracky].param[trackx % 2] & 0x0f) );
+					_hexdec(track[currtrack].line[tracky].param[trackx % 2] & 0x0f) );
 			return;
 		}
 	}else if(currtab == 2){
 		if(instrx == 1){
 			SETHI(instrument[currinstr].line[instry].param,
-					hexdec(instrument[currinstr].line[instry].param >> 4) );
+					_hexdec(instrument[currinstr].line[instry].param >> 4) );
 			return;
 		}else if(instrx == 2){
 			SETLO(instrument[currinstr].line[instry].param,
-					hexdec(instrument[currinstr].line[instry].param & 0x0f) );
+					_hexdec(instrument[currinstr].line[instry].param & 0x0f) );
 			return;
 		}
 	}
@@ -1446,7 +1448,7 @@ void act_clritall(void){
 void insertroutine(){
 	int c;
 	currmode = PM_INSERT;
-	drawgui();
+	_drawgui();
 	for(;;){
 		if((c = getch()) != ERR) switch(c){
 			case KEY_ESCAPE:
@@ -1506,7 +1508,7 @@ void insertroutine(){
 				currtab %= 3;
 				break;
 			case 'Z':
-				c = nextchar();
+				c = _nextchar();
 				switch(c){
 					case 'Z':
 						savefile(filename);
@@ -1528,7 +1530,7 @@ void insertroutine(){
 				currmode = PM_NORMAL;
 				guiloop();
 				break;
-			case ENTER:  // Enter key
+			case ENTER:
 				if(currtab != 2){
 					if(currtab == 1){
 						silence();
@@ -1559,7 +1561,7 @@ void insertroutine(){
 				}
 				saved = false;
 		}
-		drawgui();
+		_drawgui();
 		usleep(10000);
 	}
 }
@@ -1581,18 +1583,14 @@ void parsecmd(char cmd[]){
 
 /* vi cmdline mode */
 void cmdlineroutine(){
-	char *cp;
 	char c;
-	int x = 0;
-	strncat(cmdstr, ":", 50);
+
 	currmode = PM_CMDLINE;
-	drawgui();
+	strncat(cmdstr, ":", 50);
 	for(;;){
-		//if(cmdstr[x] != CTRL('A'))
-		mvaddch(getmaxy(stdscr) - 2, x, cmdstr[x]);
-		c = nextchar();
-		x++;
-		cp = &c;
+		_drawgui();
+
+		c = _nextchar();
 		switch(c){
 			case KEY_ESCAPE:
 				//cmdstr = "";
@@ -1602,7 +1600,8 @@ void cmdlineroutine(){
 				parsecmd(cmdstr);
 				goto end;
 			default:
-				 strncat(cmdstr, cp, 50); 
+				strncat(cmdstr, &c, 50);
+				break;
 		}
 	}
 end:
@@ -1611,7 +1610,6 @@ end:
 }
 
 /* jammer mode */
-
 void jammermode(void){
 		int c, x;
 		currmode = PM_JAMMER;
@@ -1633,7 +1631,7 @@ void jammermode(void){
 					if(octave < 8) octave++;
 					break;
 				default:
-					x = freqkey(c);
+					x = _freqkey(c);
 
 					if(x > 0){
 						iedplonk(x, currinstr);
@@ -1641,12 +1639,12 @@ void jammermode(void){
 
 					break;
 			}
-			drawgui();
+			_drawgui();
 			usleep(10000);
 		}
 }
 
-/* main mode */
+/* normal mode */
 void executekey(int c){
 	int i;
 
@@ -1694,7 +1692,7 @@ void executekey(int c){
 			executekey(lastaction);
 			break;
 		case 'g':
-			if(nextchar() == 'g'){
+			if(_nextchar() == 'g'){
 				switch(currtab){
 					case 0:
 						songy = 0;
@@ -1724,7 +1722,7 @@ void executekey(int c){
 
 		// yank
 		case 'y':
-			c = nextchar();
+			c = _nextchar();
 			if(c == 'y'){
 				if(currtab == 0){
 					memcpy(&tclip, &song[songy], sizeof(struct songline));
@@ -1773,11 +1771,11 @@ void executekey(int c){
 		// copy everything in the current phrase or instrument into the next free one
 		case '^':
 			if(currtab == 1){
-				f = nextfreetrack();
+				f = _nextfreetrack();
 				memcpy(&track[f], &track[currtrack], sizeof(struct track));
 				currtrack = f;
 			}else if(currtab == 2){
-				f = nextfreeinstr();
+				f = _nextfreeinstr();
 				memcpy(&instrument[f], &instrument[currinstr], sizeof(struct instrument));
 				currinstr = f;
 			}
@@ -1805,7 +1803,7 @@ void executekey(int c){
 		// TODO: clean this SHIT up
 		// TODO: add an ACT_ function for delete
 		case 'd':
-			c = nextchar();
+			c = _nextchar();
 			switch(c){
 				case 'd':
 					if(currtab == 2){
@@ -1880,7 +1878,7 @@ void executekey(int c){
 		case 'X':
 			act_clritall();
 			break;
-		case ENTER:  // Enter key
+		case ENTER:
 			if(currtab != 2){
 				if(currtab == 1){
 					silence();
@@ -1892,7 +1890,7 @@ void executekey(int c){
 			}
 			break;
 		case 'Z':
-			c = nextchar();
+			c = _nextchar();
 			switch(c){
 				case 'Z':
 					savefile(filename);
@@ -2184,7 +2182,7 @@ void executekey(int c){
 
 		// replace
 		case 'r':
-			insertc(nextchar());
+			insertc(_nextchar());
 			break;
 
 		default:
@@ -2206,9 +2204,9 @@ void handleinput(){
 		if(isdigit(c)){
 			if(!cmdrepeat){
 				cmdrepeat = true;
-				cmdrepeatnum = char2int(c);
+				cmdrepeatnum = _char2int(c);
 			}else{
-				cmdrepeatnum = (cmdrepeatnum*10) + char2int(c);
+				cmdrepeatnum = (cmdrepeatnum*10) + _char2int(c);
 			}
 		}else{
 			executekey(c);
@@ -2315,7 +2313,7 @@ void handleinput(){
 				break;
 			default:
 				if(currmode == PM_INSERT){
-					x = hexdigit(c);
+					x = _hexdigit(c);
 					if(x >= 0){
 						if(currtab == 2
 						&& instrx > 0
@@ -2349,7 +2347,7 @@ void handleinput(){
 							}
 						}
 					}
-					x = freqkey(c);
+					x = _freqkey(c);
 					if(x >= 0){
 						if(currtab == 2
 						&& instrx
@@ -2433,7 +2431,7 @@ void handleinput(){
 						}
 					}
 				}else if(currmode == PM_INSERT || currmode == PM_JAMMER){
-					x = freqkey(c);
+					x = _freqkey(c);
 
 					if(x > 0){
 						iedplonk(x, currinstr);
@@ -2470,7 +2468,7 @@ static void _display(void){
 	mvaddch(cy+1, cx+strlen(dispmesg)+1, ACS_LRCORNER);
 }
 
-void drawgui(){
+void _drawgui(){
 	char buf[1024];
 	int lines = LINES;
 	int songcols[] = {0, 1, 3, 4, 6, 7, 9, 10, 12, 13, 15, 16, 18, 19, 21, 22};
@@ -2507,8 +2505,10 @@ void drawgui(){
 	snprintf(buf, sizeof(buf), "%d<>", octave);
 	mvaddstr(0, 25, buf);
 
-	mvaddstr(getmaxy(stdscr)-1, 0, filename);
-	if(!saved && currmode != PM_INSERT) addstr(" [+]");
+	if(currmode == PM_NORMAL){
+		mvaddstr(getmaxy(stdscr)-1, 0, filename);
+		if(!saved && currmode != PM_INSERT) addstr(" [+]");
+	}
 
 	mvaddstr(1, 0, "Song");
 	drawsonged(0, 1, lines - 1);
@@ -2527,14 +2527,18 @@ void drawgui(){
 		disptick--;
 	}
 
-	strcpy(blankstr,filename);
-	blanks(blankstr);
 	if(currmode == PM_INSERT){
-		mvaddstr(getmaxy(stdscr)-1, 0, blankstr);
+		move(getmaxy(stdscr)-1,0);
+		clrtoeol();
 		mvaddstr(getmaxy(stdscr)-1, 0, "-- INSERT --");
 	}else if(currmode == PM_JAMMER){
-		mvaddstr(getmaxy(stdscr)-1, 0, blankstr);
+		move(getmaxy(stdscr)-1,0);
+		clrtoeol();
 		mvaddstr(getmaxy(stdscr)-1, 0, "-- JAMMER --");
+	}else if(currmode == PM_CMDLINE){
+		move(getmaxy(stdscr)-1,0);
+		clrtoeol();
+		mvaddstr(getmaxy(stdscr) - 1, 0, cmdstr);
 	}
 
 	/*if(cmdmode){
@@ -2565,7 +2569,7 @@ void guiloop(){
 	// don't treat the escape key like a meta key
 	ESCDELAY = 50;
 	for(;;){
-		drawgui();
+		_drawgui();
 		handleinput();
 	}
 }
