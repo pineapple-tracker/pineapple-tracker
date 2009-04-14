@@ -1568,7 +1568,15 @@ void parsecmd(char cmd[]){
 	if(cmd[1] == 'w'){
 		savefile(filename);
 		saved = 1;
-	}
+	}else if(cmd[1] == 'q'){
+		erase();
+		refresh();
+		endwin();
+		exit(0);
+	}else 
+		_setdisplay("not a tracker command!");
+		//mvaddstr(getmaxy(stdscr) - 3, 0, "Not a pineapple-tracker command.");
+	return;
 }
 
 /* vi cmdline mode */
@@ -1576,13 +1584,11 @@ void cmdlineroutine(){
 	char *cp;
 	char c;
 	int x = 0;
-	//cmdstr = ":";
 	strncat(cmdstr, ":", 50);
 	currmode = PM_CMDLINE;
-	//echo();
 	drawgui();
 	for(;;){
-		//mvaddstr(getmaxy(stdscr) - 2, x, cmdstr[x]);
+		//if(cmdstr[x] != CTRL('A'))
 		mvaddch(getmaxy(stdscr) - 2, x, cmdstr[x]);
 		c = nextchar();
 		x++;
