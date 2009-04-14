@@ -21,6 +21,7 @@
 #define SETHI(v,x) v = ((v) & 0x0f) | ((x) << 4)
 #define CTRL(c) ((c) & 037)
 #define KEY_ESCAPE 27
+#define KEY_BACKSPACE 0407
 #define KEY_TAB 9   // this also happens to be ^i...
 #define ENTER 13
 
@@ -873,7 +874,7 @@ void insertc (int c){
 			instrument[currinstr].line[instry].cmd = c;
 		}
 	}
-	if(currtab == 1 && (trackx == 3 || trackx == 6 || trackx == 9)){
+	if(currtab == 1 && (trackx == 4 || trackx == 7)){
 		if(strchr(validcmds, c)){
 			if(c == '.' || c == '0') c = 0;
 			track[currtrack].line[tracky].cmd[(trackx - 3) / 3] = c;
@@ -1583,7 +1584,7 @@ void parsecmd(char cmd[]){
 
 /* vi cmdline mode */
 void cmdlineroutine(){
-	char c;
+	u16 c;
 
 	currmode = PM_CMDLINE;
 	strncat(cmdstr, ":", 50);
@@ -1599,6 +1600,9 @@ void cmdlineroutine(){
 			case ENTER:
 				parsecmd(cmdstr);
 				goto end;
+			case KEY_BACKSPACE:
+				cmdstr[strlen(cmdstr)-1] = '\0';
+				break;
 			default:
 				strncat(cmdstr, &c, 50);
 				break;
