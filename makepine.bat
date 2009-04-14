@@ -31,7 +31,7 @@ ECHO "\   _   /   ._  |  _.     _  ._   _"
 ECHO " \ (_) /    |_) | (_| \/ (/_ | o (_"
 ECHO "            |         /            "
 
-%CC% -s -o player.exe *.o %LIB_SDL% %LIB_CACA%
+%CC% -s -o player.exe *.o %CFLAGS% %LIB_SDL% %LIB_CACA%
 rem figfont: speed
 ECHO "___         _________        ______                           "
 ECHO "__ \  ____________/_ ___________  ______ _____  ______________"
@@ -44,7 +44,7 @@ ECHO "                     /_/                 /____/               "
 ECHO "\   _   /   ._ _   _. o ._     _"
 ECHO " \ (_) /    | | | (_| | | | o (_"
 
-%CC% -s -o pineappletracker.exe main.o gui.o chip.o %LIB_SDL% %LIB_CURSES%
+%CC% -s -o pineappletracker.exe main.o gui.o chip.o %CFLAGS% %LIB_SDL% %LIB_CURSES%
 ECHO "___         _________                        _____ "
 ECHO "__ \  ____________/_ __________________________  /_"
 ECHO "___ \ _  __ ____/_/  ___  __ ___  __ ___  __ _  __/"

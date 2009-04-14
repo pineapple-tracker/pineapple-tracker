@@ -11,6 +11,8 @@ u8 songpos;
 u8 playsong;
 u8 playtrack;
 
+u8 j = 0;
+
 /*const u16 freqtable[] = {
 	0x010b, 0x011b, 0x012c, 0x013e, 0x0151, 0x0165, 0x017a, 0x0191, 0x01a9,
 	0x01c2, 0x01dd, 0x01f9, 0x0217, 0x0237, 0x0259, 0x027d, 0x02a3, 0x02cb,
@@ -297,7 +299,6 @@ void initchip(){
 u8 interrupthandler()
 {
 	u8 i;
-	u8 j = 0;
 	s16 acc;
 	static u32 noiseseed = 1;
 	u8 newbit;
