@@ -8,10 +8,9 @@
 #include <math.h>
 #include <SDL/SDL.h>
 #include <curses.h>
-//#include <locale.h>
 #include <unistd.h>
 
-#ifndef D_WINDOWS
+#ifndef WINDOWS
 #include <err.h>
 #endif
 
@@ -21,9 +20,12 @@
 #define SETHI(v,x) v = ((v) & 0x0f) | ((x) << 4)
 #define CTRL(c) ((c) & 037)
 #define KEY_ESCAPE 27
-#define KEY_BACKSPACE 0407
 #define KEY_TAB 9   // this also happens to be ^i...
 #define ENTER 13
+
+#ifndef WINDOWS
+#define KEY_BACKSPACE 0407
+#endif
 
 /*                   */
 // ** GLOBAL VARS ** //
@@ -112,15 +114,15 @@ static int _nextfreetrack(){
 
 	for(int i = 1; i <= 0xff; i++){
 		for(int j = 0; j < tracklen; j++){
-			if(track[i].line[j].note) skiptherest = true;
+			if(track[i].line[j].note) skiptherest = 1;
 			for(int k = 0; k < 2; k++){
-				if(track[i].line[j].cmd[k]) skiptherest = true;
-				if(track[i].line[j].param[k]) skiptherest = true;
+				if(track[i].line[j].cmd[k]) skiptherest = 1;
+				if(track[i].line[j].param[k]) skiptherest = 1;
 			}
 
 			// skip the rest of this track?
 			if(skiptherest){
-				skiptherest = false;
+				skiptherest = 0;
 				break;
 			}
 
@@ -1560,7 +1562,7 @@ void insertroutine(){
 					if(instry < instrument[currinstr].length-1) instry++;
 					instry %= instrument[currinstr].length;
 				}
-				saved = false;
+				saved = 0;
 		}
 		_drawgui();
 		usleep(10000);
@@ -2210,7 +2212,7 @@ void executekey(int c){
 		} // end switch
 	} // end for
 	cmdrepeatnum = 1;
-	cmdrepeat = false;
+	cmdrepeat = 0;
 }
 
 /* main input loop */
@@ -2223,7 +2225,7 @@ void handleinput(){
 		/* Repeat */
 		if(isdigit(c)){
 			if(!cmdrepeat){
-				cmdrepeat = true;
+				cmdrepeat = 1;
 				cmdrepeatnum = _char2int(c);
 			}else{
 				cmdrepeatnum = (cmdrepeatnum*10) + _char2int(c);
@@ -2586,8 +2588,10 @@ void _drawgui(){
 
 
 void guiloop(){
+#ifndef WINDOWS
 	// don't treat the escape key like a meta key
 	ESCDELAY = 50;
+#endif
 	for(;;){
 		_drawgui();
 		handleinput();
