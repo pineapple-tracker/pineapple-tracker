@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <SDL/SDL.h>
 
-#ifndef D_WINDOWS
+#ifndef WINDOWS
 #include <err.h>
 #endif
 

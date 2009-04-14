@@ -1,7 +1,9 @@
 #include <stdio.h>
-#include <err.h>
 #include <SDL/SDL.h>
 #include <caca.h>
+#ifndef WINDOWS
+#include <err.h>
+#endif
 
 #include "stuff.h"
 
