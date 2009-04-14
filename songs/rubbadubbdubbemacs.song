@@ -1,15 +1,38 @@
 musicchip tune
 version 1
 
+tempo: 180
 songline 00 01 00 05 00 00 00 00 00
 songline 01 02 00 06 00 00 00 00 00
 songline 02 03 00 05 00 00 00 00 00
 songline 03 04 00 06 00 00 00 00 00
 
-trackline 01 00 29 01 76 ff 00 00
-trackline 01 08 2c 01 00 00 00 00
-trackline 01 10 2e 01 00 00 00 00
-trackline 01 1c 2e 01 00 00 00 00
+trackline 01 00 27 01 76 ff 00 00
+trackline 01 01 33 01 00 00 00 00
+trackline 01 02 29 01 00 00 00 00
+trackline 01 03 31 01 00 00 00 00
+trackline 01 04 20 01 00 00 00 00
+trackline 01 05 33 01 00 00 00 00
+trackline 01 06 2a 01 00 00 00 00
+trackline 01 07 31 01 00 00 00 00
+trackline 01 08 20 01 00 00 00 00
+trackline 01 09 3f 01 00 00 00 00
+trackline 01 0a 41 01 00 00 00 00
+trackline 01 0f 00 0e 00 00 00 00
+trackline 01 10 2e 01 69 00 00 00
+trackline 01 13 49 01 00 00 00 00
+trackline 01 14 3f 01 00 00 00 00
+trackline 01 15 4b 01 00 00 00 00
+trackline 01 16 49 01 00 00 00 00
+trackline 01 17 41 01 00 00 00 00
+trackline 01 18 42 01 00 00 00 00
+trackline 01 19 2a 01 00 00 00 00
+trackline 01 1a 31 01 00 00 00 00
+trackline 01 1b 27 01 00 00 00 00
+trackline 01 1c 33 01 00 00 00 00
+trackline 01 1d 29 01 00 00 00 00
+trackline 01 1e 2a 01 00 00 00 00
+trackline 01 1f 20 01 00 00 00 00
 trackline 02 00 2e 01 00 00 00 00
 trackline 02 08 2c 01 00 00 00 00
 trackline 02 10 29 01 00 00 00 00

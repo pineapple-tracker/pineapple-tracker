@@ -42,13 +42,16 @@ songline 24 01 00 1c 00 19 00 1a 00
 songline 25 01 00 1d 00 00 00 00 00
 songline 26 02 00 1d 00 00 00 00 00
 songline 27 02 00 1e 00 1b 00 1b 00
+songline 28 00 00 00 00 00 00 00 00
+songline 29 00 00 00 00 00 00 00 00
+songline 2a 00 00 00 00 00 00 00 00
+songline 2b 00 00 00 00 00 00 00 00
 
 trackline 01 00 19 01 00 00 00 00
 trackline 01 08 3f 01 00 00 00 00
 trackline 01 0a 36 01 00 00 00 00
 trackline 01 0b 3f 01 00 00 00 00
 trackline 01 0d 36 01 00 00 00 00
-trackline 01 0e 3f 01 00 00 00 00
 trackline 01 0f 3d 01 00 00 00 00
 trackline 01 11 33 01 00 00 00 00
 trackline 01 12 35 01 00 00 00 00

@@ -1568,17 +1568,28 @@ void insertroutine(){
 }
 
 void parsecmd(char cmd[]){
-	if(cmd[1] == 'w'){
+	//if(cmd[1] == 'w'){
+	//switch(strcmp(cmd, 
+	if(strcmp(cmd, ":w") == 0){
 		savefile(filename);
 		saved = 1;
-	}else if(cmd[1] == 'q'){
+	}else if(strcmp(cmd, ":q") == 0){
+		erase();
+		refresh();
+		endwin();
+		exit(0);
+	}else if(strcmp(cmd, ":write") == 0){
+		savefile(filename);
+		saved = 1;
+	}else if(strcmp(cmd, ":wq") == 0){
+		savefile(filename);
+		saved = 1;
 		erase();
 		refresh();
 		endwin();
 		exit(0);
 	}else 
 		_setdisplay("not a tracker command!");
-		//mvaddstr(getmaxy(stdscr) - 3, 0, "Not a pineapple-tracker command.");
 	return;
 }
 

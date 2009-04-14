@@ -1,6 +1,7 @@
 musicchip tune
 version 1
 
+tempo: 180
 songline 00 00 00 00 00 81 00 00 00
 songline 01 00 00 00 00 80 00 67 00
 songline 02 00 00 00 00 82 00 68 00
@@ -796,7 +797,7 @@ instrumentline 01 02 74 01
 instrumentline 01 03 77 02
 instrumentline 01 04 64 90
 instrumentline 01 05 2b 31
-instrumentline 01 06 6c a0
+instrumentline 01 06 73 a0
 instrumentline 01 07 66 f0
 instrumentline 02 00 76 ff
 instrumentline 02 01 77 03
@@ -804,10 +805,10 @@ instrumentline 02 02 74 02
 instrumentline 02 03 77 02
 instrumentline 02 04 2b 31
 instrumentline 02 05 64 70
-instrumentline 02 06 6c d0
+instrumentline 02 06 73 d0
 instrumentline 02 07 74 02
 instrumentline 02 08 66 f8
-instrumentline 02 09 6a 01
+instrumentline 02 09 40 01
 instrumentline 03 00 77 02
 instrumentline 03 01 6d 05
 instrumentline 03 02 2b 31
@@ -866,7 +867,7 @@ instrumentline 08 0b 2b 34
 instrumentline 08 0c 74 03
 instrumentline 08 0d 2b 31
 instrumentline 08 0e 74 03
-instrumentline 08 0f 6a 07
+instrumentline 08 0f 40 07
 instrumentline 09 00 69 00
 instrumentline 09 01 77 03
 instrumentline 09 02 76 ff
@@ -882,7 +883,7 @@ instrumentline 09 0b 2b 35
 instrumentline 09 0c 74 03
 instrumentline 09 0d 2b 31
 instrumentline 09 0e 74 03
-instrumentline 09 0f 6a 07
+instrumentline 09 0f 40 07
 instrumentline 0a 00 69 00
 instrumentline 0a 01 77 03
 instrumentline 0a 02 76 ff
