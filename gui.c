@@ -22,6 +22,7 @@
 #define CTRL(c) ((c) & 037)
 #define KEY_ESCAPE 27
 #define KEY_TAB 9   // this also happens to be ^i...
+#define ENTER 13
 
 /*                   */
 // ** GLOBAL VARS ** //
@@ -47,14 +48,6 @@ struct instrument instrument[256], iclip;
 struct track track[256], tclip;
 struct songline song[256];
 
-/* pineapple modes */
-enum {
-	PM_NORMAL,
-	PM_CMDLINE,
-	PM_INSERT,
-	PM_JAMMER
-};
-
 /*                  */
 // ** LOCAL VARS ** //
 /*                  */
@@ -62,7 +55,7 @@ static int currtrack = 1, currinstr = 1;
 static int currtab = 0;
 static int octave = 4;
 static char blankstr[1024];
-static char *cmdstr = "";
+static char cmdstr[50] = "";
 static char *dispmesg = "";
 static int disptick = 0;
 static int cmdrepeat = 0;
@@ -361,7 +354,7 @@ void initgui(){
 
 	initscr();
 
-	if(setlocale(LC_CTYPE,"en_US.utf8") != NULL) display("UTF-8 enabled!");
+	//if(setlocale(LC_CTYPE,"en_US.utf8") != NULL) display("UTF-8 enabled!");
 
 	// don't send newline on Enter key, and don't echo chars to the screen.
 	nonl();
@@ -1538,7 +1531,7 @@ void insertroutine(){
 				currmode = PM_NORMAL;
 				guiloop();
 				break;
-			case 13:  // Enter key
+			case ENTER:  // Enter key
 				if(currtab != 2){
 					if(currtab == 1){
 						silence();
@@ -1574,27 +1567,43 @@ void insertroutine(){
 	}
 }
 
+void parsecmd(char cmd[]){
+	if(cmd[1] == 'w'){
+		savefile(filename);
+		saved = 1;
+	}
+}
+
 /* vi cmdline mode */
 void cmdlineroutine(){
-	int c;
-	cmdstr = ":";
+	char *cp;
+	char c;
+	int x = 0;
+	//cmdstr = ":";
+	strncat(cmdstr, ":", 50);
 	currmode = PM_CMDLINE;
+	//echo();
 	drawgui();
 	for(;;){
+		//mvaddstr(getmaxy(stdscr) - 2, x, cmdstr[x]);
+		mvaddch(getmaxy(stdscr) - 2, x, cmdstr[x]);
 		c = nextchar();
+		x++;
+		cp = &c;
 		switch(c){
 			case KEY_ESCAPE:
-				cmdstr = "";
+				//cmdstr = "";
 				currmode = PM_NORMAL;
 				goto end;
+			case ENTER:
+				parsecmd(cmdstr);
+				goto end;
 			default:
-				/* SEGFAULT
-				cmdstr = strcat(cmdstr,c);
-				mvaddstr(getmaxy(stdscr)-2, strlen(cmdstr)+1, c); */
-				return;
+				 strncat(cmdstr, cp, 50); 
 		}
 	}
 end:
+	strcpy(cmdstr, "");
 	return;
 }
 
@@ -1868,7 +1877,7 @@ void executekey(int c){
 		case 'X':
 			act_clritall();
 			break;
-		case 13:  // Enter key
+		case ENTER:  // Enter key
 			if(currtab != 2){
 				if(currtab == 1){
 					silence();

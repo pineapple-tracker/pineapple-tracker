@@ -19,6 +19,14 @@ enum {
 	WF_SINE
 };
 
+/* pineapple modes */
+enum {
+	PM_NORMAL,
+	PM_CMDLINE,
+	PM_INSERT,
+	PM_JAMMER
+};
+
 struct trackline {
 	u8	note;
 	u8	instr;
@@ -73,6 +81,8 @@ void display();
 void startplaysong(int);
 void startplaytrack(int);
 void loadfile(char *);
+
+void parsecmd(char cmd[]);
 
 extern u8 trackpos;
 extern u8 playtrack;
