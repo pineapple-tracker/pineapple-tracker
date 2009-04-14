@@ -1,9 +1,9 @@
 enhancements:
 -------------
 Keybindings:
-	* make comand mode
-		* ':num' - go to line number num
-		* ':w' - save ':q' - quit ':wq' - save and quit
+	* comand mode
+		* get backspace to work
+		* tab completion (right now it ignores tabs)
 	* visual mode for copy/paste like in lgpt
 	* record mode?
 	* u - undo

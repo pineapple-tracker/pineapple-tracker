@@ -1592,6 +1592,24 @@ void parsecmd(char cmd[]){
 		exit(0);
 	}else if(cmd[1]=='e' && cmd[2]=='\ '){
 		loadfile(cmd+3);
+	}else if(isdigit(cmd[1])){
+		int gotoline = atoi(cmd+1);
+
+		switch(currtab){
+			case 0:
+				if(gotoline>songlen){ songy=songlen-1; }
+				else{ songy = gotoline; }
+				break;
+			case 1:
+				if(gotoline>tracklen){ tracky=tracklen-1; }
+				else{ tracky = gotoline; }
+				break;
+			case 2:
+				if(gotoline>instrument[currinstr].length){
+					instry=instrument[currinstr].length-1; }
+				else{ instry = gotoline; }
+				break;
+		}
 	}else 
 		_setdisplay("not a tracker command!");
 	return;
@@ -1617,6 +1635,8 @@ void cmdlineroutine(){
 				goto end;
 			case KEY_BACKSPACE:
 				cmdstr[strlen(cmdstr)-1] = '\0';
+				break;
+			case '\t':
 				break;
 			default:
 				strncat(cmdstr, &c, 50);
