@@ -4,7 +4,7 @@
 #include <SDL/SDL.h>
 #include <jack/jack.h>
 
-#ifndef D_WINDOWS
+#ifndef WINDOWS
 #include <err.h>
 #endif
 

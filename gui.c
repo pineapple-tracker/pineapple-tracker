@@ -8,10 +8,9 @@
 #include <math.h>
 #include <SDL/SDL.h>
 #include <curses.h>
-//#include <locale.h>
 #include <unistd.h>
 
-#ifndef D_WINDOWS
+#ifndef WINDOWS
 #include <err.h>
 #endif
 
@@ -21,9 +20,12 @@
 #define SETHI(v,x) v = ((v) & 0x0f) | ((x) << 4)
 #define CTRL(c) ((c) & 037)
 #define KEY_ESCAPE 27
-#define KEY_BACKSPACE 0407
 #define KEY_TAB 9   // this also happens to be ^i...
 #define ENTER 13
+
+#ifndef WINDOWS
+#define KEY_BACKSPACE 0407
+#endif
 
 /*                   */
 // ** GLOBAL VARS ** //
@@ -112,15 +114,15 @@ static int _nextfreetrack(){
 
 	for(int i = 1; i <= 0xff; i++){
 		for(int j = 0; j < tracklen; j++){
-			if(track[i].line[j].note) skiptherest = true;
+			if(track[i].line[j].note) skiptherest = 1;
 			for(int k = 0; k < 2; k++){
-				if(track[i].line[j].cmd[k]) skiptherest = true;
-				if(track[i].line[j].param[k]) skiptherest = true;
+				if(track[i].line[j].cmd[k]) skiptherest = 1;
+				if(track[i].line[j].param[k]) skiptherest = 1;
 			}
 
 			// skip the rest of this track?
 			if(skiptherest){
-				skiptherest = false;
+				skiptherest = 0;
 				break;
 			}
 
@@ -1560,7 +1562,7 @@ void insertroutine(){
 					if(instry < instrument[currinstr].length-1) instry++;
 					instry %= instrument[currinstr].length;
 				}
-				saved = false;
+				saved = 0;
 		}
 		_drawgui();
 		usleep(10000);
@@ -1568,17 +1570,48 @@ void insertroutine(){
 }
 
 void parsecmd(char cmd[]){
-	if(cmd[1] == 'w'){
+	//if(cmd[1] == 'w'){
+	//switch(strcmp(cmd, 
+	if(strcmp(cmd, ":w") == 0){
 		savefile(filename);
 		saved = 1;
-	}else if(cmd[1] == 'q'){
+	}else if(strcmp(cmd, ":q") == 0){
 		erase();
 		refresh();
 		endwin();
 		exit(0);
+	}else if(strcmp(cmd, ":write") == 0){
+		savefile(filename);
+		saved = 1;
+	}else if(strcmp(cmd, ":wq") == 0){
+		savefile(filename);
+		saved = 1;
+		erase();
+		refresh();
+		endwin();
+		exit(0);
+	}else if(cmd[1]=='e' && cmd[2]=='\ '){
+		loadfile(cmd+3);
+	}else if(isdigit(cmd[1])){
+		int gotoline = atoi(cmd+1);
+
+		switch(currtab){
+			case 0:
+				if(gotoline>songlen){ songy=songlen-1; }
+				else{ songy = gotoline; }
+				break;
+			case 1:
+				if(gotoline>tracklen){ tracky=tracklen-1; }
+				else{ tracky = gotoline; }
+				break;
+			case 2:
+				if(gotoline>instrument[currinstr].length){
+					instry=instrument[currinstr].length-1; }
+				else{ instry = gotoline; }
+				break;
+		}
 	}else 
 		_setdisplay("not a tracker command!");
-		//mvaddstr(getmaxy(stdscr) - 3, 0, "Not a pineapple-tracker command.");
 	return;
 }
 
@@ -1602,6 +1635,8 @@ void cmdlineroutine(){
 				goto end;
 			case KEY_BACKSPACE:
 				cmdstr[strlen(cmdstr)-1] = '\0';
+				break;
+			case '\t':
 				break;
 			default:
 				strncat(cmdstr, &c, 50);
@@ -1694,6 +1729,9 @@ void executekey(int c){
 		case '.':
 			cmdrepeatnum = lastrepeat;
 			executekey(lastaction);
+			break;
+		case KEY_ESCAPE:
+			disptick = 0;
 			break;
 		case 'g':
 			if(_nextchar() == 'g'){
@@ -2194,7 +2232,7 @@ void executekey(int c){
 		} // end switch
 	} // end for
 	cmdrepeatnum = 1;
-	cmdrepeat = false;
+	cmdrepeat = 0;
 }
 
 /* main input loop */
@@ -2207,7 +2245,7 @@ void handleinput(){
 		/* Repeat */
 		if(isdigit(c)){
 			if(!cmdrepeat){
-				cmdrepeat = true;
+				cmdrepeat = 1;
 				cmdrepeatnum = _char2int(c);
 			}else{
 				cmdrepeatnum = (cmdrepeatnum*10) + _char2int(c);
@@ -2570,8 +2608,10 @@ void _drawgui(){
 
 
 void guiloop(){
+#ifndef WINDOWS
 	// don't treat the escape key like a meta key
 	ESCDELAY = 50;
+#endif
 	for(;;){
 		_drawgui();
 		handleinput();
