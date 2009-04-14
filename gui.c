@@ -1590,6 +1590,8 @@ void parsecmd(char cmd[]){
 		refresh();
 		endwin();
 		exit(0);
+	}else if(cmd[1]=='e' && cmd[2]=='\ '){
+		loadfile(cmd+3);
 	}else 
 		_setdisplay("not a tracker command!");
 	return;
@@ -1707,6 +1709,9 @@ void executekey(int c){
 		case '.':
 			cmdrepeatnum = lastrepeat;
 			executekey(lastaction);
+			break;
+		case KEY_ESCAPE:
+			disptick = 0;
 			break;
 		case 'g':
 			if(_nextchar() == 'g'){
