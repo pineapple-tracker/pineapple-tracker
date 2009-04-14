@@ -7,7 +7,8 @@ NCURSES_CFLAGS := $(shell ncurses5-config --cflags)
 
 LIBS := -O2 $(shell pkg-config --libs sdl) \
 		$(shell ncurses5-config --libs) \
-		$(shell pkg-config --libs caca) -lSDL
+		$(shell pkg-config --libs caca) \
+		$(shell pkg-config --libs jack)
 
 all: pineapple-tracker player
 
