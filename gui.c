@@ -8,7 +8,7 @@
 #include <math.h>
 #include <SDL/SDL.h>
 #include <curses.h>
-#include <locale.h>
+//#include <locale.h>
 #include <unistd.h>
 
 #ifndef D_WINDOWS
@@ -87,7 +87,7 @@ static int hexinc(int x);
 static int hexdec(int x);
 static int nextfreetrack(void);
 static int nextfreeinstr(void);
-static char *blanks(int len);
+static void blanks(char *str);
 static char nextchar(void);
 static int char2int(char ch);
 static int freqkey(int c);
@@ -114,13 +114,12 @@ static int hexdec(int x){
 }
 
 static int nextfreetrack(){
-	int i, j, k;
 	int skiptherest = 0;
 
-	for(i = 1; i <= 0xff; i++){
-		for(j = 0; j < tracklen; j++){
+	for(int i = 1; i <= 0xff; i++){
+		for(int j = 0; j < tracklen; j++){
 			if(track[i].line[j].note) skiptherest = true;
-			for(k = 0; k < 2; k++){
+			for(int k = 0; k < 2; k++){
 				if(track[i].line[j].cmd[k]) skiptherest = true;
 				if(track[i].line[j].param[k]) skiptherest = true;
 			}
@@ -141,9 +140,7 @@ static int nextfreetrack(){
 }
 
 static int nextfreeinstr(){
-	int i;
-
-	for(i = 1; i <= 0xff; i++){
+	for(int i = 1; i <= 0xff; i++){
 		if(instrument[i].line[0].cmd == '0')
 			return i;
 	}
@@ -152,16 +149,13 @@ static int nextfreeinstr(){
 	return -1;
 }
 
-/* returns a blank string of length len */
-static char *blanks(int len){
-	int i;
-
-	for(i=0; i<len; i++){
-		blankstr[i] = ' ';
+static void blanks(char *str){
+	int i=1;
+	while(str[i] != '\0'){
+		str[i] = ' ';
+		i++;
 	}
-	blankstr[i+1] = '\0';
-
-	return blankstr;
+	str[i] = '\0';
 }
 
 static char nextchar(){
@@ -364,7 +358,7 @@ void initgui(){
 
 	initscr();
 
-	if(setlocale(LC_CTYPE,"en_US.utf8") != NULL) _setdisplay("UTF-8 enabled!");
+	//if(setlocale(LC_CTYPE,"en_US.utf8") != NULL) _setdisplay("UTF-8 enabled!");
 
 	// don't send newline on Enter key, and don't echo chars to the screen.
 	nonl();
@@ -2437,29 +2431,28 @@ void handleinput(){
 }
 
 void _setdisplay(char *str){
-	disptick = 250;
+	disptick = 350;
 	dispmesg = str;
 }
 
 // display dispmesg in the center of the screen
 static void _display(void){
-	int cx = (getmaxx(stdscr)/2)-(strlen(dispmesg)/2);
+	int cx = (getmaxx(stdscr)/2)-(strlen(dispmesg)/2)-1;
 	int cy = getmaxy(stdscr)/2;
-	char *dstring;
 
-	dstring = " ";
-	dstring = blanks(strlen(dispmesg)+2);
-	//int i;
-	//i = 0;
-	//while(dispmesg[i] != '\0'){
-	for(int i=0; i<strlen(dispmesg); i++) {
-		dstring[i+1] = dispmesg[i];
-		//i++;
-	}
+	mvaddch(cy-1, cx, ACS_ULCORNER);
+	for(int i=cx+1; i<cx+strlen(dispmesg)+1; i++)
+		mvaddch(cy-1, i, ACS_HLINE);
+	mvaddch(cy-1, cx+strlen(dispmesg)+1, ACS_URCORNER);
 
-	mvaddstr(cy-1, cx-1, blanks(strlen(dstring)));
-	mvaddstr(cy, cx, dstring);
-	mvaddstr(cy+1, cx-1, blanks(strlen(dstring)));
+	mvaddch(cy, cx, ACS_VLINE);
+	mvaddstr(cy, cx+1, dispmesg);
+	mvaddch(cy, cx+strlen(dispmesg)+1, ACS_VLINE);
+
+	mvaddch(cy+1, cx, ACS_LLCORNER);
+	for(int i=cx+1; i<cx+strlen(dispmesg)+1; i++)
+		mvaddch(cy+1, i, ACS_HLINE);
+	mvaddch(cy+1, cx+strlen(dispmesg)+1, ACS_LRCORNER);
 }
 
 void drawgui(){
@@ -2470,8 +2463,7 @@ void drawgui(){
 	int instrcols[] = {0, 2, 3};
 	u8 tempo;
 
-	erase();
-
+	erase(); 
 	attrset(A_UNDERLINE);
 	mvaddstr(0, 0, "PINEAPPLEtRACKER");
 	attrset(A_NORMAL);
@@ -2520,13 +2512,13 @@ void drawgui(){
 		disptick--;
 	}
 
+	strcpy(blankstr,filename);
+	blanks(blankstr);
 	if(currmode == PM_INSERT){
-		mvaddstr(getmaxy(stdscr)-1, 0, blanks(strlen(filename)));
+		mvaddstr(getmaxy(stdscr)-1, 0, blankstr);
 		mvaddstr(getmaxy(stdscr)-1, 0, "-- INSERT --");
-	}
-
-	if(currmode == PM_JAMMER){
-		mvaddstr(getmaxy(stdscr)-1, 0, blanks(strlen(filename)));
+	}else if(currmode == PM_JAMMER){
+		mvaddstr(getmaxy(stdscr)-1, 0, blankstr);
 		mvaddstr(getmaxy(stdscr)-1, 0, "-- JAMMER --");
 	}
 
