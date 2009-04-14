@@ -1588,7 +1588,12 @@ void parsecmd(char cmd[]){
 		refresh();
 		endwin();
 		exit(0);
-	}else 
+	}else if(strcmp(cmd, ":quit") == 0){
+		erase();
+		refresh();
+		endwin();
+		exit(0);
+	}else
 		_setdisplay("not a tracker command!");
 	return;
 }
