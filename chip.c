@@ -47,15 +47,6 @@ const s8 sinetable[] = {
 	-71, -60, -49, -37, -25, -12
 };
 
-/*volatile struct oscillator {
-	u16	freq;
-	u16	phase;
-	u16	duty;
-	u8	waveform;
-	u8	volume;	// 0-255
-} osc[4];
-*/
-
 struct channel {
 	u8	tnum;
 	s8	transp;
@@ -234,7 +225,7 @@ void playroutine(){			// called at 50 Hz
 		u16 duty;
 		u16 slur;
 
-		// i dunno if that last condition is correct...........................................................................
+		// i dunno if that last condition is correct...........................
 		while((channel[ch].inum && !channel[ch].iwait) || channel[0].iptr == 0){
 			u8 il[2];
 

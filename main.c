@@ -1,8 +1,9 @@
 /* vi:set ts=4 sts=4 sw=4: */
 #include <stdio.h>
+#include <stdint.h>
 
 #include <SDL/SDL.h>
-#include <jack/jack.h>
+//#include <jack/jack.h>
 
 #ifndef WINDOWS
 #include <err.h>
@@ -25,14 +26,14 @@ int process(jack_nframes_t nframes, void *arg){
 
 	// For each required sample
 	for(jack_nframes_t i=0; i<nframes; i++){
-		out[i] = interrupthandler();
+		out[i] = (sample_t) interrupthandler();
 
 	}
 	return 0;
 }
 
 int srate(jack_nframes_t nframes, void *arg){
-	printf("the sample rate is now %lu/sec\n", nframes);
+	printf("the sample rate is now %d/sec\n", nframes);
 	sr=nframes;
 	return 0;
 }
@@ -47,9 +48,7 @@ void jack_shutdown(void *arg){
 
 /* SDL */
 void audiocb(void *userdata, Uint8 *buf, int len){
-	int i;
-
-	for(i = 0; i < len; i++){
+	for(int i = 0; i < len; i++){
 		buf[i] = interrupthandler();
 	}
 }
@@ -67,32 +66,27 @@ int main(int argc, char **argv){
 
 	atexit(SDL_Quit);
 
-	requested.freq = 16000;
+	requested.freq = 44100;
 	requested.format = AUDIO_U8;
-	requested.samples = 256;
+	requested.samples = 4096;
 	requested.callback = audiocb;
 	requested.channels = 1;
 
-	// comment this out to run on grace
-	//if(SDL_OpenAudio(&requested, &obtained) == -1){
-	//	err(1, "SDL_OpenAudio");
-	//}
-
-    // Actually if we don't do error checking it just works on grace and
-	//     // locally with sound :3
 	SDL_OpenAudio(&requested, &obtained);
 
 	fprintf(stderr, "freq %d\n", obtained.freq);
+	fprintf(stderr, "req. format %d\n", obtained.format);
+	fprintf(stderr, "obtained format %d\n", obtained.format);
 	fprintf(stderr, "samples %d\n", obtained.samples);
+
+	initchip();
+	initgui();
 
 	if(argc != 2){
 		loadfile("untitled.song");
 	}else{
 		loadfile(argv[1]);
 	}
-
-	initchip();
-	initgui();
 
 	SDL_PauseAudio(0);
 
@@ -104,7 +98,7 @@ int main(int argc, char **argv){
 	 * JACK
 	 */
 	/*jack_client_t *client;
-	const char **ports;
+	const intptr_t **ports;
 
 	if(argc != 2){
 		loadfile("untitled.song");
@@ -146,13 +140,14 @@ int main(int argc, char **argv){
 	// display the current sample rate. once the client is activated 
 	// (see below), you should rely on your own sample rate
 	// callback (see above) for this value.
-	printf ("engine sample rate: %lu\n", jack_get_sample_rate (client));
+	printf ("engine sample rate: %d\n", jack_get_sample_rate (client));
 
 
 	sr=jack_get_sample_rate(client);
 
 	output_port = jack_port_register (client, "output", 
 					 JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
+	
 
 	// tell the JACK server that we are ready to roll
 
@@ -178,8 +173,8 @@ int main(int argc, char **argv){
 
 	guiloop();
 
-	//free (ports);
-	//jack_client_close (client);
+	free (ports);
+	jack_client_close (client);
 	
 	exit (0);*/
 }

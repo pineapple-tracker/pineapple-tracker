@@ -1,13 +1,17 @@
 /* vi:set ts=4 sts=4 sw=4: */
+#include <stdint.h>
+
 #ifndef STUFF_H
 #define STUFF_H
 #define TRACKLEN 32
 
-typedef unsigned char u8;
-typedef unsigned short u16;
-typedef char s8;
-typedef short s16;
-typedef unsigned long u32;
+typedef uint8_t u8;
+typedef uint16_t u16;
+typedef uint32_t u32;
+
+typedef int8_t s8;
+typedef int16_t s16;
+typedef int32_t s32;
 
 u8 callbacktime;
 
@@ -80,7 +84,7 @@ void display();
 
 void startplaysong(int);
 void startplaytrack(int);
-void loadfile(char *);
+int loadfile(char *);
 
 void parsecmd(char cmd[]);
 
