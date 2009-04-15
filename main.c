@@ -11,6 +11,13 @@
 
 #include "stuff.h"
 
+/* SDL */
+void audiocb(void *userdata, Uint8 *buf, int len){
+	for(int i = 0; i < len; i++){
+		buf[i] = interrupthandler();
+	}
+}
+
 /* JACK */
 /*jack_port_t *output_port;
 
@@ -46,13 +53,6 @@ void jack_shutdown(void *arg){
 	exit(1);
 }*/
 
-/* SDL */
-void audiocb(void *userdata, Uint8 *buf, int len){
-	for(int i = 0; i < len; i++){
-		buf[i] = interrupthandler();
-	}
-}
-
 int main(int argc, char **argv){
 	/*
 	 * SDL
@@ -66,9 +66,9 @@ int main(int argc, char **argv){
 
 	atexit(SDL_Quit);
 
-	requested.freq = 44100;
+	requested.freq = 16000;
 	requested.format = AUDIO_U8;
-	requested.samples = 4096;
+	requested.samples = 256;
 	requested.callback = audiocb;
 	requested.channels = 1;
 

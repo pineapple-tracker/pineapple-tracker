@@ -81,6 +81,9 @@ go into insert mode
 ctrl-a
 go to jammer mode
 
+:
+enter command line mode
+
 o
 insert a new line and go into insert mode
 
@@ -117,6 +120,21 @@ q	w	e	r	t	y	u	i	o	p
 
 escape key
 go back to normal mode
+
+
+COMMAND LINE MODE
++++++++++++++++++
+:w
+save
+
+:q
+quit
+
+:e <filename>
+edit new or existing song
+
+:<num>
+move cursor to line <num>
 
 
 
