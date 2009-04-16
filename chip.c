@@ -11,7 +11,7 @@ u8 songpos;
 u8 playsong;
 u8 playtrack;
 
-u8 j = 0;
+u8 interruptwait = 0;
 
 /*const u16 freqtable[] = {
 	0x010b, 0x011b, 0x012c, 0x013e, 0x0151, 0x0165, 0x017a, 0x0191, 0x01a9,
@@ -46,15 +46,6 @@ const s8 sinetable[] = {
 	-125, -126, -127, -126, -125, -122, -117, -112, -106, -98, -90, -81,
 	-71, -60, -49, -37, -25, -12
 };
-
-/*volatile struct oscillator {
-	u16	freq;
-	u16	phase;
-	u16	duty;
-	u8	waveform;
-	u8	volume;	// 0-255
-} osc[4];
-*/
 
 struct channel {
 	u8	tnum;
@@ -234,7 +225,7 @@ void playroutine(){			// called at 50 Hz
 		u16 duty;
 		u16 slur;
 
-		// i dunno if that last condition is correct...........................................................................
+		// i dunno if that last condition is correct...........................
 		while((channel[ch].inum && !channel[ch].iwait) || channel[0].iptr == 0){
 			u8 il[2];
 
@@ -296,25 +287,27 @@ void initchip(){
 	channel[3].inum = 0;
 }
 
-u8 interrupthandler()
+u8 interrupthandler()        // called at 9000 Hz
 {
 	u8 i;
+	u8 j = 0;
 	s16 acc;
 	static u32 noiseseed = 1;
-	u8 newbit;
+	u8 newbit = 0;
 
-	newbit = 0;
 	if(noiseseed & 0x80000000L) newbit ^= 1;
 	if(noiseseed & 0x01000000L) newbit ^= 1;
 	if(noiseseed & 0x00000040L) newbit ^= 1;
 	if(noiseseed & 0x00000200L) newbit ^= 1;
 	noiseseed = (noiseseed << 1) | newbit;
 
-	if(callbackwait){
-		callbackwait--;
-	}else{
-		playroutine();
-		callbackwait = callbacktime - 1;
+	if(!interruptwait){
+		if(callbackwait){
+			callbackwait--;
+		}else{
+			playroutine();
+			callbackwait = callbacktime - 1;
+		}
 	}
 
 	acc = 0;
@@ -346,10 +339,18 @@ u8 interrupthandler()
 				value = 0;
 				break;
 		}
-		osc[i].phase += osc[i].freq;
+
+		if(!interruptwait)
+			osc[i].phase += osc[i].freq;
 
 		acc += value * osc[i].volume; // rhs = [-8160,7905]
 	}
+
+	if(interruptwait)
+		interruptwait--;
+	else
+		interruptwait = 10;
+
 	// acc [-32640,31620]
 	return 128 + (acc >> 8);	// [1,251]
 }

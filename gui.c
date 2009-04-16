@@ -6,9 +6,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <SDL/SDL.h>
 #include <curses.h>
 #include <unistd.h>
+#include <ctype.h>
 
 #ifndef WINDOWS
 #include <err.h>
@@ -24,7 +24,7 @@
 #define ENTER 13
 
 #ifndef WINDOWS
-#define KEY_BACKSPACE 0407
+#define BACKSPACE 0x107
 #endif
 
 /*                   */
@@ -57,7 +57,6 @@ struct songline song[256];
 static int currtrack = 1, currinstr = 1;
 static int currtab = 0;
 static int octave = 4;
-//static char blankstr[1024];
 static char cmdstr[50] = "";
 static char *dispmesg = "";
 static int disptick = 0;
@@ -78,12 +77,14 @@ static char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#"
 // ** LOCAL FUNCTIONS ** //
 /*                       */
 static void _drawgui(void);
+static void _initsonglines(void);
+static void _inittracks(void);
+static void _initinstrs(void);
 static int _hexdigit(char c);
 static int _hexinc(int x);
 static int _hexdec(int x);
 static int _nextfreetrack(void);
 static int _nextfreeinstr(void);
-//static void _blanks(char *str);
 static char _nextchar(void);
 static int _char2int(char ch);
 static int _freqkey(int c);
@@ -196,6 +197,37 @@ static int _freqkey(int c){
 	return f;
 }
 
+void _initsonglines(void){
+	for(int i=0; i < songlen; i++){
+		memmove(&song[i + 0], &song[i + 1], sizeof(struct songline) * (songlen - i - 1));
+		if(i < 4){
+			song[0].track[i] = 0x000;
+			song[0].transp[i] = 0x000;
+		}
+	}
+	songlen = 1;
+}
+
+void _inittracks(void){
+	for(int i=0; i < 256; i++){
+		for(int j=0; j < TRACKLEN; j++){
+			track[i].line[j].note = 0x0000;
+			track[i].line[j].instr = 0x0000;
+			for(int k=0; k < 2; k++){
+				track[i].line[j].cmd[k] = 0x0000;
+				track[i].line[j].param[k] = 0x0000;
+			}
+		}
+	}
+}
+
+void _initinstrs(void){
+	for(int i=1; i < 256; i++){
+		instrument[i].length = 1;
+		instrument[i].line[0].cmd = '0';
+		instrument[i].line[0].param = 0;
+	}
+}
 
 void readsong(int pos, int ch, u8 *dest){ 
 	dest[0] = song[pos].track[ch];
@@ -281,7 +313,7 @@ void savefile(char *fname){
 	fclose(f);
 }
 
-void loadfile(char *fname){
+int loadfile(char *fname){
 	FILE *f;
 	char buf[1024];
 	int cmd[3];
@@ -292,13 +324,12 @@ void loadfile(char *fname){
 
 	f = fopen(fname, "r");
 	if(!f){
-		return;
+		return -1;
 	}
 
 	songlen = 1;
 	while(!feof(f) && fgets(buf, sizeof(buf), f)){
 		if(1 == sscanf(buf, "tempo: %hhd", &callbacktime)){
-			fprintf(stderr, "hey");
 			callbacktime = (u8)callbacktime;
 		}else if(9 == sscanf(buf, "songline %x %x %x %x %x %x %x %x %x",
 			&i1,
@@ -345,6 +376,7 @@ void loadfile(char *fname){
 	}
 
 	fclose(f);
+	return 0;
 }
 
 void exitgui(){
@@ -352,8 +384,6 @@ void exitgui(){
 }
 
 void initgui(){
-	int i;
-
 	initscr();
 
 	//if(setlocale(LC_CTYPE,"en_US.utf8") != NULL) _setdisplay("UTF-8 enabled!");
@@ -382,11 +412,7 @@ void initgui(){
 	// on that yet.
 	nodelay(stdscr, TRUE);
 
-	for(i = 1; i < 256; i++){
-		instrument[i].length = 1;
-		instrument[i].line[0].cmd = '0';
-		instrument[i].line[0].param = 0;
-	}
+	_initinstrs();
 
 	atexit(exitgui);
 }
@@ -1595,7 +1621,32 @@ void parsecmd(char cmd[]){
 		refresh();
 		endwin();
 		exit(0);
-	}else
+	}else if(cmd[1]=='e' && cmd[2]==' '){
+		// if the file doesn't exist, clear the song
+		if(loadfile(cmd+3)){
+			_initsonglines();
+			_inittracks();
+			_initinstrs();
+		}
+	}else if(isdigit(cmd[1])){
+		int gotoline = atoi(cmd+1);
+
+		switch(currtab){
+			case 0:
+				if(gotoline>songlen){ songy=songlen-1; }
+				else{ songy = gotoline; }
+				break;
+			case 1:
+				if(gotoline>tracklen){ tracky=tracklen-1; }
+				else{ tracky = gotoline; }
+				break;
+			case 2:
+				if(gotoline>instrument[currinstr].length){
+					instry=instrument[currinstr].length-1; }
+				else{ instry = gotoline; }
+				break;
+		}
+	}else 
 		_setdisplay("not a tracker command!");
 	return;
 }
@@ -1618,8 +1669,11 @@ void cmdlineroutine(){
 			case ENTER:
 				parsecmd(cmdstr);
 				goto end;
-			case KEY_BACKSPACE:
+			case BACKSPACE:
+				_setdisplay("\\o/");
 				cmdstr[strlen(cmdstr)-1] = '\0';
+				break;
+			case '\t':
 				break;
 			default:
 				strncat(cmdstr, &c, 50);
@@ -1712,6 +1766,9 @@ void executekey(int c){
 		case '.':
 			cmdrepeatnum = lastrepeat;
 			executekey(lastaction);
+			break;
+		case KEY_ESCAPE:
+			disptick = 0;
 			break;
 		case 'g':
 			if(_nextchar() == 'g'){
