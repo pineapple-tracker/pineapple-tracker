@@ -66,9 +66,9 @@ int main(int argc, char **argv){
 
 	atexit(SDL_Quit);
 
-	requested.freq = 16000;
+	requested.freq = 44100;
 	requested.format = AUDIO_U8;
-	requested.samples = 256;
+	requested.samples = 4096;
 	requested.callback = audiocb;
 	requested.channels = 1;
 
