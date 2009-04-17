@@ -349,7 +349,7 @@ u8 interrupthandler()        // called at 9000 Hz
 	if(interruptwait)
 		interruptwait--;
 	else
-		interruptwait = 10;
+		interruptwait = 2;
 
 	// acc [-32640,31620]
 	return 128 + (acc >> 8);	// [1,251]
