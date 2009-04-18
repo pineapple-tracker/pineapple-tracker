@@ -26,7 +26,7 @@ u8 interruptwait = 0;
 	0x70a3, 0x7756, 0x7e6f
 };*/
 
-const u16 freqtable[] = {
+u16 freqtable[] = {
 	0x0085, 0x008d, 0x0096, 0x009f, 0x00a8, 0x00b2, 0x00bd, 0x00c8, 0x00d4,
 	0x00e1, 0x00ee, 0x00fc, 0x010b, 0x011b, 0x012c, 0x013e, 0x0151, 0x0165,
 	0x017a, 0x0191, 0x01a9, 0x01c2, 0x01dd, 0x01f9, 0x0217, 0x0237, 0x0259,
@@ -163,7 +163,8 @@ void playroutine(){			// called at 50 Hz
 		if(trackwait){
 			trackwait--;
 		}else{
-			trackwait = 4;
+			trackwait = 12;
+			//trackwait = 4;
 
 			if(!trackpos){
 				if(playsong){
@@ -272,6 +273,10 @@ void playroutine(){			// called at 50 Hz
 }
 
 void initchip(){
+	/*int i;
+	for(i = 0; i < 84; i++)
+		freqtable[i] = freqtable[i] / 3;
+		*/
 	trackwait = 0;
 	trackpos = 0;
 	playsong = 0;
@@ -301,14 +306,14 @@ u8 interrupthandler()        // called at 9000 Hz
 	if(noiseseed & 0x00000200L) newbit ^= 1;
 	noiseseed = (noiseseed << 1) | newbit;
 
-	if(!interruptwait){
+	//if(!interruptwait){
 		if(callbackwait){
 			callbackwait--;
 		}else{
 			playroutine();
 			callbackwait = callbacktime - 1;
 		}
-	}
+	//}
 
 	acc = 0;
 	for(i = 0; i < 4; i++){
@@ -340,16 +345,17 @@ u8 interrupthandler()        // called at 9000 Hz
 				break;
 		}
 
-		if(!interruptwait)
-			osc[i].phase += osc[i].freq;
+		//if(!interruptwait)
+		osc[i].phase += osc[i].freq;
 
 		acc += value * osc[i].volume; // rhs = [-8160,7905]
 	}
 
-	if(interruptwait)
+	/*if(interruptwait)
 		interruptwait--;
 	else
 		interruptwait = 2;
+		*/
 
 	// acc [-32640,31620]
 	return 128 + (acc >> 8);	// [1,251]
