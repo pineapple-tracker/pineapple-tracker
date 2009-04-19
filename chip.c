@@ -26,6 +26,7 @@ u8 interruptwait = 0;
 	0x70a3, 0x7756, 0x7e6f
 };*/
 
+// for 16kHz
 /*
 const u16 freqtable[] = {
 	0x0085, 0x008d, 0x0096, 0x009f, 0x00a8, 0x00b2, 0x00bd, 0x00c8, 0x00d4,
@@ -41,6 +42,7 @@ const u16 freqtable[] = {
 };
 */
 
+// for 48kHz
 const u16 freqtable[] = {
 	0x002c, 0x002f, 0x0032, 0x0035, 0x0038, 0x003b, 0x003f, 0x0042, 0x0046,
 	0x004b, 0x004f, 0x0054, 0x0059, 0x005e, 0x0064, 0x006a, 0x0070, 0x0077,
@@ -135,7 +137,7 @@ void runcmd(u8 ch, u8 cmd, u8 param){
 				channel[ch].vpos = 0;
 			}
 			channel[ch].vdepth = param >> 4;
-			channel[ch].vrate = param & 15;
+			channel[ch].vrate = (param/2) & 15;
 			break;
 	}
 }

@@ -23,6 +23,8 @@ branch?
 
 * clean up gui.c someday
 
+* make a frequency table for 44.1 khz
+
 bugs:
 ----
 * when switching to + or = in instrument view, the note is sometimes out of
