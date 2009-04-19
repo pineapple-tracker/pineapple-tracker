@@ -96,8 +96,8 @@ change tempo
 J K
 decrement or increment whatever is under the cursor
 
-H L
-decrement or increment by octave if there is a note under the cursor
+H M L
+move cursor to the top, middle, or bottom of the screen
 
 enter key
 play song or phrase, depending on what column you're in

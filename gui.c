@@ -1669,10 +1669,12 @@ void cmdlineroutine(){
 			case ENTER:
 				parsecmd(cmdstr);
 				goto end;
+#ifndef WINDOWS
 			case BACKSPACE:
 				_setdisplay("\\o/");
 				cmdstr[strlen(cmdstr)-1] = '\0';
 				break;
+#endif
 			case '\t':
 				break;
 			default:
@@ -1769,6 +1771,51 @@ void executekey(int c){
 			break;
 		case KEY_ESCAPE:
 			disptick = 0;
+			break;
+		case 'H':
+			switch(currtab){
+				case 0:
+					songy = songoffs;
+					break;
+				case 1:
+					tracky = trackoffs;
+					break;
+				case 2:
+					instry = instroffs;
+					break;
+			}
+			break;
+		case 'M':
+			switch(currtab){
+				case 0:
+					songy = (songlen+1<getmaxy(stdscr)-2)?
+							songlen/2 : (getmaxy(stdscr)-2+songoffs)/2;
+					break;
+				case 1:
+					tracky = (tracklen+1<getmaxy(stdscr)-2)?
+							tracklen/2 : (getmaxy(stdscr)-2+trackoffs)/2;
+					break;
+				case 2:
+					instry = (instrument[currinstr].length-1<getmaxy(stdscr)-2)?
+							(instrument[currinstr].length-1)/2 : (getmaxy(stdscr)-2+instroffs)/2;
+					break;
+			}
+			break;
+		case 'L':
+			switch(currtab){
+				case 0:
+					songy = (songlen+1<getmaxy(stdscr)-2)?
+							songlen-1 : getmaxy(stdscr)-3+songoffs;
+					break;
+				case 1:
+					tracky = (tracklen+1<getmaxy(stdscr)-2)?
+							tracklen-1 : getmaxy(stdscr)-3+trackoffs;
+					break;
+				case 2:
+					instry = (instrument[currinstr].length-1<getmaxy(stdscr)-2)?
+							instrument[currinstr].length-1 : getmaxy(stdscr)-2+instroffs;
+					break;
+			}
 			break;
 		case 'g':
 			if(_nextchar() == 'g'){
@@ -2188,7 +2235,7 @@ void executekey(int c){
 				}
 			}
 			break;
-		case 'H':
+		/*case 'H':
 			if(currtab==1){
 				if(trackx==0){
 					act_octavedec();
@@ -2209,7 +2256,7 @@ void executekey(int c){
 					act_octaveinc();
 				}
 			}
-			break;
+			break;*/
 		case CTRL('J'):
 			if(currtab == 2){
 				act_viewinstrdec();
@@ -2590,16 +2637,7 @@ void _drawgui(){
 	}
 
 	mvaddstr(1, 0, "Song");
-	drawsonged(0, 1, lines - 1);
-
-	/*snprintf(buf, sizeof(buf), "Track %02x {}", currtrack);
-	mvaddstr(1, 29, buf);*/
-
-
-	/*if(currbutt > -1){
-		snprintf(buf, sizeof(buf), "joybutton: %d", currbutt);
-		mvaddstr(2, 0, buf);
-	}*/
+	drawsonged(0, 1, lines - 2);
 
 	if(disptick > 0){
 		_display();
@@ -2619,10 +2657,6 @@ void _drawgui(){
 		clrtoeol();
 		mvaddstr(getmaxy(stdscr) - 1, 0, cmdstr);
 	}
-
-	/*if(cmdmode){
-		mvaddstr(getmaxy(stdscr)-1, 0, cmdstr);
-	}*/
     
 	switch(currtab){
 		case 0:
