@@ -27,8 +27,7 @@ u8 interruptwait = 0;
 };*/
 
 // for 16kHz
-/*
-const u16 freqtable[] = {
+/*const u16 freqtable[] = {
 	0x0085, 0x008d, 0x0096, 0x009f, 0x00a8, 0x00b2, 0x00bd, 0x00c8, 0x00d4,
 	0x00e1, 0x00ee, 0x00fc, 0x010b, 0x011b, 0x012c, 0x013e, 0x0151, 0x0165,
 	0x017a, 0x0191, 0x01a9, 0x01c2, 0x01dd, 0x01f9, 0x0217, 0x0237, 0x0259,
@@ -39,8 +38,7 @@ const u16 freqtable[] = {
 	0x13e9, 0x1518, 0x1659, 0x17ad, 0x1916, 0x1a94, 0x1c28, 0x1dd5, 0x1f9b,
 	0x217c, 0x237a, 0x2596, 0x27d3, 0x2a31, 0x2cb3, 0x2f5b, 0x322c, 0x3528,
 	0x3851, 0x3bab, 0x3f37
-};
-*/
+};*/
 
 // for 48kHz
 const u16 freqtable[] = {
@@ -112,13 +110,13 @@ void runcmd(u8 ch, u8 cmd, u8 param){
 			channel[ch].iptr = param;
 			break;
 		case 's':
-			channel[ch].bendd = param;
+			channel[ch].bendd = (param/3);
 			break;
 		case 'm':
 			channel[ch].dutyd = param << 6;
 			break;
 		case 't':
-			channel[ch].iwait = param;
+			channel[ch].iwait = (param*2);
 			break;
 		case 'v':
 			osc[ch].volume = param;
@@ -133,11 +131,13 @@ void runcmd(u8 ch, u8 cmd, u8 param){
 			channel[ch].inote = param;
 			break;
 		case '~':
+			//if(channel[ch].vdepth != (param >> 4)){
 			if(channel[ch].vdepth != (param >> 4)){
 				channel[ch].vpos = 0;
 			}
+			//channel[ch].vdepth = param >> 4;
 			channel[ch].vdepth = param >> 4;
-			channel[ch].vrate = (param/2) & 15;
+			channel[ch].vrate = (param/2) & 0xf;
 			break;
 	}
 }

@@ -9,10 +9,6 @@ Keybindings:
 	* u - undo
 	* find&replace
 	* porous paste
-	* we need to be able to select the octave and note seperately in track tab,
-		so we can change them seperately with 'J' and 'K'
-		-- this isn't so essential now that there is H and L to alter notes by
-		octave
 
 * control with a gamepad
 
@@ -22,6 +18,9 @@ Keybindings:
 branch?
 
 * clean up gui.c someday
+	* I tried to make a modes.c file for jammermode(), insertmode(), etc. but
+	it's kind of complicated cause those functions use a lot variables from
+	gui.c... I'd like to figure out how to seperate them, though
 
 * make a frequency table for 44.1 khz
 
