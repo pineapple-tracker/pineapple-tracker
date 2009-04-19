@@ -1163,6 +1163,7 @@ void act_notedec(void){
 	}
 }
 
+// TODO: make octaveinc/dec wrap around
 void act_octaveinc(void){
 	if(currtab==1){
 		if( track[currtrack].line[tracky].note+12 < 97 ){
@@ -1772,6 +1773,30 @@ void executekey(int c){
 		case KEY_ESCAPE:
 			disptick = 0;
 			break;
+		// TODO: the cursor blocks ^y and ^e
+		case CTRL('Y'):
+			switch(currtab){
+				case 0:
+					if(songoffs)
+						songoffs--;
+				case 1:
+					if(trackoffs)
+						trackoffs--;
+				case 2:
+					if(instroffs)
+						instroffs--;
+			}
+			break;
+		case CTRL('E'):
+			switch(currtab){
+				case 0:
+					songoffs++;
+				case 1:
+					trackoffs++;
+				case 2:
+					instroffs++;
+			}
+			break;
 		case 'H':
 			switch(currtab){
 				case 0:
@@ -2235,28 +2260,6 @@ void executekey(int c){
 				}
 			}
 			break;
-		/*case 'H':
-			if(currtab==1){
-				if(trackx==0){
-					act_octavedec();
-				}
-			}else if(currtab==2){
-				if(instrx==1 || instrx == 2){
-					act_octavedec();
-				}
-			}
-			break;
-		case 'L':
-			if(currtab==1){
-				if(trackx==0){
-					act_octaveinc();
-				}
-			}else if(currtab==2){
-				if(instrx==1 || instrx == 2){
-					act_octaveinc();
-				}
-			}
-			break;*/
 		case CTRL('J'):
 			if(currtab == 2){
 				act_viewinstrdec();

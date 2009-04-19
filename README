@@ -99,6 +99,9 @@ decrement or increment whatever is under the cursor
 H M L
 move cursor to the top, middle, or bottom of the screen
 
+ctrl-y ctrl-e
+move the screen up and down without moving the cursor
+
 enter key
 play song or phrase, depending on what column you're in
 
