@@ -1773,28 +1773,54 @@ void executekey(int c){
 		case KEY_ESCAPE:
 			disptick = 0;
 			break;
-		// TODO: the cursor blocks ^y and ^e
 		case CTRL('Y'):
 			switch(currtab){
 				case 0:
-					if(songoffs)
+					if(songoffs>0){
+						if(songy==getmaxy(stdscr)-3+songoffs)
+							songy--;
 						songoffs--;
+					}
+					break;
 				case 1:
-					if(trackoffs)
+					if(trackoffs>0){
+						if(tracky==getmaxy(stdscr)-3+trackoffs)
+							tracky--;
 						trackoffs--;
+					}
+					break;
 				case 2:
-					if(instroffs)
+					if(instroffs>0){
+						if(instry==getmaxy(stdscr)-3+instroffs)
+							instry--;
 						instroffs--;
+					}
+					break;
 			}
 			break;
 		case CTRL('E'):
 			switch(currtab){
 				case 0:
-					songoffs++;
+					if(songy<=songlen-2){
+						if(songy==songoffs)
+							songy++;
+						songoffs++;
+					}
+					break;
 				case 1:
-					trackoffs++;
+					if(tracky<=tracklen-2){
+						if(tracky==trackoffs)
+							tracky++;
+						trackoffs++;
+					}
+					break;
 				case 2:
-					instroffs++;
+					if(instry<=instrument[currinstr].length-2){
+						if(instry==instroffs)
+							instry++;
+						instroffs++;
+					}
+					break;
 			}
 			break;
 		case 'H':
@@ -1838,7 +1864,7 @@ void executekey(int c){
 					break;
 				case 2:
 					instry = (instrument[currinstr].length-1<getmaxy(stdscr)-2)?
-							instrument[currinstr].length-1 : getmaxy(stdscr)-2+instroffs;
+							instrument[currinstr].length-1 : getmaxy(stdscr)-3+instroffs;
 					break;
 			}
 			break;
