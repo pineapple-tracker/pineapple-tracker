@@ -1,7 +1,7 @@
 enhancements:
 -------------
 Keybindings:
-	* comand mode
+	* command mode
 		* get backspace to work
 		* tab completion (right now it ignores tabs)
 	* visual mode for copy/paste like in lgpt
