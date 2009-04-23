@@ -1563,6 +1563,7 @@ void parsecmd(char cmd[]){
 /* vi cmdline mode */
 void cmdlinemode(){
 	u16 c;
+	keypad(stdscr, TRUE);
 
 	currmode = PM_CMDLINE;
 	strncat(cmdstr, ":", 50);
@@ -1579,7 +1580,7 @@ void cmdlinemode(){
 				parsecmd(cmdstr);
 				goto end;
 #ifndef WINDOWS
-			case BACKSPACE:
+			case 0x07:
 				_setdisplay("\\o/");
 				cmdstr[strlen(cmdstr)-1] = '\0';
 				break;
@@ -1593,6 +1594,7 @@ void cmdlinemode(){
 	}
 end:
 	strcpy(cmdstr, "");
+	keypad(stdscr, FALSE);
 	return;
 }
 
