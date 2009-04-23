@@ -12,10 +12,10 @@ LIBS := -O2 $(shell pkg-config --libs sdl) \
 
 all: pineapple-tracker player
 
-pineapple-tracker:	main.o chip.o gui.o modes.o
+pineapple-tracker:	main.o chip.o gui.o
 	$(CC) -o $@ $^ ${LIBS}
 
-player:		player.o chip.o gui.o modes.o
+player:		player.o chip.o gui.o
 	$(CC) -o $@ $^ ${LIBS}
 
 %.o:	%.c stuff.h gui.h Makefile

@@ -63,4 +63,3 @@ void act_viewinstrdec(void);
 void act_viewinstrinc(void);
 void drawgui(void);
 int freqkey(int c);
-

@@ -1674,7 +1674,7 @@ void jammermode(void){
 				if(octave < 8) octave++;
 				break;
 			default:
-				x = _freqkey(c);
+				x = freqkey(c);
 
 				if(x > 0){
 					iedplonk(x, currinstr);
@@ -1682,7 +1682,7 @@ void jammermode(void){
 
 				break;
 		}
-		_drawgui();
+		drawgui();
 		usleep(10000);
 	}
 }
@@ -1698,7 +1698,7 @@ void visualmode(void){
 				currmode = PM_NORMAL;
 				break;
 		}
-		_drawgui();
+		drawgui();
 	}
 	attrset(A_BOLD);
 	return;
