@@ -15,6 +15,12 @@ Directions
 		Move cursor to the highest, middle, or lowest line on the screen.
 
 Window movement
+	] [
+		Switch to next/last instrument from any column.
+
+	} {
+		Switch to next/last phrase from any column.
+
 	^d ^u
 		Scroll down/up eight lines.
 
@@ -25,9 +31,12 @@ Window movement
 		Switch current column to the left/right.
 
 	^k ^j
-		Switch to next/last phrase or instrument.
+		Switch to next/last phrase or instrument based on the current column.
 
 Modifying commands
+	) (
+		Increase/Decrease song tempo.
+
 	a
 		Add a line to the end of the current song/instrument.
 
@@ -108,14 +117,8 @@ Mode commands
 		Enter visual line mode.
 
 We dont know the category yet Commands
-	<	
-		Decrease current octave.
-	>	
-		Increase current octave.
-	[   
-		Decrease current instrument.
-	]   
-		Increase current instrument.
+	> <
+		Increase/Decrease current octave.
 
 
 ***************
@@ -180,7 +183,7 @@ Mode commands
 * VISUAL LINE MODE *
 ********************
 	h j k l
-		Move cursor left/down/up/right in current column. J and K modify the
+		Move cursor left/down/up/right in current column. j and k modify the
 		selection.
 
 	y
