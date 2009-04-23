@@ -28,7 +28,9 @@ int songx, songy, songoffs, songlen;
 int trackx, tracky, trackoffs, tracklen;
 int currtrack, currinstr;
 int currtab;
+int saved;
 
+char filename[1024];
 char *validcmds;
 char *keymap[2];
 
@@ -36,30 +38,16 @@ struct instrument instrument[256], iclip[256];
 struct track track[256], tclip[256];
 struct songline song[256];
 
-/*                  */
-// ** LOCAL VARS ** //
-/*                  */
-/*
-static int currtrack = 1, currinstr = 1;
-static int currtab = 0;
-static int octave = 4;
-static char cmdstr[50] = "";
-static char *dispmesg = "";
-static int disptick = 0;
-static int cmdrepeat = 0;
-static int cmdrepeatnum = 1;
-static int lastrepeat = 1;
-static int lastaction;
-static int f;
-static int saved = 1;
-
-
-static int currmode = PM_NORMAL;
-
-static char filename[1024];
-*/
-
 void act_viewinstrdec(void);
 void act_viewinstrinc(void);
+void act_viewphrasedec(void);
+void act_viewphraseinc(void);
+void act_mvleft(void);
+void act_mvdown(void);
+void act_mvup(void);
+void act_mvright(void);
+
 void drawgui(void);
 int freqkey(int c);
+char nextchar(void);
+void savefile(char *fname);
