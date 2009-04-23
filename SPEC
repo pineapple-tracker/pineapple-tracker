@@ -1,0 +1,177 @@
+Specification for pineappletracker's user interface
+
+
+***************
+* NORMAL MODE *
+***************
+Directions
+	gg G
+		Move cursor to the top/bottom of the current column.
+
+	h j k l
+		Move cursor left/down/up/right in current column.
+
+	H M L
+		Move cursor to the highest, middle, or lowest line on the screen.
+
+Window movement
+	^d ^u
+		Scroll down/up eight lines.
+
+	^e ^y
+		Scroll current window up/down without moving the cursor.
+
+	^f ^b
+		Switch to next/last phrase or instrument.
+
+	^h ^l
+		Switch current column to the left/right.
+
+Modifying commands
+	a
+		Add a line to the end of the current song/instrument.
+
+	dd D
+		Delete current line. If track column is focused, just clear it.
+
+	d<direction>
+		Delete everything towards the direction. If track column is focused,
+		just clear everything.
+
+	J K
+		Increment/Decrement whatever is under the cursor. Wrap around at
+		min/max values.
+
+	p
+		Paste whatever is in the current column's paste buffer onto this line.
+		If the whole line was yanked into the buffer, replace the whole
+		existing line with the new one. Otherwise, replace only the 
+
+	r
+		Replace whatever is under the cursor with a note or number. Kind of
+		like going into insert mode for just one insertion, then returning.
+
+	x
+		Clear whatever is under the cursor.
+
+	X
+		Clear the whole line under the cursor.
+
+Yank commands
+	yy Y
+		Yank the current line into the current column's buffer.
+	
+Meta commands
+	.
+		Repeat last modifying command.
+
+	<number>
+		Execute the following command that many times.
+
+	^r
+		Redo the last undo'd command. Repeat to go ahead if there were
+		multiple undos.
+
+	u
+		Undo the last modifying command. Repeat to go further back.
+
+Player commands
+	<Enter>
+		Play song/track depending on the current column.
+
+	<Space Bar>
+		Stop playback.
+
+Mode commands
+	:
+		Enter command line mode.
+
+	^a
+		Enter jammer mode.
+
+	i
+		Enter insert mode.
+
+	o
+		Insert new line then go into insert mode. If the current column is the
+		track column, just move the cursor down one line and enter insert
+		mode.
+
+	v
+		Enter visual mode.
+
+	V
+		Enter visual line mode.
+
+
+***************
+* INSERT MODE *
+***************
+Cursor/Window movement
+	h j k l
+		Move cursor left/down/up/right in current column.
+
+Modifying commands
+	<note>
+		If the cursor is on top of a note, replace it.
+
+	<number>
+		If the cursor is on top of a number, replace it.
+	
+
+*********************
+* COMMAND LINE MODE *
+*********************
+	<number>
+		Move cursor to that line number.
+
+	q
+		Quit.
+
+	w (filename)
+		Save. If filename is given, save to that file instead.
+
+Mode commands
+	<Escape>
+		Enter normal mode.
+
+
+***************
+* JAMMER MODE *
+***************
+	<note>
+		Play the note with the current instrument.
+
+Mode commands
+	<Escape>
+		Enter normal mode.
+
+
+***************
+* VISUAL MODE *
+***************
+	h j k l
+		Move cursor left/down/up/right in current column. Modify selection
+		based on where the cursor was when visual mode was entered.
+
+	y
+		Yank whatever is under the cursor into the current column's buffer.
+
+Mode commands
+	<Escape>
+		Enter normal mode.
+
+
+********************
+* VISUAL LINE MODE *
+********************
+	h j k l
+		Move cursor left/down/up/right in current column. J and K modify the
+		selection.
+
+	y
+		Yank whatever is under the cursor into the current column's buffer.
+
+Mode commands
+	<Escape>
+		Enter normal mode.
