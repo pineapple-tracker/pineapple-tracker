@@ -44,9 +44,10 @@ void _setdisplay(char *str);
 
 int currmode = PM_NORMAL;
 int octave = 4;
-int songx, songy, songoffs, songlen = 1;
-int trackx, tracky, trackoffs, tracklen = TRACKLEN;
-int currtrack, currinstr = 1;
+int songlen = 1;
+int tracklen = TRACKLEN;
+int currtrack = 1;
+int currinstr = 1;
 int currtab = 0;
 
 // 0 is like a blank command
@@ -1658,8 +1659,8 @@ void executekey(int c){
 		c != 'j' && 
 		c != 'k' && 
 		c != 'l' && 
-		c != CTRL('F') && 
-		c != CTRL('B') && 
+		c != CTRL('D') && 
+		c != CTRL('U') && 
 		c != CTRL('H') && 
 		c != CTRL('L') && 
 		c != 'g' && 
@@ -2251,10 +2252,10 @@ void executekey(int c){
 			currtab++;
 			currtab %= 3;
 			break;
-		case CTRL('B'):
+		case CTRL('U'):
 			act_bigmvup();
 			break;
-		case CTRL('F'):
+		case CTRL('D'):
 			act_bigmvdown();
 			break;
 		/*case CTRL('P'):

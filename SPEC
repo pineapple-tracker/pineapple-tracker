@@ -21,11 +21,11 @@ Window movement
 	^e ^y
 		Scroll current window up/down without moving the cursor.
 
-	^f ^b
-		Switch to next/last phrase or instrument.
-
 	^h ^l
 		Switch current column to the left/right.
+
+	^k ^j
+		Switch to next/last phrase or instrument.
 
 Modifying commands
 	a
