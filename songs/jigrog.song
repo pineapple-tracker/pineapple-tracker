@@ -48,6 +48,12 @@ songline 2a 00 00 00 00 00 00 00 00
 songline 2b 00 00 00 00 00 00 00 00
 
 trackline 01 00 19 01 00 00 00 00
+trackline 01 01 19 01 00 00 00 00
+trackline 01 02 19 01 00 00 00 00
+trackline 01 03 19 01 00 00 00 00
+trackline 01 04 19 01 00 00 00 00
+trackline 01 05 19 01 00 00 00 00
+trackline 01 06 19 01 00 00 00 00
 trackline 01 08 3f 01 00 00 00 00
 trackline 01 0a 36 01 00 00 00 00
 trackline 01 0b 3f 01 00 00 00 00

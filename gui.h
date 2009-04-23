@@ -43,8 +43,8 @@ char *keymap[2] = {
 	"q2w3er5t6y7ui9o0p"
 };
 
-struct instrument instrument[256], iclip;
-struct track track[256], tclip;
+struct instrument instrument[256], iclip[256];
+struct track track[256], tclip[256];
 struct songline song[256];
 
 /*                  */
@@ -62,6 +62,8 @@ static int lastrepeat = 1;
 static int lastaction;
 static int f;
 static int saved = 1;
+
+static int tcliplen, icliplen = 0;
 
 static int currmode = PM_NORMAL;
 

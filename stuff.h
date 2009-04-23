@@ -26,6 +26,7 @@ enum {
 /* pineapple modes */
 enum {
 	PM_NORMAL,
+	PM_VISUAL,
 	PM_CMDLINE,
 	PM_INSERT,
 	PM_JAMMER
@@ -94,8 +95,8 @@ extern u8 playsong;
 extern u8 songpos;
 extern int songlen;
 
-extern struct instrument instrument[256], iclip;
-extern struct track track[256], tclip;
+extern struct instrument instrument[256], iclip[256];
+extern struct track track[256], tclip[256];
 extern struct songline song[256];
 
 #endif /* STUFF_H */

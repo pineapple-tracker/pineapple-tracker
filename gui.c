@@ -711,7 +711,7 @@ void sdlmainloop(SDL_Event event, SDL_Joystick *joystick){
 }*/
 
 /* actions are anything that can be repeated by entering a number beforehand */
-enum {
+/*enum {
 	ACT_MVLEFT,
 	ACT_MVRIGHT,
 	ACT_MVUP,
@@ -746,6 +746,7 @@ enum {
 	ACT_PARAMINC,
 	ACT_PARAMDEC
 };
+*/
 
 /* execute an action */
 int z;
@@ -1600,37 +1601,54 @@ end:
 
 /* jammer mode */
 void jammermode(void){
-		int c, x;
-		currmode = PM_JAMMER;
-		while(currmode == PM_JAMMER){
-			if((c = getch()) != ERR) switch(c){
-				case KEY_ESCAPE:
-					currmode = PM_NORMAL;
-					break;
-				case '[':
-					act_viewinstrdec();
-					break;
-				case ']':
-					act_viewinstrinc();
-					break;
-				case '<':
-					if(octave) octave--;
-					break;
-				case '>':
-					if(octave < 8) octave++;
-					break;
-				default:
-					x = _freqkey(c);
+	int c, x;
+	currmode = PM_JAMMER;
+	while(currmode == PM_JAMMER){
+		if((c = getch()) != ERR) switch(c){
+			case KEY_ESCAPE:
+				currmode = PM_NORMAL;
+				break;
+			case '[':
+				act_viewinstrdec();
+				break;
+			case ']':
+				act_viewinstrinc();
+				break;
+			case '<':
+				if(octave) octave--;
+				break;
+			case '>':
+				if(octave < 8) octave++;
+				break;
+			default:
+				x = _freqkey(c);
 
-					if(x > 0){
-						iedplonk(x, currinstr);
-					}
+				if(x > 0){
+					iedplonk(x, currinstr);
+				}
 
-					break;
-			}
-			_drawgui();
-			usleep(10000);
+				break;
 		}
+		_drawgui();
+		usleep(10000);
+	}
+}
+
+/* visual mode */
+void visualmode(void){
+	int c;
+	currmode = PM_VISUAL;
+	attrset(A_REVERSE);
+	while(currmode == PM_VISUAL){
+		if((c = getch()) != ERR) switch(c){
+			case KEY_ESCAPE:
+				currmode = PM_NORMAL;
+				break;
+		}
+		_drawgui();
+	}
+	attrset(A_BOLD);
+	return;
 }
 
 /* normal mode */
@@ -1810,18 +1828,62 @@ void executekey(int c){
 		// yank
 		case 'y':
 			c = _nextchar();
-			if(c == 'y'){
-				if(currtab == 0){
-					memcpy(&tclip, &song[songy], sizeof(struct songline));
-				}else if(currtab == 1){
-					memcpy(&tclip, &track[currtrack].line[tracky], sizeof(struct trackline));
-				}else if(currtab == 2){
-					memcpy(&iclip, &instrument[currinstr].line[instry], sizeof(struct instrline));
-				}
+			switch(c){
+				case 'y':
+					//tclip = malloc(1);
+					if(currtab == 0){
+						tcliplen = 1;
+						memcpy(&tclip, &song[songy], sizeof(struct songline));
+					}else if(currtab == 1){
+						tcliplen = 1;
+						memcpy(&tclip, &track[currtrack].line[tracky], sizeof(struct trackline));
+					}else if(currtab == 2){
+						icliplen = 1;
+						memcpy(&iclip, &instrument[currinstr].line[instry], sizeof(struct instrline));
+					}
+					break;
+				case 'j':
+					//tclip = malloc(2);
+					if(currtab == 0){
+						tcliplen = 2;
+						memcpy(&tclip[0], &song[songy], sizeof(struct songline));
+						act_mvdown();
+						memcpy(&tclip[1], &song[songy], sizeof(struct songline));
+					}else if(currtab == 1){
+						tcliplen = 2;
+						memcpy(&tclip[0], &track[currtrack].line[tracky], sizeof(struct trackline));
+						act_mvdown();
+						memcpy(&tclip[1], &track[currtrack].line[tracky], sizeof(struct trackline));
+					}else if(currtab == 2){
+						icliplen = 2;
+						memcpy(&iclip[0], &instrument[currinstr].line[instry], sizeof(struct instrline));
+						act_mvdown();
+						memcpy(&iclip[1], &instrument[currinstr].line[instry], sizeof(struct instrline));
+					}
+					break;
+				case 'k':
+					//tclip = malloc(2);
+					if(currtab == 0){
+						tcliplen = 2;
+						memcpy(&tclip[1], &song[songy], sizeof(struct songline));
+						act_mvup();
+						memcpy(&tclip[0], &song[songy], sizeof(struct songline));
+					}else if(currtab == 1){
+						tcliplen = 2;
+						memcpy(&tclip[1], &track[currtrack].line[tracky], sizeof(struct trackline));
+						act_mvup();
+						memcpy(&tclip[0], &track[currtrack].line[tracky], sizeof(struct trackline));
+					}else if(currtab == 2){
+						icliplen = 2;
+						memcpy(&iclip[1], &instrument[currinstr].line[instry], sizeof(struct instrline));
+						act_mvup();
+						memcpy(&iclip[0], &instrument[currinstr].line[instry], sizeof(struct instrline));
+					}
+					break;
 			}
 			break;
 
-		// paste
+		//paste
 		case 'p':
 			if(currtab == 0){
 				if(songlen < 256){
@@ -1835,8 +1897,10 @@ void executekey(int c){
 					memcpy(&song[songy], &tclip, sizeof(struct songline));
 				}
 			}else if(currtab == 1){
-					memcpy(&track[currtrack].line[tracky], &tclip, sizeof(struct trackline));
-				if(tracky < tracklen-1) tracky++;
+					for(int i = 0; i < tcliplen; i++){
+						memcpy(&track[currtrack].line[tracky], &tclip[i], sizeof(struct trackline));
+						if(tracky < tracklen-1) tracky++;
+					}
 			}else if(currtab == 2){
 				if(instrument[currinstr].length < 256){
 					// insert new line
@@ -2019,6 +2083,10 @@ void executekey(int c){
 		/* Enter insert mode */
 		case 'i':
 			insertmode();
+			break;
+		/* Enter visual mode */
+		case 'v':
+			visualmode();
 			break;
 		/* enter jammer mode */
 		case CTRL('A'):
@@ -2587,6 +2655,10 @@ void _drawgui(){
 		move(getmaxy(stdscr)-1,0);
 		clrtoeol();
 		mvaddstr(getmaxy(stdscr)-1, 0, "-- INSERT --");
+	}else if(currmode == PM_VISUAL){
+		move(getmaxy(stdscr)-1,0);
+		clrtoeol();
+		mvaddstr(getmaxy(stdscr)-1, 0, "-- VISUAL --");
 	}else if(currmode == PM_JAMMER){
 		move(getmaxy(stdscr)-1,0);
 		clrtoeol();
