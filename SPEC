@@ -102,11 +102,15 @@ Mode commands
 
 	V
 		Enter visual line mode.
-Other commands(?)
-	<	decrease current octave
-	>	increase current octave
-	[   decrease current instrument
-	]   increase current instrument
+We dont know the category yet Commands
+	<	
+		decrease current octave
+	>	
+		increase current octave
+	[   
+		decrease current instrument
+	]   
+		increase current instrument
 
 
 ***************
