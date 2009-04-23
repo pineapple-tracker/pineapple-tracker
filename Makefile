@@ -18,6 +18,12 @@ pineapple-tracker:	main.o chip.o gui.o
 player:		player.o chip.o gui.o
 	$(CC) -o $@ $^ ${LIBS}
 
+#pineapple-tracker:	main.o chip.o gui.o modes.o
+#	$(CC) -o $@ $^ ${LIBS}
+
+#player:		player.o chip.o gui.o modes.o
+#	$(CC) -o $@ $^ ${LIBS}
+
 %.o:	%.c stuff.h gui.h Makefile
 
 .PHONY:
