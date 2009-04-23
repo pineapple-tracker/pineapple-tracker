@@ -15,28 +15,37 @@ Directions
 		Move cursor to the highest, middle, or lowest line on the screen.
 
 Window movement
+	] [
+		Switch to next/last instrument from any column.
+
+	} {
+		Switch to next/last phrase from any column.
+
 	^d ^u
 		Scroll down/up eight lines.
 
 	^e ^y
 		Scroll current window up/down without moving the cursor.
 
-	^f ^b
-		Switch to next/last phrase or instrument.
-
 	^h ^l
 		Switch current column to the left/right.
 
+	^k ^j
+		Switch to next/last phrase or instrument based on the current column.
+
 Modifying commands
+	) (
+		Increase/Decrease song tempo.
+
 	a
 		Add a line to the end of the current song/instrument.
-
-	dd D
-		Delete current line. If track column is focused, just clear it.
 
 	d<direction>
 		Delete everything towards the direction. If track column is focused,
 		just clear everything.
+
+	dd D
+		Delete current line. If track column is focused, just clear it.
 
 	J K
 		Increment/Decrement whatever is under the cursor. Wrap around at
@@ -58,19 +67,19 @@ Modifying commands
 		Clear the whole line under the cursor.
 
 Yank commands
-	yy Y
-		Yank the current line into the current column's buffer.
-
 	y<direction>
 		Yank everything from the cursor to the direction into the current
 		column's buffer.
 
-Meta commands
-	.
-		Repeat last modifying command.
+	yy Y
+		Yank the current line into the current column's buffer.
 
+Meta commands
 	<number>
 		Execute the following command that many times.
+
+	.
+		Repeat last modifying command.
 
 	^r
 		Redo the last undo'd command. Repeat to go ahead if there were
@@ -106,15 +115,10 @@ Mode commands
 
 	V
 		Enter visual line mode.
+
 We dont know the category yet Commands
-	<	
-		decrease current octave
-	>	
-		increase current octave
-	[   
-		decrease current instrument
-	]   
-		increase current instrument
+	> <
+		Increase/Decrease current octave.
 
 
 ***************
@@ -179,7 +183,7 @@ Mode commands
 * VISUAL LINE MODE *
 ********************
 	h j k l
-		Move cursor left/down/up/right in current column. J and K modify the
+		Move cursor left/down/up/right in current column. j and k modify the
 		selection.
 
 	y

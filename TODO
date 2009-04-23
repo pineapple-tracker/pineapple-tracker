@@ -26,6 +26,9 @@ branch?
 
 * make the sampling rate not affect the pitch of notes
 
+* decide what should and should not be in stuff.h... and maybe rename it
+	to pineapple.h
+
 bugs:
 ----
 * when switching to + or = in instrument view, the note is sometimes out of

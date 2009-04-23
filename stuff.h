@@ -89,6 +89,8 @@ int loadfile(char *);
 
 void parsecmd(char cmd[]);
 
+void jammermode(void);
+
 extern u8 trackpos;
 extern u8 playtrack;
 extern u8 playsong;

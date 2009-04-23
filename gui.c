@@ -2,7 +2,69 @@
 
 /* welcome to gui.c, enjoy your stay 8-) */
 
+#include "stuff.h"
 #include "gui.h"
+
+/*                  */
+// ** LOCAL VARS ** //
+/*                  */
+static char cmdstr[50] = "";
+static char *dispmesg = "";
+static int disptick = 0;
+static int cmdrepeat = 0;
+static int cmdrepeatnum = 1;
+static int lastrepeat = 1;
+static int lastaction;
+static int f;
+static int saved = 1;
+
+static int tcliplen, icliplen = 0;
+
+static char filename[1024];
+
+static char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#", "A-", "A#", "H-"};
+
+/*                       */
+// ** LOCAL FUNCTIONS ** //
+/*                       */
+static void _initsonglines(void);
+static void _inittracks(void);
+static void _initinstrs(void);
+static int _hexdigit(char c);
+static int _hexinc(int x);
+static int _hexdec(int x);
+static int _nextfreetrack(void);
+static int _nextfreeinstr(void);
+static char _nextchar(void);
+static int _char2int(char ch);
+static void _display(void);
+void _setdisplay(char *str);
+
+/*                              */
+// ** END LOCAL DECLARATIONS ** //
+/*                              */
+
+int currmode = PM_NORMAL;
+int octave = 4;
+int songlen = 1;
+int tracklen = TRACKLEN;
+int currtrack = 1;
+int currinstr = 1;
+int currtab = 0;
+
+// 0 is like a blank command
+char *validcmds = "0dfi@smtvw~+=";
+
+/*char *keymap[2] = {
+	";oqejkixdbhmwnvsz",
+	"'2,3.p5y6f7gc9r0l/="
+};*/
+
+char *keymap[2] = {
+	"zsxdcvgbhnjm,l.;/",
+	"q2w3er5t6y7ui9o0p"
+};
+
 
 static int _hexdigit(char c){
 	if(c >= '0' && c <= '9') return c - '0';
@@ -54,15 +116,6 @@ static int _nextfreeinstr(){
 	return -1;
 }
 
-/*static void _blanks(char *str){
-	int i=1;
-	while(str[i] != '\0'){
-		str[i] = ' ';
-		i++;
-	}
-	str[i] = '\0';
-}*/
-
 /* Wait for the next keyboard char and return it.
  * This stops the screen from being updated. */
 static char _nextchar(){
@@ -85,7 +138,7 @@ static int _char2int(char ch){
 	return -1;
 }
 
-static int _freqkey(int c){
+int freqkey(int c){
 	char *s;
 	int f = -1;
 
@@ -789,7 +842,7 @@ void insertc (int c){
 			}
 		}
 	}
-	x = _freqkey(c);
+	x = freqkey(c);
 	if(x >= 0){
 		if(currtab == 2
 		&& instrx
@@ -1387,7 +1440,7 @@ void act_clritall(void){
 void insertmode(){
 	int c;
 	currmode = PM_INSERT;
-	_drawgui();
+	drawgui();
 	for(;;){
 		if((c = getch()) != ERR) switch(c){
 			case KEY_ESCAPE:
@@ -1500,7 +1553,7 @@ void insertmode(){
 				}
 				saved = 0;
 		}
-		_drawgui();
+		drawgui();
 		usleep(10000);
 	}
 }
@@ -1569,7 +1622,7 @@ void cmdlinemode(){
 	currmode = PM_CMDLINE;
 	strncat(cmdstr, ":", 50);
 	for(;;){
-		_drawgui();
+		drawgui();
 
 		c = _nextchar();
 		switch(c){
@@ -1660,8 +1713,8 @@ void executekey(int c){
 		c != 'j' && 
 		c != 'k' && 
 		c != 'l' && 
-		c != CTRL('F') && 
-		c != CTRL('B') && 
+		c != CTRL('D') && 
+		c != CTRL('U') && 
 		c != CTRL('H') && 
 		c != CTRL('L') && 
 		c != 'g' && 
@@ -2303,10 +2356,10 @@ void executekey(int c){
 			currtab++;
 			currtab %= 3;
 			break;
-		case CTRL('B'):
+		case CTRL('U'):
 			act_bigmvup();
 			break;
-		case CTRL('F'):
+		case CTRL('D'):
 			act_bigmvdown();
 			break;
 		/*case CTRL('P'):
@@ -2345,7 +2398,7 @@ void handleinput(){
 			executekey(c);
 		}
 	}
-	/* linus' original commands */
+	/* linus' commands */
 	/*}else{
 		if((c = getch()) != ERR) switch(c){
 			case 10:
@@ -2480,7 +2533,7 @@ void handleinput(){
 							}
 						}
 					}
-					x = _freqkey(c);
+					x = freqkey(c);
 					if(x >= 0){
 						if(currtab == 2
 						&& instrx
@@ -2564,7 +2617,7 @@ void handleinput(){
 						}
 					}
 				}else if(currmode == PM_INSERT || currmode == PM_JAMMER){
-					x = _freqkey(c);
+					x = freqkey(c);
 
 					if(x > 0){
 						iedplonk(x, currinstr);
@@ -2601,7 +2654,7 @@ static void _display(void){
 	mvaddch(cy+1, cx+strlen(dispmesg)+1, ACS_LRCORNER);
 }
 
-void _drawgui(){
+void drawgui(){
 	char buf[1024];
 	int lines = LINES;
 	int songcols[] = {0, 1, 3, 4, 6, 7, 9, 10, 12, 13, 15, 16, 18, 19, 21, 22};
@@ -2695,7 +2748,7 @@ void guiloop(){
 	ESCDELAY = 50;
 #endif
 	for(;;){
-		_drawgui();
+		drawgui();
 		handleinput();
 	}
 }
