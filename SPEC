@@ -31,12 +31,12 @@ Modifying commands
 	a
 		Add a line to the end of the current song/instrument.
 
-	dd D
-		Delete current line. If track column is focused, just clear it.
-
 	d<direction>
 		Delete everything towards the direction. If track column is focused,
 		just clear everything.
+
+	dd D
+		Delete current line. If track column is focused, just clear it.
 
 	J K
 		Increment/Decrement whatever is under the cursor. Wrap around at
@@ -58,19 +58,19 @@ Modifying commands
 		Clear the whole line under the cursor.
 
 Yank commands
-	yy Y
-		Yank the current line into the current column's buffer.
-
 	y<direction>
 		Yank everything from the cursor to the direction into the current
 		column's buffer.
 
-Meta commands
-	.
-		Repeat last modifying command.
+	yy Y
+		Yank the current line into the current column's buffer.
 
+Meta commands
 	<number>
 		Execute the following command that many times.
+
+	.
+		Repeat last modifying command.
 
 	^r
 		Redo the last undo'd command. Repeat to go ahead if there were
@@ -106,15 +106,16 @@ Mode commands
 
 	V
 		Enter visual line mode.
+
 We dont know the category yet Commands
 	<	
-		decrease current octave
+		Decrease current octave.
 	>	
-		increase current octave
+		Increase current octave.
 	[   
-		decrease current instrument
+		Decrease current instrument.
 	]   
-		increase current instrument
+		Increase current instrument.
 
 
 ***************
