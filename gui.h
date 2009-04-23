@@ -22,6 +22,7 @@
 #endif
 
 int currmode;
+char currcmd;
 int instrx, instry, instroffs;
 int octave;
 int songx, songy, songoffs, songlen;
@@ -30,6 +31,7 @@ int currtrack, currinstr;
 int currtab;
 int saved;
 
+char cmdstr[50];
 char filename[1024];
 char *validcmds;
 char *keymap[2];
@@ -38,16 +40,15 @@ struct instrument instrument[256], iclip[256];
 struct track track[256], tclip[256];
 struct songline song[256];
 
-void act_viewinstrdec(void);
-void act_viewinstrinc(void);
-void act_viewphrasedec(void);
-void act_viewphraseinc(void);
-void act_mvleft(void);
-void act_mvdown(void);
-void act_mvup(void);
-void act_mvright(void);
+void initsonglines(void);
+void inittracks(void);
+void initinstrs(void);
 
 void drawgui(void);
 int freqkey(int c);
+int hexinc(int x);
+int hexdec(int x);
+void insertc (int c);
 char nextchar(void);
 void savefile(char *fname);
+void setdisplay(char *str);

@@ -23,7 +23,7 @@ enum {
 	WF_SINE
 };
 
-/* pineapple modes */
+/* MODES */
 enum {
 	PM_NORMAL,
 	PM_VISUAL,
@@ -31,6 +31,11 @@ enum {
 	PM_INSERT,
 	PM_JAMMER
 };
+void cmdlinemode(void);
+void insertmode(void);
+void jammermode(void);
+void visualmode(void);
+
 
 struct trackline {
 	u8	note;
@@ -66,22 +71,22 @@ volatile struct oscillator {
 	u8	volume;	// 0-255
 } osc[4];
 
-void initchip();
-u8 interrupthandler();
+void initchip(void);
+u8 interrupthandler(void);
 
 void readsong(int pos, int ch, u8 *dest);
 void readtrack(int num, int pos, struct trackline *tl);
 void readinstr(int num, int pos, u8 *il);
 
-void silence();
+void silence(void);
 void iedplonk(int, int);
 
-void initgui();
-void guiloop();
+void initgui(void);
+void guiloop(void);
 
 //void initjoystick();
 //void sdlmainloop();
-void display();
+void display(void);
 
 void startplaysong(int);
 void startplaytrack(int);
@@ -89,9 +94,33 @@ int loadfile(char *);
 
 void parsecmd(char cmd[]);
 
-void insertmode(void);
-void jammermode(void);
-void visualmode(void);
+/* ACTIONS */
+void act_bigmvdown(void);
+void act_bigmvup(void);
+void act_clritall(void);
+void act_clronething(void);
+void act_fxdec(void);
+void act_fxinc(void);
+void act_instrdec(void);
+void act_instrinc(void);
+void act_mvdown(void);
+void act_mvleft(void);
+void act_mvright(void);
+void act_mvup(void);
+void act_notedec(void);
+void act_noteinc(void);
+void act_octavedec(void);
+void act_octaveinc(void);
+void act_paramdec(void);
+void act_paraminc(void);
+void act_trackdec(void);
+void act_trackinc(void);
+void act_transpdec(void);
+void act_transpinc(void);
+void act_viewinstrdec(void);
+void act_viewinstrinc(void);
+void act_viewphrasedec(void);
+void act_viewphraseinc(void);
 
 extern u8 trackpos;
 extern u8 playtrack;
