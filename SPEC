@@ -36,6 +36,9 @@ Window movement
 Modifying commands
 	) (
 		Increase/Decrease song tempo.
+	
+	> <
+		Increase/Decrease current octave.
 
 	a
 		Add a line to the end of the current song/instrument.
@@ -116,10 +119,6 @@ Mode commands
 	V
 		Enter visual line mode.
 
-We dont know the category yet Commands
-	> <
-		Increase/Decrease current octave.
-
 
 ***************
 * INSERT MODE *
@@ -158,6 +157,9 @@ Mode commands
 ***************
 	<note>
 		Play the note with the current instrument.
+	
+	> <
+		Incrase/Decrase current octave.
 
 Mode commands
 	<Escape>
