@@ -1,7 +1,7 @@
 #include "stuff.h"
 #include "gui.h"
 
-void parsecmd(char cmd[]){
+void _parsecmd(char cmd[]){
 	//if(cmd[1] == 'w'){
 	//switch(strcmp(cmd,
 	if(strcmp(cmd, ":w") == 0){
@@ -74,7 +74,7 @@ void cmdlinemode(void){
 				currmode = PM_NORMAL;
 				goto end;
 			case ENTER:
-				parsecmd(cmdstr);
+				_parsecmd(cmdstr);
 				goto end;
 #ifndef WINDOWS
 			case BACKSPACE:

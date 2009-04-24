@@ -33,7 +33,7 @@ static void _display(void);
 // ** END LOCAL DECLARATIONS ** //
 /*                              */
 
-char cmdstr[50] = "";
+char cmdstr[500] = "";
 
 int currmode = PM_NORMAL;
 int octave = 4;

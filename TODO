@@ -1,28 +1,11 @@
 enhancements:
 -------------
-Keybindings:
-	* command mode
-		* get backspace to work
-		* tab completion (right now it ignores tabs)
-	* visual mode for copy/paste like in lgpt
-	* record mode?
-	* u - undo
-	* find&replace
-	* porous paste
+* complete and implement the SPEC
 
 * control with a gamepad
 
-* save as.. support
-
 * port gui to libcaca.
 branch?
-
-* clean up gui.c someday
-	* I tried to make a modes.c file for jammermode(), insertmode(), etc. but
-	it's kind of complicated cause those functions use a lot variables from
-	gui.c... I'd like to figure out how to seperate them, though
-
-* make a frequency table for 44.1 khz
 
 * make the sampling rate not affect the pitch of notes
 
@@ -40,8 +23,6 @@ bugs:
 	you set it too high as well.
 
 * speed of vibrato, arpeggio, slide, faster than when we were running at 16khz
-
-* command mode crashes if too many characters are entered, we need some sort of buffer?
 
 dreams:
 ------

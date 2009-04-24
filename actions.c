@@ -1,8 +1,6 @@
 #include "stuff.h"
 #include "gui.h"
 
-int z;
-
 void act_mvleft(void){
 	switch(currtab){
 		case 0:
@@ -319,6 +317,8 @@ void act_instrdec(void){
 }
 
 void act_fxinc(void){
+	int z;
+
 	if(currtab==1){
 		currcmd = track[currtrack].line[tracky].cmd[trackx % 2];
 		// there must be a better way to do this...
@@ -352,6 +352,8 @@ void act_fxinc(void){
 }
 
 void act_fxdec(void){
+	int z;
+
 	if(currtab==1){
 		currcmd = track[currtrack].line[tracky].cmd[trackx % 2];
 		if((unsigned long)currcmd == (unsigned long)NULL){

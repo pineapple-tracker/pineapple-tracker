@@ -31,7 +31,7 @@ int currtrack, currinstr;
 int currtab;
 int saved;
 
-char cmdstr[50];
+char cmdstr[500];
 char filename[1024];
 char *validcmds;
 char *keymap[2];
