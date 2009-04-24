@@ -57,7 +57,8 @@ Modifying commands
 	p
 		Paste whatever is in the current column's paste buffer onto this line.
 		If the whole line was yanked into the buffer, replace the whole
-		existing line with the new one. Otherwise, replace only the 
+		existing line with the new one. Otherwise, replace only what is in the 
+		buffer, and leave everything else as is.
 
 	r
 		Replace whatever is under the cursor with a note or number. Kind of
@@ -74,8 +75,11 @@ Yank commands
 		Yank everything from the cursor to the direction into the current
 		column's buffer.
 
-	yy Y
+	yy 
 		Yank the current line into the current column's buffer.
+	
+	Y
+		Yank entire current column into current column's buffer.
 
 Meta commands
 	<number>
