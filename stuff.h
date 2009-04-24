@@ -31,6 +31,7 @@ enum {
 	PM_INSERT,
 	PM_JAMMER
 };
+void normalmode(int c);
 void cmdlinemode(void);
 void insertmode(void);
 void jammermode(void);

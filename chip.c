@@ -131,11 +131,9 @@ void runcmd(u8 ch, u8 cmd, u8 param){
 			channel[ch].inote = param;
 			break;
 		case '~':
-			//if(channel[ch].vdepth != (param >> 4)){
 			if(channel[ch].vdepth != (param >> 4)){
 				channel[ch].vpos = 0;
 			}
-			//channel[ch].vdepth = param >> 4;
 			channel[ch].vdepth = param >> 4;
 			channel[ch].vrate = (param/2) & 0xf;
 			//channel[ch].vrate = param & 0xf;
@@ -320,14 +318,12 @@ u8 interrupthandler()        // called at 9000 Hz
 	if(noiseseed & 0x00000200L) newbit ^= 1;
 	noiseseed = (noiseseed << 1) | newbit;
 
-	//if(!interruptwait){
 	if(callbackwait){
 		callbackwait--;
 	}else{
 		playroutine();
 		callbackwait = callbacktime - 1;
 	}
-	//}
 
 	acc = 0;
 	for(i = 0; i < 4; i++){
@@ -352,24 +348,17 @@ u8 interrupthandler()        // called at 9000 Hz
 				break;
 			case WF_SINE:
 				value = sinetable[j];
-				if(j == 64) j = 0;
+				if(j >= sizeof(sinetable)-1) j = 0;
 				else j++;
 			default:
 				value = 0;
 				break;
 		}
 
-		//if(!interruptwait)
 		osc[i].phase += osc[i].freq;
 
 		acc += value * osc[i].volume; // rhs = [-8160,7905]
 	}
-
-	/*if(interruptwait)
-		interruptwait--;
-	else
-		interruptwait = 2;
-		*/
 
 	// acc [-32640,31620]
 	return 128 + (acc >> 8);	// [1,251]

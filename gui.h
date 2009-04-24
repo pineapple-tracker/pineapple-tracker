@@ -30,6 +30,12 @@ int trackx, tracky, trackoffs, tracklen;
 int currtrack, currinstr;
 int currtab;
 int saved;
+int disptick;
+
+int cmdrepeat;
+int cmdrepeatnum;
+int lastrepeat;
+int lastaction;
 
 char cmdstr[500];
 char filename[1024];
