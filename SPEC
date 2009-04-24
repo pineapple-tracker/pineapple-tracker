@@ -40,6 +40,9 @@ Modifying commands
 	> <
 		Increase/Decrease current octave.
 
+	^
+		Yank entire current column and put it in the next empty one.
+
 	a
 		Add a line to the end of the current song/instrument.
 

@@ -1,3 +1,4 @@
+/* vi:set ts=4 sts=4 sw=4: */
 #include "stuff.h"
 #include "gui.h"
 
@@ -254,16 +255,15 @@ void act_notedec(void){
 	}
 }
 
-// TODO: make octaveinc/dec wrap around
 void act_octaveinc(void){
 	if(currtab==1){
-		if( track[currtrack].line[tracky].note+12 < 97 ){
+		if( track[currtrack].line[tracky].note+12 <= 96 ){
 			track[currtrack].line[tracky].note+=12;
 		}else{
-			track[currtrack].line[tracky].note = 96;
+			track[currtrack].line[tracky].note %= 12;
 		}
 	}else if(currtab==2){ if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '='){
-			if( instrument[currinstr].line[instry].param+12 < 97 ){
+			if( instrument[currinstr].line[instry].param+12 <= 96 ){
 				instrument[currinstr].line[instry].param+=12;
 			}else{
 				instrument[currinstr].line[instry].param = 96;
@@ -277,7 +277,7 @@ void act_octavedec(void){
 		if( track[currtrack].line[tracky].note-12 > 0 ){
 			track[currtrack].line[tracky].note-=12;
 		}else{
-			track[currtrack].line[tracky].note = (unsigned long)NULL;
+			track[currtrack].line[tracky].note = 84 + track[currtrack].line[tracky].note;
 		}
 	}else if(currtab==2){
 		if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '='){
