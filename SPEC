@@ -41,7 +41,7 @@ Modifying commands
 		Increase/Decrease current octave.
 
 	^
-		Yank entire current column and put it in the next empty one.
+		Yank entire current column and paste it in the next empty phrase or instrument.
 
 	a
 		Add a line to the end of the current song/instrument.
