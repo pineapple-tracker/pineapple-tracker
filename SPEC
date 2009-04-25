@@ -18,7 +18,7 @@ Window movement
 	] [
 		Switch to next/last instrument from any column.
 
-	} {
+		} {
 		Switch to next/last phrase from any column.
 
 	^d ^u
@@ -39,6 +39,9 @@ Modifying commands
 	
 	> <
 		Increase/Decrease current octave.
+
+	- =
+		Increase/Decrease step amount.
 
 	^
 		Yank entire current column and paste it in the next empty phrase or instrument.
@@ -125,7 +128,7 @@ Mode commands
 
 	V
 		Enter visual line mode.
-
+	
 
 ***************
 * INSERT MODE *
@@ -148,10 +151,12 @@ Modifying commands
 	<number>
 		Move cursor to that line number.
 
-	q
+	:q
+	:quit
 		Quit.
 
-	w (filename)
+	:w (filename) 
+	:write (filename)
 		Save. If filename is given, save to that file instead.
 
 Mode commands
