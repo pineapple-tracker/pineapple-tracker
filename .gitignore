@@ -1,10 +1,7 @@
 *.o
 *.swp
-tracker
+*.log
 pineapple-tracker
 player
 songs
-autom4te.cache
-*.log
-config.status
 tags

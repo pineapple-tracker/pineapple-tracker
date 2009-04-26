@@ -51,7 +51,6 @@ char *keymap[2] = {
 	"q2w3er5t6y7ui9o0p"
 };
 
-
 /* hexinc and hexdec wrap around */
 int hexinc(int x){
 	return (x >= 0 && x <= 14)? x+1 : 0;
@@ -59,7 +58,6 @@ int hexinc(int x){
 int hexdec(int x){
 	return (x >= 1 && x <= 15)? x-1 : 15;
 }
-
 
 /* Wait for the next keyboard char and return it.
  * This stops the screen from being updated. */
@@ -307,12 +305,13 @@ void initgui(){
 	// is one tenth of a second, which is too long for our purposes.
 	//
 	// Right now we are calling usleep() whenever we use getch() in a loop so
-	// the cpu won't spin. This solution isn't the best, for two reasons:
+	// the cpu won't spin. This solution isn't the best, for three reasons:
 	//    1. We're still wasting a little bit of cpu!!!!!
 	//    2. It is possible to enter keys faster than the usleep time. It's
 	//       especially easy to do this by setting your key repeat rate really
 	//       high and moving up or down, and the screen will lag a little.
-	// 
+	//    3. nextchar() prevents the screen from being updated.
+	//
 	// Because of these two small problems, maybe we should eventually use
 	// keyboard interrupts to trigger gui events. I haven't done any research
 	// on that yet.
@@ -708,44 +707,6 @@ void sdlmainloop(SDL_Event event, SDL_Joystick *joystick){
 	}
 }*/
 
-/* actions are anything that can be repeated by entering a number beforehand */
-/*enum {
-	ACT_MVLEFT,
-	ACT_MVRIGHT,
-	ACT_MVUP,
-	ACT_MVDOWN,
-	ACT_BIGMVUP,
-	ACT_BIGMVDOWN,
-
-	ACT_VIEWPHRASEINC,
-	ACT_VIEWPHRASEDEC,
-	ACT_VIEWINSTRINC,
-	ACT_VIEWINSTRDEC,
-	ACT_ADDLINE,
-	ACT_DELLINE,
-	ACT_CLRONETHING,
-	ACT_CLRITALL,
-
-	// song view
-	ACT_TRACKINC,
-	ACT_TRACKDEC,
-	ACT_TRANSPINC,
-	ACT_TRANSPDEC,
-
-	// phrase view
-	ACT_NOTEINC,
-	ACT_NOTEDEC,
-	ACT_OCTAVEINC,
-	ACT_OCTAVEDEC,
-	ACT_INSTRINC,
-	ACT_INSTRDEC,
-	ACT_FXINC,
-	ACT_FXDEC,
-	ACT_PARAMINC,
-	ACT_PARAMDEC
-};
-*/
-
 /* main input loop */
 void handleinput(){
 	int c;
@@ -1107,7 +1068,6 @@ void drawgui(){
 		disptick--;
 	}
 }
-
 
 void guiloop(){
 #ifndef WINDOWS

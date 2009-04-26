@@ -159,7 +159,7 @@ Mode commands
 		Play the note with the current instrument.
 	
 	> <
-		Incrase/Decrase current octave.
+		Increase/Decrease current octave.
 
 Mode commands
 	<Escape>
