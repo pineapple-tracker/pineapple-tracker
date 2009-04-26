@@ -18,7 +18,7 @@ Window movement
 	] [
 		Switch to next/last instrument from any column.
 
-		} {
+	} {
 		Switch to next/last phrase from any column.
 
 	^d ^u

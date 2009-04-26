@@ -8,15 +8,15 @@
 /*                  */
 // ** LOCAL VARS ** //
 /*                  */
-static char *dispmesg = "";
+char *dispmesg = "";
 
 static char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#", "A-", "A#", "H-"};
 
 /*                       */
 // ** LOCAL FUNCTIONS ** //
 /*                       */
-static int _char2int(char ch);
-static void _display(void);
+int _char2int(char ch);
+void _display(void);
 
 /*                              */
 // ** END LOCAL DECLARATIONS ** //
@@ -963,7 +963,7 @@ void setdisplay(char *str){
 }
 
 // display dispmesg in the center of the screen
-static void _display(void){
+void _display(void){
 	int cx = (getmaxx(stdscr)/2)-(strlen(dispmesg)/2)-1;
 	int cy = getmaxy(stdscr)/2;
 
