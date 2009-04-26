@@ -26,6 +26,9 @@ bugs:
 
 * M acts weird
 
+* backspace doesn't work on some computers (so far i've only tried it on a
+	gentoo computer in the office). -nik
+
 dreams:
 ------
 config files

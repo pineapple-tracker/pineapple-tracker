@@ -1,20 +1,21 @@
+/* vi:set ts=4 sts=4 sw=4: */
 #include "stuff.h"
 #include "gui.h"
 
-static int f;
-static int tcliplen, icliplen = 0;
+int f;
+int tcliplen, icliplen = 0;
 
-static int _hexdigit(char c);
-static int _nextfreetrack(void);
-static int _nextfreeinstr(void);
+int _hexdigit(char c);
+int _nextfreetrack(void);
+int _nextfreeinstr(void);
 
-static int _hexdigit(char c){
+int _hexdigit(char c){
 	if(c >= '0' && c <= '9') return c - '0';
 	if(c >= 'a' && c <= 'f') return c - 'a' + 10;
 	return -1;
 }
 
-static int _nextfreetrack(){
+int _nextfreetrack(){
 	int skiptherest = 0;
 
 	for(int i = 1; i <= 0xff; i++){
@@ -40,7 +41,7 @@ static int _nextfreetrack(){
 	return -1;
 }
 
-static int _nextfreeinstr(){
+int _nextfreeinstr(){
 	for(int i = 1; i <= 0xff; i++){
 		if(instrument[i].line[0].cmd == '0')
 			return i;

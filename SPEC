@@ -18,7 +18,7 @@ Window movement
 	] [
 		Switch to next/last instrument from any column.
 
-	} {
+		} {
 		Switch to next/last phrase from any column.
 
 	^d ^u
@@ -40,6 +40,12 @@ Modifying commands
 	> <
 		Increase/Decrease current octave.
 
+	- =
+		Increase/Decrease step amount.
+
+	^
+		Yank entire current column and paste it in the next empty phrase or instrument.
+
 	a
 		Add a line to the end of the current song/instrument.
 
@@ -57,7 +63,8 @@ Modifying commands
 	p
 		Paste whatever is in the current column's paste buffer onto this line.
 		If the whole line was yanked into the buffer, replace the whole
-		existing line with the new one. Otherwise, replace only the 
+		existing line with the new one. Otherwise, replace only what is in the 
+		buffer, and leave everything else as is.
 
 	r
 		Replace whatever is under the cursor with a note or number. Kind of
@@ -74,8 +81,11 @@ Yank commands
 		Yank everything from the cursor to the direction into the current
 		column's buffer.
 
-	yy Y
+	yy 
 		Yank the current line into the current column's buffer.
+	
+	Y
+		Yank entire current column into current column's buffer.
 
 Meta commands
 	<number>
@@ -118,7 +128,7 @@ Mode commands
 
 	V
 		Enter visual line mode.
-
+	
 
 ***************
 * INSERT MODE *
@@ -141,10 +151,12 @@ Modifying commands
 	<number>
 		Move cursor to that line number.
 
-	q
+	:q
+	:quit
 		Quit.
 
-	w (filename)
+	:w (filename) 
+	:write (filename)
 		Save. If filename is given, save to that file instead.
 
 Mode commands

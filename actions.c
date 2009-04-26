@@ -1,3 +1,4 @@
+/* vi:set ts=4 sts=4 sw=4: */
 #include "stuff.h"
 #include "gui.h"
 
@@ -254,19 +255,18 @@ void act_notedec(void){
 	}
 }
 
-// TODO: make octaveinc/dec wrap around
 void act_octaveinc(void){
 	if(currtab==1){
-		if( track[currtrack].line[tracky].note+12 < 97 ){
+		if( track[currtrack].line[tracky].note+12 <= 96 ){
 			track[currtrack].line[tracky].note+=12;
 		}else{
-			track[currtrack].line[tracky].note = 96;
+			track[currtrack].line[tracky].note %= 12;
 		}
 	}else if(currtab==2){ if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '='){
-			if( instrument[currinstr].line[instry].param+12 < 97 ){
+			if( instrument[currinstr].line[instry].param+12 <= 96 ){
 				instrument[currinstr].line[instry].param+=12;
 			}else{
-				instrument[currinstr].line[instry].param = 96;
+				instrument[currinstr].line[instry].param %= 12;
 			}
 		}
 	}
@@ -277,14 +277,14 @@ void act_octavedec(void){
 		if( track[currtrack].line[tracky].note-12 > 0 ){
 			track[currtrack].line[tracky].note-=12;
 		}else{
-			track[currtrack].line[tracky].note = (unsigned long)NULL;
+			track[currtrack].line[tracky].note = 84 + track[currtrack].line[tracky].note;
 		}
 	}else if(currtab==2){
 		if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '='){
 			if( instrument[currinstr].line[instry].param-12 > 0 ){
 				instrument[currinstr].line[instry].param-=12;
 			}else{
-				instrument[currinstr].line[instry].param = (unsigned long)NULL;
+				instrument[currinstr].line[instry].param = 84 + instrument[currinstr].line[instry].param;
 			}
 		}
 	}
@@ -387,11 +387,13 @@ void act_fxdec(void){
 
 void act_paraminc(void){
 	if(currtab==1){
-		if(trackx==5 || trackx==8){
+		if((trackx==5 && track[currtrack].line[tracky].cmd[0])
+				|| (trackx==8 && track[currtrack].line[tracky].cmd[1])){
 			SETHI(track[currtrack].line[tracky].param[(trackx - 1) % 2],
 					hexinc(track[currtrack].line[tracky].param[(trackx - 1) % 2] >> 4) );
 			return;
-		}else if(trackx==6 || trackx==9){
+		}else if((trackx==6 && track[currtrack].line[tracky].cmd[0])
+				|| (trackx==9 && track[currtrack].line[tracky].cmd[1])){
 			SETLO(track[currtrack].line[tracky].param[trackx % 2],
 					hexinc(track[currtrack].line[tracky].param[trackx % 2] & 0x0f) );
 			return;
@@ -411,11 +413,13 @@ void act_paraminc(void){
 
 void act_paramdec(void){
 	if(currtab==1){
-		if(trackx==5 || trackx==8){
+		if((trackx==5 && track[currtrack].line[tracky].cmd[0])
+				|| (trackx==8 && track[currtrack].line[tracky].cmd[1])){
 			SETHI(track[currtrack].line[tracky].param[(trackx-1) % 2],
 					hexdec(track[currtrack].line[tracky].param[(trackx-1) % 2] >> 4) );
 			return;
-		}else if(trackx==6 || trackx==9){
+		}else if((trackx==6 && track[currtrack].line[tracky].cmd[0])
+				|| (trackx==9 && track[currtrack].line[tracky].cmd[1])){
 			SETLO(track[currtrack].line[tracky].param[trackx % 2],
 					hexdec(track[currtrack].line[tracky].param[trackx % 2] & 0x0f) );
 			return;
