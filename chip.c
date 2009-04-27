@@ -138,6 +138,9 @@ void runcmd(u8 ch, u8 cmd, u8 param){
 			channel[ch].vrate = (param/2) & 0xf;
 			//channel[ch].vrate = param & 0xf;
 			break;
+		case '*':
+			callbacktime = -param;
+			break;
 	}
 }
 

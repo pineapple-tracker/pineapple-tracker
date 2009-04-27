@@ -206,3 +206,39 @@ Mode commands
 Mode commands
 	<Escape>
 		Enter normal mode.
+
+=-=-=-=-=-=-=-=
+= FX COMMANDS =
+-=-=-=-=-=-=-=-
+  dxx
+	  Set duty cycle (pulse width) to xx.
+	
+  fxx 
+	  Set volume fade speed to xx. So, fff is a slow fadeout, f01 is a slow fadein.
+
+  ixx 
+	  Set channel inertia to xx. A high inertia causes automatic slides between notes. Default 0.
+  
+  @xx
+	  Jump to instrument line xx.
+  
+  sxx
+	  Set slide. 0-7f is slide up, 80-ff is slide down.
+  
+  mxx
+	  Set pulse width modulation rate to xx.
+
+  txx
+	  Wait xx time units.
+	
+  vxx
+	  Set channel volume to xx.
+  
+  wxx
+	  Set waveform. 00 = triangle, 01 = saw, 02 = pulse, 03 = noise.
+  
+  ~xy
+	  Set vibrato, x = depth, y = rate.
+
+  *xx
+	  Set tempo to xx.

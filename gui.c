@@ -39,7 +39,7 @@ int cmdrepeatnum = 1;
 int lastrepeat = 1;
 
 // 0 is like a blank command
-char *validcmds = "0dfi@smtvw~+=";
+char *validcmds = "0dfi@smtvw~+=*";
 
 /*char *keymap[2] = {
 	";oqejkixdbhmwnvsz",
