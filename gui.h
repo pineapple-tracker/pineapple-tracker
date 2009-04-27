@@ -31,6 +31,7 @@ int currtrack, currinstr;
 int currtab;
 int saved;
 int disptick;
+int step;
 
 int cmdrepeat;
 int cmdrepeatnum;

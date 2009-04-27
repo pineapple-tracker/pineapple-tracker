@@ -813,6 +813,14 @@ void normalmode(int c){
 		case ')':
 			callbacktime--;
 			break;
+		case '-':
+			if(step > 0) 
+			  step--;
+			break;
+		case '=':
+			if(step < 0x0f) 
+			  step++;
+			break;
 		case CTRL('H'):
 			currtab--;
 			if(currtab < 0)
@@ -996,7 +1004,7 @@ void insertmode(void){
 			default:
 				_insertc(c);
 				if(currtab == 1){
-					tracky++;
+					tracky+=step;
 					tracky %= tracklen;
 				}else if(currtab == 2){
 					if(instry < instrument[currinstr].length-1) instry++;
