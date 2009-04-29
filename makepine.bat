@@ -15,16 +15,26 @@ set LIBS=%LIB_CURSES% %LIB_SDL% %LIB_CACA%
 set COMPILE_CMD=%CC% -c %CFLAGS%
 
 erase *.o
-%COMPILE_CMD% chip.c
-rem figfont: mini
-echo "\   _   /    _ |_  o ._     _"
-echo " \ (_) /    (_ | | | |_) o (_"
-echo "                     |       "
+
+
+%COMPILE_CMD% actions.c
+echo "\   _   /    _.  _ _|_ o  _  ._   _    _"
+echo " \ (_) /    (_| (_  |_ | (_) | | _> o (_"
+
+%COMPILE_CMD% modes.c
+echo "\   _   /   ._ _   _   _|  _   _    _"
+echo " \ (_) /    | | | (_) (_| (/_ _> o (_"
 
 %COMPILE_CMD% gui.c
 echo "\   _   /    _      o    _"
 echo " \ (_) /    (_| |_| | o (_"
 echo "             _|           "
+
+%COMPILE_CMD% chip.c
+rem figfont: mini
+echo "\   _   /    _ |_  o ._     _"
+echo " \ (_) /    (_ | | | |_) o (_"
+echo "                     |       "
 
 rem %COMPILE_CMD% player.c %LIB_SDL% %LIB_CACA%
 rem echo "\   _   /   ._  |  _.     _  ._   _"
@@ -45,7 +55,7 @@ echo "\   _   /   ._ _   _. o ._     _"
 echo " \ (_) /    | | | (_| | | | o (_"
 
 set WORKAROUND=-Wl,-u,_WinMain@16
-%CC% -s -o pineappletracker.exe main.o gui.o chip.o %WORKAROUND% %CFLAGS% %LIB_SDL% %LIB_CURSES%
+%CC% -s -o pineappletracker.exe main.o gui.o chip.o modes.o actions.o %WORKAROUND% %CFLAGS% %LIB_SDL% %LIB_CURSES%
 echo ___         _________                        _____ 
 echo __ \  ____________/_ __________________________  /_
 echo ___ \ _  __ ____/_/  ___  __ ___  __ ___  __ _  __/
