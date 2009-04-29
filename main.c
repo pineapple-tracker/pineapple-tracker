@@ -9,7 +9,7 @@
 #include <err.h>
 #endif
 
-#include "stuff.h"
+#include "pineapple.h"
 
 /* SDL */
 void audiocb(void *userdata, Uint8 *buf, int len){

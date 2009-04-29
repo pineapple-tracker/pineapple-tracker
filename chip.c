@@ -1,5 +1,5 @@
 /* vi:set ts=4 sts=4 sw=4: */
-#include "stuff.h"
+#include "pineapple.h"
 
 volatile u8 callbackwait;
 u8 callbacktime = 180;

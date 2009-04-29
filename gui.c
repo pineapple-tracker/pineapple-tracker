@@ -2,7 +2,7 @@
 
 /* welcome to gui.c, enjoy your stay 8-) */
 
-#include "stuff.h"
+#include "pineapple.h"
 #include "gui.h"
 
 /*                  */
@@ -34,7 +34,7 @@ int currinstr = 1;
 int currtab = 0;
 int saved = 1;
 
-//step = 1;
+step = 1;
 
 int cmdrepeat = 0;
 int cmdrepeatnum = 1;
