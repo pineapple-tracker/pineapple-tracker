@@ -1007,7 +1007,9 @@ void insertmode(void){
 					tracky+=step;
 					tracky %= tracklen;
 				}else if(currtab == 2){
-					if(instry < instrument[currinstr].length-1) instry++;
+					//if(instry < instrument[currinstr].length-1) instry++;
+					if(instrx < 2) instrx++;
+					else instrx--;
 					instry %= instrument[currinstr].length;
 				}
 				saved = 0;

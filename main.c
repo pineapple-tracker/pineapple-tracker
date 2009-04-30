@@ -70,8 +70,8 @@ int main(int argc, char **argv){
 	//requested.freq = 16000;
 	//requested.format = AUDIO_S16SYS;
 	requested.format = AUDIO_U8;
-	requested.samples = 4096;
-	//requested.samples = 256;
+	//requested.samples = 4096;
+	requested.samples = 256;
 	requested.callback = audiocb;
 	requested.channels = 1;
 
