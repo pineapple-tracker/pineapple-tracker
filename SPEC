@@ -65,7 +65,7 @@ Modifying commands
 		If the whole line was yanked into the buffer, replace the whole
 		existing line with the new one. Otherwise, replace only what is in the 
 		buffer, and leave everything else as is.
-
+	
 	r
 		Replace whatever is under the cursor with a note or number. Kind of
 		like going into insert mode for just one insertion, then returning.
@@ -158,6 +158,36 @@ Modifying commands
 	:w (filename) 
 	:write (filename)
 		Save. If filename is given, save to that file instead.
+	
+	:wq (filename)
+		Save and quit. If filename is given, save to that file instead.
+	
+	:set buffersize = number
+		Set buffersize to number.
+	
+	:set step = number
+		Set step increment to number.
+	
+	:load instrument.ins
+		Load instrument.ins into next empty slot.
+	
+	:save instrument.ins
+		Save current instrument to instrument.ins.
+	
+	:clear song
+		Clear entire song tab.
+	
+	:clear tracks
+		Clear all tracks.
+	
+	:clear instruments
+		Clear all instruments.
+	
+	:clear all
+		Clear song, track, and instruments.
+	
+	:wavexport filename
+		Render to .wav format filename.
 
 Mode commands
 	<Escape>
