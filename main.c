@@ -14,7 +14,7 @@
 /* SDL */
 void audiocb(void *userdata, Uint8 *buf, int len){
 	for(int i = 0; i < len; i++){
-		buf[i] = interrupthandler();
+		//buf[i] = interrupthandler();
 	}
 }
 

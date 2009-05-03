@@ -2,15 +2,21 @@ enhancements:
 -------------
 * complete and implement the SPEC
 
-* control with a gamepad
-
-* port gui to libcaca.
-branch?
-
 * make the sampling rate not affect the pitch of notes
 
 * decide what should and should not be in stuff.h... and maybe rename it
 	to pineapple.h
+
+* rainbow decibel meters on each track like AHX tracker
+
+* JACK driver
+
+* config files
+
+* MORE MODULAR
+	* gui.c => ncurses_ui.c
+		* port gui to libcaca?
+	* 
 
 bugs:
 ----
@@ -31,5 +37,4 @@ bugs:
 
 dreams:
 ------
-config files
-rainbow decibel meters on each track like AHX tracker
+deprecated

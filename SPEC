@@ -189,6 +189,12 @@ Modifying commands
 	:wavexport filename
 		Render to .wav format filename.
 
+	:help
+		Get to the documentation.
+
+	:help <key>
+		See the help for that key.
+
 Mode commands
 	<Escape>
 		Enter normal mode.

@@ -18,7 +18,7 @@ pineapple-tracker:	main.o chip.o gui.o modes.o actions.o
 player:		player.o chip.o gui.o modes.o actions.o
 	$(CC) -o $@ $^ ${LIBS}
 
-%.o:	%.c stuff.h gui.h Makefile
+%.o:	%.c pineapple.h gui.h Makefile
 
 .PHONY:
 	clean
