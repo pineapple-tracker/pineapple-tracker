@@ -4,6 +4,7 @@
 
 int f;
 int tcliplen, icliplen = 0;
+static int _oldfxparam = 0;
 
 int _hexdigit(char c);
 int _nextfreetrack(void);
@@ -108,6 +109,17 @@ void _insertc(int c){
 	if(currtab == 2 && instrx == 0){
 		if(strchr(validcmds, c)){
 			instrument[currinstr].line[instry].cmd = c;
+
+			// when switching to the note command, change to param if it's
+			// higher than H7
+			if(instrument[currinstr].line[instry].cmd == '+'){
+				// save current param
+				_oldfxparam = instrument[currinstr].line[instry].param;
+				instrument[currinstr].line[instry].param = 96; //H7
+			}else if(_oldfxparam)
+				instrument[currinstr].line[instry].param = _oldfxparam;
+			_oldfxparam = 0;
+
 		}
 	}
 	if(currtab == 1 && (trackx == 4 || trackx == 7)){
