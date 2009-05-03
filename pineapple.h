@@ -1,8 +1,8 @@
 /* vi:set ts=4 sts=4 sw=4: */
 #include <stdint.h>
 
-#ifndef STUFF_H
-#define STUFF_H
+#ifndef PINEAPPLE_H
+#define PINEAPPLE_H
 #define TRACKLEN 32
 
 typedef uint8_t u8;
@@ -133,4 +133,4 @@ extern struct instrument instrument[256], iclip[256];
 extern struct track track[256], tclip[256];
 extern struct songline song[256];
 
-#endif /* STUFF_H */
+#endif /* PINEAPPLE_H */

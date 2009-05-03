@@ -2,7 +2,7 @@
 
 /* welcome to gui.c, enjoy your stay 8-) */
 
-#include "stuff.h"
+#include "pineapple.h"
 #include "gui.h"
 
 /*                  */
@@ -34,12 +34,14 @@ int currinstr = 1;
 int currtab = 0;
 int saved = 1;
 
+step = 1;
+
 int cmdrepeat = 0;
 int cmdrepeatnum = 1;
 int lastrepeat = 1;
 
 // 0 is like a blank command
-char *validcmds = "0dfi@smtvw~+=";
+char *validcmds = "0dfi@smtvw~+=*";
 
 /*char *keymap[2] = {
 	";oqejkixdbhmwnvsz",
@@ -1018,6 +1020,11 @@ void drawgui(){
 	mvaddch(0, 24, ACS_PI);
 	snprintf(buf, sizeof(buf), "%d<>", octave);
 	mvaddstr(0, 25, buf);
+
+	// display step amount
+	mvaddstr(0, 60, "step -=");
+	snprintf(buf, sizeof(buf), "%0x", step); 
+	mvaddstr(0, 68, buf);
 
 	if(currmode == PM_NORMAL){
 		mvaddstr(getmaxy(stdscr)-1, 0, filename);

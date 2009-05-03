@@ -1,5 +1,5 @@
 /* vi:set ts=4 sts=4 sw=4: */
-#include "stuff.h"
+#include "pineapple.h"
 #include "gui.h"
 
 void act_mvleft(void){
