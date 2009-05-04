@@ -1,6 +1,7 @@
 /* vi:set ts=4 sts=4 sw=4: */
 #include "pineapple.h"
 #include "gui.h"
+#include "musicchip_file.h"
 
 int f;
 int tcliplen, icliplen = 0;

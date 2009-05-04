@@ -10,6 +10,7 @@
 #endif
 
 #include "pineapple.h"
+#include "musicchip_file.h"
 
 /* SDL */
 void audiocb(void *userdata, Uint8 *buf, int len){

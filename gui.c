@@ -161,7 +161,7 @@ void readinstr(int num, int pos, u8 *il){
 	}
 }
 
-void savefile(char *fname){
+/*void savefile(char *fname){
 	FILE *f;
 	int i, j;
 
@@ -285,7 +285,7 @@ int loadfile(char *fname){
 
 	fclose(f);
 	return 0;
-}
+}*/
 
 void exitgui(){
 	endwin();
@@ -650,103 +650,6 @@ void export(){
 	fclose(f);
 	fclose(hf);
 }
-
-/*void initjoystick(){
-	SDL_Event event;
-	SDL_Joystick *joystick = NULL;
-
-	SDL_JoystickEventState(SDL_ENABLE);
-	if(SDL_NumJoysticks > 0){
-		joystick = SDL_JoystickOpen(0);
-	}
-
-	sdlmainloop(event, joystick);
-}
-
-void sdlmainloop(SDL_Event event, SDL_Joystick *joystick){
-	SDL_JoystickEventState(SDL_ENABLE);
-	joystick = SDL_JoystickOpen(0);
-
-	// wtf does this do
-	while(SDL_PollEvent(&event)){ //nik its just checking if a bit is set :) 
-	//while(!sdl_finished){       //   oh hmmm.. ok.
-		switch(event.type){  
-			case SDL_KEYDOWN:
-				break;
-
-			case SDL_JOYBUTTONDOWN:
-				switch(event.jbutton.button){
-				// should probably figure out what these are
-				// gotta make them configurable, too
-					case 0:
-						currbutt = 0;
-						display("0");
-						break;
-					case 1:
-						currbutt = 1;
-						display("1");
-						break;
-					case 2:
-						currbutt = 2;
-						display("2");
-						break;
-					case 3:
-						currbutt = 3;
-						display("3");
-						break;
-					default:
-						display("unknown joystick button");
-						break;
-				}
-				break;
-
-			case SDL_QUIT:
-				sdl_finished = true;
-				break;
-
-			default:
-				break;
-		}
-	}
-}*/
-
-/* actions are anything that can be repeated by entering a number beforehand */
-/*enum {
-	ACT_MVLEFT,
-	ACT_MVRIGHT,
-	ACT_MVUP,
-	ACT_MVDOWN,
-	ACT_BIGMVUP,
-	ACT_BIGMVDOWN,
-
-	ACT_VIEWPHRASEINC,
-	ACT_VIEWPHRASEDEC,
-	ACT_VIEWINSTRINC,
-	ACT_VIEWINSTRDEC,
-	ACT_ADDLINE,
-	ACT_DELLINE,
-	ACT_CLRONETHING,
-	ACT_CLRITALL,
-
-	// song view
-	ACT_TRACKINC,
-	ACT_TRACKDEC,
-	ACT_TRANSPINC,
-	ACT_TRANSPDEC,
-
-	// phrase view
-	ACT_NOTEINC,
-	ACT_NOTEDEC,
-	ACT_OCTAVEINC,
-	ACT_OCTAVEDEC,
-	ACT_INSTRINC,
-	ACT_INSTRDEC,
-	ACT_FXINC,
-	ACT_FXDEC,
-	ACT_PARAMINC,
-	ACT_PARAMDEC
-};
-*/
 
 /* main input loop */
 void handleinput(){

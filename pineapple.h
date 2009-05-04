@@ -14,6 +14,7 @@ typedef int16_t s16;
 typedef int32_t s32;
 
 u8 callbacktime;
+char filename[1024];
 
 enum {
 	WF_TRI,
@@ -64,6 +65,8 @@ struct songline {
 	u8			transp[4];
 };
 
+int songlen, tracklen;
+
 volatile struct oscillator {
 	u16	freq;
 	u16	phase;
@@ -91,7 +94,6 @@ void display(void);
 
 void startplaysong(int);
 void startplaytrack(int);
-int loadfile(char *);
 
 void parsecmd(char cmd[]);
 
