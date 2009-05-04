@@ -30,8 +30,6 @@ bugs:
 
 * sound doesn't always stop at the end of a song
 
-* step should change the lines moved after pasting, too
-
 * ui doesn't update in cmdline mode
 
 * ui doesn't update after pressing the first key of a two-key command like yy

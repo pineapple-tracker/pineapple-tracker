@@ -435,7 +435,8 @@ void normalmode(int c){
 			}else if(currtab == 1){
 					for(int i = 0; i < tcliplen; i++){
 						memcpy(&track[currtrack].line[tracky], &tclip[i], sizeof(struct trackline));
-						if(tracky < tracklen-1) tracky++;
+						if(tracky < tracklen-step) tracky += step;
+						else tracky = tracklen-1;
 					}
 			}else if(currtab == 2){
 				if(instrument[currinstr].length < 256){
