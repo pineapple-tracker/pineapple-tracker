@@ -30,11 +30,10 @@ bugs:
 
 * speed of vibrato, arpeggio, slide, faster than when we were running at 16khz
 
-* backspace doesn't work on some computers (so far i've only tried it on a
-	gentoo computer in the office). -nik
+* backspace doesn't work on some computers
 
 * yj and yk only work in track tab.
 
-dreams:
-------
-deprecated
+* sound doesn't always stop at the end of a song
+
+* step should change the lines moved after pasting, too
