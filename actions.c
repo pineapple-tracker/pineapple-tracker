@@ -172,6 +172,7 @@ void act_trackinc(void){
 			song[songy].track[songx/4]++;
 		}
 	}
+	saved = 0;
 }
 
 void act_trackdec(void){
@@ -188,6 +189,7 @@ void act_trackdec(void){
 			song[songy].track[songx/4]--;
 		}
 	}
+	saved = 0;
 }
 
 void act_transpinc(void){
@@ -204,6 +206,7 @@ void act_transpinc(void){
 			song[songy].transp[songx/4]++;
 		}
 	}
+	saved = 0;
 }
 
 void act_transpdec(void){
@@ -220,6 +223,7 @@ void act_transpdec(void){
 			song[songy].transp[songx/4]--;
 		}
 	}
+	saved = 0;
 }
 
 void act_noteinc(void){
@@ -237,6 +241,7 @@ void act_noteinc(void){
 			instrument[currinstr].line[instry].param = 0;
 		}
 	}
+	saved = 0;
 }
 
 void act_notedec(void){
@@ -253,6 +258,7 @@ void act_notedec(void){
 			instrument[currinstr].line[instry].param = 96;
 		}
 	}
+	saved = 0;
 }
 
 void act_octaveinc(void){
@@ -270,6 +276,7 @@ void act_octaveinc(void){
 			}
 		}
 	}
+	saved = 0;
 }
 
 void act_octavedec(void){
@@ -288,6 +295,7 @@ void act_octavedec(void){
 			}
 		}
 	}
+	saved = 0;
 }
 
 void act_instrinc(void){
@@ -301,6 +309,7 @@ void act_instrinc(void){
 					hexinc(track[currtrack].line[tracky].instr & 0x0f) );
 			break;
 	}
+	saved = 0;
 }
 
 void act_instrdec(void){
@@ -314,6 +323,7 @@ void act_instrdec(void){
 					hexdec(track[currtrack].line[tracky].instr & 0x0f) );
 			break;
 	}
+	saved = 0;
 }
 
 void act_fxinc(void){
@@ -349,6 +359,7 @@ void act_fxinc(void){
 			}
 		}
 	}
+	saved = 0;
 }
 
 void act_fxdec(void){
@@ -383,6 +394,7 @@ void act_fxdec(void){
 			}
 		}
 	}
+	saved = 0;
 }
 
 void act_paraminc(void){
@@ -409,6 +421,7 @@ void act_paraminc(void){
 			return;
 		}
 	}
+	saved = 0;
 }
 
 void act_paramdec(void){
@@ -435,6 +448,7 @@ void act_paramdec(void){
 			return;
 		}
 	}
+	saved = 0;
 }
 
 void act_addline(void){
@@ -456,6 +470,7 @@ void act_addline(void){
 			memset(&song[songy], 0, sizeof(struct songline));
 		}
 	}
+	saved = 0;
 }
 
 void act_delline(void){
@@ -474,6 +489,7 @@ void act_delline(void){
 			if(songy >= songlen) songy = songlen - 1;
 		}
 	}
+	saved = 0;
 }
 
 void act_clronething(void){
@@ -547,6 +563,7 @@ void act_clronething(void){
 			}
 		}
 	}
+	saved = 0;
 }
 
 void act_clritall(void){
@@ -571,5 +588,6 @@ void act_clritall(void){
 		instrument[currinstr].line[instry].cmd = '0';
 		instrument[currinstr].line[instry].param = 0;
 	}
+	saved = 0;
 }
 

@@ -4,9 +4,6 @@ enhancements:
 
 * make the sampling rate not affect the pitch of notes
 
-* decide what should and should not be in stuff.h... and maybe rename it
-	to pineapple.h
-
 * rainbow decibel meters on each track like AHX tracker
 
 * JACK driver

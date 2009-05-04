@@ -82,7 +82,7 @@ struct channel {
 	u16	slur;
 } channel[4];
 
-void silence(){
+void silence(void){
 	u8 i;
 
 	for(i = 0; i < 4; i++){
@@ -126,10 +126,7 @@ void startplaysong(int p){
 	playsong = 1;
 }
 
-void playroutine(){			// called at 50 Hz
-}
-
-void initchip(){
+void initchip(void){
 	trackwait = 0;
 	trackpos = 0;
 	playsong = 0;
@@ -145,6 +142,8 @@ void initchip(){
 	channel[3].inum = 0;
 }
 
-u8 interrupthandler()        // called at 9000 Hz
-{
+void playroutine(void){			// called at 50 Hz
+}
+
+u8 interrupthandler(void){
 }
