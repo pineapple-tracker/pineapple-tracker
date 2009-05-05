@@ -13,6 +13,10 @@ typedef int8_t s8;
 typedef int16_t s16;
 typedef int32_t s32;
 
+typedef char BOOL;
+#define FALSE 0
+#define TRUE 1
+
 u8 callbacktime;
 char filename[1024];
 

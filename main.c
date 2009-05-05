@@ -3,66 +3,35 @@
 #include <stdint.h>
 
 #include <SDL/SDL.h>
-//#include <jack/jack.h>
 
 #ifndef WINDOWS
 #include <err.h>
+#include <jack/jack.h>
 #endif
 
 #include "pineapple.h"
 #include "musicchip_file.h"
 
-/* SDL */
-void audiocb(void *userdata, Uint8 *buf, int len){
-	for(int i = 0; i < len; i++){
-		//buf[i] = interrupthandler();
-	}
-}
-
-/* JACK */
-/*jack_port_t *output_port;
-
-typedef jack_default_audio_sample_t sample_t;
+void sdl_callbackbuffer(void *userdata, Uint8 *buf, int len);
 
 // The current sample rate
 jack_nframes_t sr;
+jack_port_t *output_port;
+typedef jack_default_audio_sample_t sample_t;
 
-int process(jack_nframes_t nframes, void *arg){
-	// grab our output buffer
-	sample_t *out = (sample_t *) jack_port_get_buffer 
-			(output_port, nframes);
+void jack_error(const char *desc);
+int jack_process(jack_nframes_t nframes, void *arg);
+int jack_srate(jack_nframes_t nframes, void *arg);
+void jack_shutdown(void *arg);
 
-	// For each required sample
-	for(jack_nframes_t i=0; i<nframes; i++){
-		out[i] = (sample_t) interrupthandler();
 
-	}
-	return 0;
-}
-
-int srate(jack_nframes_t nframes, void *arg){
-	printf("the sample rate is now %d/sec\n", nframes);
-	sr=nframes;
-	return 0;
-}
-
-void error(const char *desc){
-	fprintf(stderr, "JACK error: %s\n", desc);
-}
-
-void jack_shutdown(void *arg){
-	exit(1);
-}*/
-
-int main(int argc, char **argv){
-	/*
-	 * SDL
-	 */
+/* initialize SDL audio */
+BOOL sdl_init(void){
 	SDL_AudioSpec requested, obtained;
 
 	if(SDL_Init( SDL_INIT_AUDIO ) < 0){
 		fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
-		exit(1);
+		return FALSE;
 	}
 
 	atexit(SDL_Quit);
@@ -73,7 +42,7 @@ int main(int argc, char **argv){
 	requested.format = AUDIO_U8;
 	//requested.samples = 4096;
 	requested.samples = 256;
-	requested.callback = audiocb;
+	requested.callback = sdl_callbackbuffer;
 	requested.channels = 1;
 
 	SDL_OpenAudio(&requested, &obtained);
@@ -83,32 +52,20 @@ int main(int argc, char **argv){
 	fprintf(stderr, "obtained format %d\n", obtained.format);
 	fprintf(stderr, "samples %d\n", obtained.samples);
 
-	initchip();
-	initgui();
+	return TRUE;
+}
 
-	if(argc != 2){
-		loadfile("untitled.song");
-	}else{
-		loadfile(argv[1]);
+/* called by SDL */
+void sdl_callbackbuffer(void *userdata, Uint8 *buf, int len){
+	for(int i = 0; i < len; i++){
+		//buf[i] = interrupthandler();
 	}
+}
 
-	SDL_PauseAudio(0);
-
-	guiloop();
-
-	return 0;
-
-	/*
-	 * JACK
-	 */
-	/*jack_client_t *client;
+#ifndef WINDOWS
+BOOL jack_init(void){
+	jack_client_t *client;
 	const intptr_t **ports;
-
-	if(argc != 2){
-		loadfile("untitled.song");
-	}else{
-		loadfile(argv[1]);
-	}
 
 	// tell the JACK server to call error() whenever it
 	//experiences an error.  Notice that this callback is
@@ -116,24 +73,24 @@ int main(int argc, char **argv){
 	// 
 	// This is set here so that it can catch errors in the
 	// connection process
-	jack_set_error_function (error);
+	jack_set_error_function (jack_error);
 
 	// try to become a client of the JACK server
 
 	if ((client = jack_client_new ("pineappletracker")) == 0) {
 		fprintf (stderr, "jack server not running?\n");
-		return 1;
+		return FALSE;
 	}
 
 	// tell the JACK server to call `process()' whenever
 	// there is work to be done.
 
-	jack_set_process_callback (client, process, 0);
+	jack_set_process_callback (client, jack_process, 0);
 
 	// tell the JACK server to call `srate()' whenever
 	// the sample rate of the system changes.
 
-	jack_set_sample_rate_callback (client, srate, 0);
+	jack_set_sample_rate_callback (client, jack_srate, 0);
 
 	// tell the JACK server to call `jack_shutdown()' if
 	// it ever shuts down, either entirely, or if it
@@ -146,18 +103,16 @@ int main(int argc, char **argv){
 	// callback (see above) for this value.
 	printf ("engine sample rate: %d\n", jack_get_sample_rate (client));
 
-
 	sr=jack_get_sample_rate(client);
 
 	output_port = jack_port_register (client, "output", 
 					 JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
 	
-
 	// tell the JACK server that we are ready to roll
 
 	if (jack_activate (client)) {
 		fprintf (stderr, "cannot activate client");
-		return 1;
+		return FALSE;
 	}
 
 	// connect the ports
@@ -175,10 +130,74 @@ int main(int argc, char **argv){
 		i++;
 	}
 
-	guiloop();
+	return TRUE;
+}
 
-	free (ports);
-	jack_client_close (client);
+int jack_process(jack_nframes_t nframes, void *arg){
+	// grab our output buffer
+	sample_t *out = (sample_t *) jack_port_get_buffer 
+			(output_port, nframes);
+
+	// For each required sample
+	for(jack_nframes_t i=0; i<nframes; i++){
+		out[i] = (sample_t) interrupthandler();
+
+	}
+	return 0;
+}
+
+int jack_srate(jack_nframes_t nframes, void *arg){
+	printf("the sample rate is now %d/sec\n", nframes);
+	sr=nframes;
+	return 0;
+}
+
+void jack_error(const char *desc){
+	fprintf(stderr, "JACK error: %s\n", desc);
+}
+
+void jack_shutdown(void *arg){
+	exit(1);
+}
+#endif // Windows
+
+int main(int argc, char **argv){
+#ifndef WINDOWS
+	if(jack_init()){
+		initchip();
+		initgui();
+
+		if(argc != 2){
+			loadfile("untitled.song");
+		}else{
+			loadfile(argv[1]);
+		}
+
+		guiloop();
+
+		//free (ports);
+		//jack_client_close (client);
+	}else if(sdl_init()){
+#else
+	if(sdl_init()){
+#endif // Windows
+		initchip();
+		initgui();
+
+		if(argc != 2){
+			loadfile("untitled.song");
+		}else{
+			loadfile(argv[1]);
+		}
+
+		SDL_PauseAudio(0);
+
+		guiloop();
+
+		SDL_Quit();
+	}
 	
-	exit (0);*/
+	exit (0);
+	return 0;
+
 }
