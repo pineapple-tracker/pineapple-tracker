@@ -30,6 +30,22 @@ void insertmode(void);
 void jammermode(void);
 void visualmode(void);
 
+typedef enum {
+	WF_TRI = 0,
+	WF_SAW,
+	WF_PUL,
+	WF_NOI,
+	WF_SINE
+} waveform_t;
+
+volatile struct oscillator {
+	u16	freq;
+	u16	phase;
+	u16	duty;
+	waveform_t waveform;
+	u8 volume;	// 0-255
+} osc[4];
+
 struct trackline {
 	u8	note;
 	u8	instr;
