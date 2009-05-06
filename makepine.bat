@@ -30,6 +30,8 @@ echo "\   _   /    _      o    _"
 echo " \ (_) /    (_| |_| | o (_"
 echo "             _|           "
 
+%COMPILE_CMD% musicchip_file.c
+
 %COMPILE_CMD% chip.c
 rem figfont: mini
 echo "\   _   /    _ |_  o ._     _"
@@ -55,7 +57,7 @@ echo "\   _   /   ._ _   _. o ._     _"
 echo " \ (_) /    | | | (_| | | | o (_"
 
 set WORKAROUND=-Wl,-u,_WinMain@16
-%CC% -s -o pineappletracker.exe main.o gui.o chip.o modes.o actions.o %WORKAROUND% %CFLAGS% %LIB_SDL% %LIB_CURSES%
+%CC% -s -o pineappletracker.exe main.o gui.o chip.o modes.o actions.o musicchip_file.c %WORKAROUND% %CFLAGS% %LIB_SDL% %LIB_CURSES%
 echo ___         _________                        _____ 
 echo __ \  ____________/_ __________________________  /_
 echo ___ \ _  __ ____/_/  ___  __ ___  __ ___  __ _  __/

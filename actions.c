@@ -2,6 +2,9 @@
 #include "pineapple.h"
 #include "gui.h"
 
+static int _oldfxparam = 0;
+
+/* move cursor left one column */
 void act_mvleft(void){
 	switch(currtab){
 		case 0:
@@ -16,6 +19,7 @@ void act_mvleft(void){
 	}
 }
 
+/* move cursor right one column */
 void act_mvright(void){
 	switch(currtab){
 		case 0:
@@ -30,6 +34,7 @@ void act_mvright(void){
 	}
 }
 
+/* move cursor up 1 line */
 void act_mvup(void){
 	switch(currtab){
 		case 0:
@@ -56,6 +61,7 @@ void act_mvup(void){
 	}
 }
 
+/* move cursor down 1 line */
 void act_mvdown(void){
 	switch(currtab){
 		case 0:
@@ -82,6 +88,7 @@ void act_mvdown(void){
 	}
 }
 
+/* move cursor up 8 lines */
 void act_bigmvup(void){
 	switch(currtab){
 		case 0:
@@ -104,6 +111,7 @@ void act_bigmvup(void){
 	}
 }
 
+/* move cursor down 8 lines */
 void act_bigmvdown(void){
 	switch(currtab){
 		case 0:
@@ -172,6 +180,7 @@ void act_trackinc(void){
 			song[songy].track[songx/4]++;
 		}
 	}
+	saved = 0;
 }
 
 void act_trackdec(void){
@@ -188,6 +197,7 @@ void act_trackdec(void){
 			song[songy].track[songx/4]--;
 		}
 	}
+	saved = 0;
 }
 
 void act_transpinc(void){
@@ -204,6 +214,7 @@ void act_transpinc(void){
 			song[songy].transp[songx/4]++;
 		}
 	}
+	saved = 0;
 }
 
 void act_transpdec(void){
@@ -220,6 +231,7 @@ void act_transpdec(void){
 			song[songy].transp[songx/4]--;
 		}
 	}
+	saved = 0;
 }
 
 void act_noteinc(void){
@@ -237,6 +249,7 @@ void act_noteinc(void){
 			instrument[currinstr].line[instry].param = 0;
 		}
 	}
+	saved = 0;
 }
 
 void act_notedec(void){
@@ -253,6 +266,7 @@ void act_notedec(void){
 			instrument[currinstr].line[instry].param = 96;
 		}
 	}
+	saved = 0;
 }
 
 void act_octaveinc(void){
@@ -270,6 +284,7 @@ void act_octaveinc(void){
 			}
 		}
 	}
+	saved = 0;
 }
 
 void act_octavedec(void){
@@ -288,6 +303,7 @@ void act_octavedec(void){
 			}
 		}
 	}
+	saved = 0;
 }
 
 void act_instrinc(void){
@@ -301,6 +317,7 @@ void act_instrinc(void){
 					hexinc(track[currtrack].line[tracky].instr & 0x0f) );
 			break;
 	}
+	saved = 0;
 }
 
 void act_instrdec(void){
@@ -314,18 +331,17 @@ void act_instrdec(void){
 					hexdec(track[currtrack].line[tracky].instr & 0x0f) );
 			break;
 	}
+	saved = 0;
 }
 
 void act_fxinc(void){
-	int z;
-
 	if(currtab==1){
 		currcmd = track[currtrack].line[tracky].cmd[trackx % 2];
 		// there must be a better way to do this...
 		if((unsigned long)currcmd == (unsigned long)NULL){
 			track[currtrack].line[tracky].cmd[trackx % 2] = validcmds[0];
 		}else{
-			for(z = 0; z < strlen(validcmds); z++){
+			for(int z = 0; z < strlen(validcmds); z++){
 				if(currcmd == validcmds[z]){
 					if(z == (strlen(validcmds)-1)){
 						track[currtrack].line[tracky].cmd[trackx % 2] = (unsigned long)NULL;
@@ -338,28 +354,38 @@ void act_fxinc(void){
 		}
 	}else if(currtab==2){
 		currcmd = instrument[currinstr].line[instry].cmd;
-		for(z = 0; z < strlen(validcmds); z++){
+		for(int z = 0; z < strlen(validcmds); z++){
 			if(currcmd == validcmds[z]){
 				if(z == (strlen(validcmds)-1)){
 					instrument[currinstr].line[instry].cmd = validcmds[0];
 				}else{
 					instrument[currinstr].line[instry].cmd = validcmds[z+1];
+					if(_oldfxparam)
+						instrument[currinstr].line[instry].param = _oldfxparam;
 				}
+
+				// when switching to the note command, change to param if it's
+				// higher than H7
+				if(instrument[currinstr].line[instry].cmd == '+'){
+					// save current param
+					_oldfxparam = instrument[currinstr].line[instry].param;
+					instrument[currinstr].line[instry].param = 96; //H7
+				}
+
 				continue;
 			}
 		}
 	}
+	saved = 0;
 }
 
 void act_fxdec(void){
-	int z;
-
 	if(currtab==1){
 		currcmd = track[currtrack].line[tracky].cmd[trackx % 2];
 		if((unsigned long)currcmd == (unsigned long)NULL){
 			track[currtrack].line[tracky].cmd[trackx % 2] = validcmds[strlen(validcmds)-1];
 		}else{
-			for(z = 0; z < strlen(validcmds); z++){
+			for(int z = 0; z < strlen(validcmds); z++){
 				if(currcmd == validcmds[z]){
 					if(z==0){
 						track[currtrack].line[tracky].cmd[trackx % 2] = (unsigned long)NULL;
@@ -372,17 +398,29 @@ void act_fxdec(void){
 		}
 	}else if(currtab==2){
 		currcmd = instrument[currinstr].line[instry].cmd;
-		for(z = 0; z < strlen(validcmds); z++){
+		for(int z = 0; z < strlen(validcmds); z++){
 			if(currcmd == validcmds[z]){
 				if(z==0){
 					instrument[currinstr].line[instry].cmd = validcmds[strlen(validcmds)-1];
 				}else{
 					instrument[currinstr].line[instry].cmd = validcmds[z-1];
+					if(_oldfxparam)
+						instrument[currinstr].line[instry].param = _oldfxparam;
 				}
+
+				// when switching to the note command, change to param if it's
+				// higher than H7
+				if(instrument[currinstr].line[instry].cmd == '+'){
+					// save current param
+					_oldfxparam = instrument[currinstr].line[instry].param;
+					instrument[currinstr].line[instry].param = 96; //H7
+				}
+
 				continue;
 			}
 		}
 	}
+	saved = 0;
 }
 
 void act_paraminc(void){
@@ -409,6 +447,7 @@ void act_paraminc(void){
 			return;
 		}
 	}
+	saved = 0;
 }
 
 void act_paramdec(void){
@@ -435,6 +474,7 @@ void act_paramdec(void){
 			return;
 		}
 	}
+	saved = 0;
 }
 
 void act_addline(void){
@@ -456,6 +496,7 @@ void act_addline(void){
 			memset(&song[songy], 0, sizeof(struct songline));
 		}
 	}
+	saved = 0;
 }
 
 void act_delline(void){
@@ -474,6 +515,7 @@ void act_delline(void){
 			if(songy >= songlen) songy = songlen - 1;
 		}
 	}
+	saved = 0;
 }
 
 void act_clronething(void){
@@ -547,6 +589,7 @@ void act_clronething(void){
 			}
 		}
 	}
+	saved = 0;
 }
 
 void act_clritall(void){
@@ -571,5 +614,6 @@ void act_clritall(void){
 		instrument[currinstr].line[instry].cmd = '0';
 		instrument[currinstr].line[instry].param = 0;
 	}
+	saved = 0;
 }
 

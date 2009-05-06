@@ -1,9 +1,11 @@
 /* vi:set ts=4 sts=4 sw=4: */
 #include "pineapple.h"
 #include "gui.h"
+#include "musicchip_file.h"
 
 int f;
 int tcliplen, icliplen = 0;
+static int _oldfxparam = 0;
 
 int _hexdigit(char c);
 int _nextfreetrack(void);
@@ -108,6 +110,17 @@ void _insertc(int c){
 	if(currtab == 2 && instrx == 0){
 		if(strchr(validcmds, c)){
 			instrument[currinstr].line[instry].cmd = c;
+
+			// when switching to the note command, change to param if it's
+			// higher than H7
+			if(instrument[currinstr].line[instry].cmd == '+'){
+				// save current param
+				_oldfxparam = instrument[currinstr].line[instry].param;
+				instrument[currinstr].line[instry].param = 96; //H7
+			}else if(_oldfxparam)
+				instrument[currinstr].line[instry].param = _oldfxparam;
+			_oldfxparam = 0;
+
 		}
 	}
 	if(currtab == 1 && (trackx == 4 || trackx == 7)){
@@ -422,7 +435,8 @@ void normalmode(int c){
 			}else if(currtab == 1){
 					for(int i = 0; i < tcliplen; i++){
 						memcpy(&track[currtrack].line[tracky], &tclip[i], sizeof(struct trackline));
-						if(tracky < tracklen-1) tracky++;
+						if(tracky < tracklen-step) tracky += step;
+						else tracky = tracklen-1;
 					}
 			}else if(currtab == 2){
 				if(instrument[currinstr].length < 256){

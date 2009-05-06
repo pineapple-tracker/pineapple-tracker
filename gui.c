@@ -34,7 +34,7 @@ int currinstr = 1;
 int currtab = 0;
 int saved = 1;
 
-step = 1;
+int step = 1;
 
 int cmdrepeat = 0;
 int cmdrepeatnum = 1;
@@ -76,7 +76,7 @@ char nextchar(){
 	return ch;
 }
 
-static int _char2int(char ch){
+int _char2int(char ch){
 	if(isdigit(ch)){
 		return (int)ch - '0';
 	}
@@ -157,132 +157,6 @@ void readinstr(int num, int pos, u8 *il){
 		il[0] = instrument[num].line[pos].cmd;
 		il[1] = instrument[num].line[pos].param;
 	}
-}
-
-void savefile(char *fname){
-	FILE *f;
-	int i, j;
-
-	f = fopen(fname, "w");
-	if(!f){
-		fprintf(stderr, "save error!\n");
-		return;
-	}
-
-	fprintf(f, "musicchip tune\n");
-	fprintf(f, "version 1\n");
-	fprintf(f, "\n");
-	fprintf(f, "tempo: %d\n", callbacktime);
-	for(i = 0; i < songlen; i++){
-		fprintf(f, "songline %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
-			i,
-			song[i].track[0],
-			song[i].transp[0],
-			song[i].track[1],
-			song[i].transp[1],
-			song[i].track[2],
-			song[i].transp[2],
-			song[i].track[3],
-			song[i].transp[3]);
-	}
-	fprintf(f, "\n");
-	for(i = 1; i < 256; i++){
-		for(j = 0; j < tracklen; j++){
-			struct trackline *tl = &track[i].line[j];
-
-			if(tl->note || tl->instr || tl->cmd[0] || tl->cmd[1]){
-				fprintf(f, "trackline %02x %02x %02x %02x %02x %02x %02x %02x\n",
-					i,
-					j,
-					tl->note,
-					tl->instr,
-					tl->cmd[0],
-					tl->param[0],
-					tl->cmd[1],
-					tl->param[1]);
-			}
-		}
-	}
-	fprintf(f, "\n");
-	for(i = 1; i < 256; i++){
-		if(instrument[i].length > 1){
-			for(j = 0; j < instrument[i].length; j++){
-				fprintf(f, "instrumentline %02x %02x %02x %02x\n",
-					i,
-					j,
-					instrument[i].line[j].cmd,
-					instrument[i].line[j].param);
-			}
-		}
-	}
-
-	fclose(f);
-}
-
-int loadfile(char *fname){
-	FILE *f;
-	char buf[1024];
-	int cmd[3];
-	int i1, i2, trk[4], transp[4], param[3], note, instr;
-	int i;
-
-	snprintf(filename, sizeof(filename), "%s", fname);
-
-	f = fopen(fname, "r");
-	if(!f){
-		return -1;
-	}
-
-	songlen = 1;
-	while(!feof(f) && fgets(buf, sizeof(buf), f)){
-		if(1 == sscanf(buf, "tempo: %hhd", &callbacktime)){
-			callbacktime = (u8)callbacktime;
-		}else if(9 == sscanf(buf, "songline %x %x %x %x %x %x %x %x %x",
-			&i1,
-			&trk[0],
-			&transp[0],
-			&trk[1],
-			&transp[1],
-			&trk[2],
-			&transp[2],
-			&trk[3],
-			&transp[3])){
-
-			for(i = 0; i < 4; i++){
-				song[i1].track[i] = trk[i];
-				song[i1].transp[i] = transp[i];
-			}
-			if(songlen <= i1) songlen = i1 + 1;
-		}else if(8 == sscanf(buf, "trackline %x %x %x %x %x %x %x %x",
-			&i1,
-			&i2,
-			&note,
-			&instr,
-			&cmd[0],
-			&param[0],
-			&cmd[1],
-			&param[1])){
-
-			track[i1].line[i2].note = note;
-			track[i1].line[i2].instr = instr;
-			for(i = 0; i < 2; i++){
-				track[i1].line[i2].cmd[i] = cmd[i];
-				track[i1].line[i2].param[i] = param[i];
-			}
-		}else if(4 == sscanf(buf, "instrumentline %x %x %x %x",
-			&i1,
-			&i2,
-			&cmd[0],
-			&param[0])){
-
-			instrument[i1].line[i2].cmd = cmd[0];
-			instrument[i1].line[i2].param = param[0];
-			if(instrument[i1].length <= i2) instrument[i1].length = i2 + 1;
-		}
-	}
-
-	fclose(f);
-	return 0;
 }
 
 void exitgui(){
@@ -649,65 +523,6 @@ void export(){
 	fclose(f);
 	fclose(hf);
 }
-
-/*void initjoystick(){
-	SDL_Event event;
-	SDL_Joystick *joystick = NULL;
-
-	SDL_JoystickEventState(SDL_ENABLE);
-	if(SDL_NumJoysticks > 0){
-		joystick = SDL_JoystickOpen(0);
-	}
-
-	sdlmainloop(event, joystick);
-}
-
-void sdlmainloop(SDL_Event event, SDL_Joystick *joystick){
-	SDL_JoystickEventState(SDL_ENABLE);
-	joystick = SDL_JoystickOpen(0);
-
-	// wtf does this do
-	while(SDL_PollEvent(&event)){ //nik its just checking if a bit is set :) 
-	//while(!sdl_finished){       //   oh hmmm.. ok.
-		switch(event.type){  
-			case SDL_KEYDOWN:
-				break;
-
-			case SDL_JOYBUTTONDOWN:
-				switch(event.jbutton.button){
-				// should probably figure out what these are
-				// gotta make them configurable, too
-					case 0:
-						currbutt = 0;
-						display("0");
-						break;
-					case 1:
-						currbutt = 1;
-						display("1");
-						break;
-					case 2:
-						currbutt = 2;
-						display("2");
-						break;
-					case 3:
-						currbutt = 3;
-						display("3");
-						break;
-					default:
-						display("unknown joystick button");
-						break;
-				}
-				break;
-
-			case SDL_QUIT:
-				sdl_finished = true;
-				break;
-
-			default:
-				break;
-		}
-	}
-}*/
 
 /* main input loop */
 void handleinput(){

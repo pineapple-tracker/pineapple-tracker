@@ -7,18 +7,18 @@ NCURSES_CFLAGS := $(shell ncurses5-config --cflags)
 
 LIBS := -O2 $(shell pkg-config --libs sdl) \
 		$(shell ncurses5-config --libs) \
-		$(shell pkg-config --libs caca) #\
-		#$(shell pkg-config --libs jack)
+		$(shell pkg-config --libs caca) \
+		$(shell pkg-config --libs jack)
 
 all: pineapple-tracker player
 
-pineapple-tracker:	main.o chip.o gui.o modes.o actions.o
+pineapple-tracker:	main.o chip.o gui.o modes.o actions.o musicchip_file.c
 	$(CC) -o $@ $^ ${LIBS}
 
-player:		player.o chip.o gui.o modes.o actions.o
+player:		player.o chip.o gui.o modes.o actions.o musicchip_file.c
 	$(CC) -o $@ $^ ${LIBS}
 
-%.o:	%.c pineapple.h gui.h Makefile
+%.o:	%.c pineapple.h gui.h musicchip_file.h Makefile
 
 .PHONY:
 	clean

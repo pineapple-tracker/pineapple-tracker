@@ -1,3 +1,4 @@
+/* vi:set ts=4 sts=4 sw=4: */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,8 +26,8 @@ int currmode;
 char currcmd;
 int instrx, instry, instroffs;
 int octave;
-int songx, songy, songoffs, songlen;
-int trackx, tracky, trackoffs, tracklen;
+int songx, songy, songoffs;
+int trackx, tracky, trackoffs;
 int currtrack, currinstr;
 int currtab;
 int saved;
@@ -57,5 +58,4 @@ int hexinc(int x);
 int hexdec(int x);
 void insertc (int c);
 char nextchar(void);
-void savefile(char *fname);
 void setdisplay(char *str);
