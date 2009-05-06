@@ -13,11 +13,3 @@ static int void freqkey(int x){
 }
 
 No space between the closing paren and the curly bracket either.
-
-
-Function naming:
-----------------
-
-Just a proposal... should we have every function that isn't exported in a .h
-file begin with an underscore? I just thought it might make it easier to
-differentiate between the two.. maybe it's not really necessary, though.

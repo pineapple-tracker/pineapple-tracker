@@ -1,10 +1,6 @@
 /* vi:set ts=4 sts=4 sw=4: */
 #include "pineapple.h"
 
-//volatile u8 callbackwait;
-//u8 callbacktime = 180;
-//u8 interruptwait = 0;
-
 u8 trackwait;
 u8 trackpos;
 u8 songpos;
@@ -185,18 +181,29 @@ void initchip(void){
 	channel[3].instrnum = 0;
 }
 
-/*void playroutine(void){
-}*/
-
-void process_(struct trackline *tl, struct oscillator *o){
+void playroutine(void){
+	if(playsong||playtrack){
+	}
 }
 
+/*void process_frame(struct trackline *tl, struct oscillator *o){
+}*/
+
+volatile u8 hello = 60;
+volatile u8 callbackwait = 0;
+u8 callbacktime = 180;
+
 u8 interrupthandler(void){
-	u8 hai = 0;
+	s16 hai = 0; // [-32768, 32767]
 
-	//playroutine();
+	if(callbackwait){
+		callbackwait--;
+	}else{
+		callbackwait = 0;
+		playroutine();
+	}
 
-	for(u8 i=0; i<4; i++){
+	/*for(u8 i=0; i<4; i++){
 		s8 amplitude;
 
 		switch(osc[i].waveform){
@@ -206,7 +213,11 @@ u8 interrupthandler(void){
 				break;
 		}
 		osc[i].phase += osc[i].freq;
-	}
+	}*/
+	if(hello==180){ hello=60; }
+	else{ hello++; }
 
-	return hai;
+	hai = hello;
+
+	return 128 + (hai >> 8);
 }
