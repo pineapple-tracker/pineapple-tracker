@@ -6,6 +6,9 @@
 
 #ifndef WINDOWS
 #include <err.h>
+#endif
+
+#ifdef JACK
 #include <jack/jack.h>
 #endif
 
@@ -14,6 +17,7 @@
 
 void sdl_callbackbuffer(void *userdata, Uint8 *buf, int len);
 
+#ifdef JACK
 // The current sample rate
 jack_nframes_t sr;
 jack_port_t *output_port;
@@ -23,6 +27,7 @@ void jack_error(const char *desc);
 int jack_process(jack_nframes_t nframes, void *arg);
 int jack_srate(jack_nframes_t nframes, void *arg);
 void jack_shutdown(void *arg);
+#endif
 
 
 /* initialize SDL audio */
@@ -62,7 +67,7 @@ void sdl_callbackbuffer(void *userdata, Uint8 *buf, int len){
 	}
 }
 
-#ifndef WINDOWS
+#ifdef JACK
 BOOL jack_init(void){
 	jack_client_t *client;
 	const intptr_t **ports;
@@ -159,10 +164,10 @@ void jack_error(const char *desc){
 void jack_shutdown(void *arg){
 	exit(1);
 }
-#endif // Windows
+#endif // JACK
 
 int main(int argc, char **argv){
-#ifndef WINDOWS
+#ifdef JACK
 	if(jack_init()){
 		initchip();
 		initgui();
