@@ -546,6 +546,9 @@ void normalmode(int c){
 					break;
 			}
 			break;
+		/* undo */
+		case 'u':
+			act_undo();
 		/* Clear */
 		case 'x':
 			act_clronething();
@@ -611,6 +614,10 @@ void normalmode(int c){
 		/* Enter visual mode */
 		case 'v':
 			visualmode();
+			break;
+		/* Enter visual line mode */
+		case 'V':
+			visuallinemode();
 			break;
 		/* enter jammer mode */
 		case CTRL('A'):
@@ -1058,12 +1065,25 @@ void jammermode(void){
 /* visual mode */
 void visualmode(void){
 	int c;
+
 	currmode = PM_VISUAL;
 	attrset(A_REVERSE);
 	while(currmode == PM_VISUAL){
 		if((c = getch()) != ERR) switch(c){
 			case KEY_ESCAPE:
 				currmode = PM_NORMAL;
+				break;
+			case 'h':
+				act_mvleft();
+				break;
+			case 'j':
+				act_mvdown();
+				break;
+			case 'k':
+				act_mvup();
+				break;
+			case 'l':
+				act_mvright();
 				break;
 		}
 		drawgui();
@@ -1072,3 +1092,41 @@ void visualmode(void){
 	return;
 }
 
+/* visual line mode */
+void visuallinemode(void){
+	int c;
+	u8 firstline;
+
+	currmode = PM_VISUALLINE;
+
+	/* Save the line under the cursor when entering this mode */
+	if(currtab==0){
+		firstline = songy;
+	}else if(currtab==1){
+		firstline = tracky;
+	}else if(currtab==2){
+		firstline = instry;
+	}
+
+	while(currmode == PM_VISUALLINE){
+		if((c = getch()) != ERR) switch(c){
+			case KEY_ESCAPE:
+				currmode = PM_NORMAL;
+				break;
+			case 'h':
+				act_mvleft();
+				break;
+			case 'j':
+				act_mvdown();
+				break;
+			case 'k':
+				act_mvup();
+				break;
+			case 'l':
+				act_mvright();
+				break;
+		}
+		drawgui();
+	}
+	return;
+}

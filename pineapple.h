@@ -20,6 +20,7 @@ char filename[1024];
 enum {
 	PM_NORMAL,
 	PM_VISUAL,
+	PM_VISUALLINE,
 	PM_CMDLINE,
 	PM_INSERT,
 	PM_JAMMER
@@ -29,6 +30,10 @@ void cmdlinemode(void);
 void insertmode(void);
 void jammermode(void);
 void visualmode(void);
+void visuallinemode(void);
+
+/* lines to be highlighted in visual line mode */
+u8 highlightlines[256];
 
 typedef enum {
 	WF_TRI = 0,

@@ -824,6 +824,9 @@ void drawgui(){
 	mvaddstr(0, 52, buf);
 	drawinstred(49, 1, lines - 2);
 
+	mvaddstr(1, 0, "Song");
+	drawsonged(0, 1, lines - 2);
+
 	// just a wild guess here..
 	tempo = callbacktime * (-1) + 300;
 	// display tempo
@@ -846,9 +849,6 @@ void drawgui(){
 		if(!saved && currmode != PM_INSERT) addstr(" [+]");
 	}
 
-	mvaddstr(1, 0, "Song");
-	drawsonged(0, 1, lines - 2);
-
 	if(disptick > 0){
 		_display();
 		disptick--;
@@ -862,6 +862,10 @@ void drawgui(){
 		move(getmaxy(stdscr)-1,0);
 		clrtoeol();
 		mvaddstr(getmaxy(stdscr)-1, 0, "-- VISUAL --");
+	}else if(currmode == PM_VISUALLINE){
+		move(getmaxy(stdscr)-1,0);
+		clrtoeol();
+		mvaddstr(getmaxy(stdscr)-1, 0, "-- VISUAL LINE --");
 	}else if(currmode == PM_JAMMER){
 		move(getmaxy(stdscr)-1,0);
 		clrtoeol();

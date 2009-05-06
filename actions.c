@@ -234,6 +234,9 @@ void act_transpdec(void){
 	saved = 0;
 }
 
+void act_undo(void){
+}
+
 void act_noteinc(void){
 	if(currtab==1){
 		// if current note < H7
