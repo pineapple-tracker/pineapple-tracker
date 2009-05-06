@@ -31,12 +31,12 @@ void jack_shutdown(void *arg);
 
 
 /* initialize SDL audio */
-BOOL sdl_init(void){
+u8 sdl_init(void){
 	SDL_AudioSpec requested, obtained;
 
 	if(SDL_Init( SDL_INIT_AUDIO ) < 0){
 		fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
-		return FALSE;
+		return 1;
 	}
 
 	atexit(SDL_Quit);
@@ -57,7 +57,7 @@ BOOL sdl_init(void){
 	fprintf(stderr, "obtained format %d\n", obtained.format);
 	fprintf(stderr, "samples %d\n", obtained.samples);
 
-	return TRUE;
+	return 0;
 }
 
 /* called by SDL */
@@ -68,7 +68,7 @@ void sdl_callbackbuffer(void *userdata, Uint8 *buf, int len){
 }
 
 #ifdef JACK
-BOOL jack_init(void){
+u8 jack_init(void){
 	jack_client_t *client;
 	const intptr_t **ports;
 
@@ -117,14 +117,14 @@ BOOL jack_init(void){
 
 	if (jack_activate (client)) {
 		fprintf (stderr, "cannot activate client");
-		return FALSE;
+		return 1;
 	}
 
 	// connect the ports
 	if ((ports = jack_get_ports (client, NULL, NULL, 
 				   JackPortIsPhysical|JackPortIsInput)) == NULL) {
 		fprintf(stderr, "Cannot find any physical playback ports\n");
-		exit(1);
+		return 1;
 	}
 
 	int i=0;
@@ -135,7 +135,7 @@ BOOL jack_init(void){
 		i++;
 	}
 
-	return TRUE;
+	return 0;
 }
 
 int jack_process(jack_nframes_t nframes, void *arg){
@@ -168,7 +168,7 @@ void jack_shutdown(void *arg){
 
 int main(int argc, char **argv){
 #ifdef JACK
-	if(jack_init()){
+	if(!jack_init()){
 		initchip();
 		initgui();
 
@@ -182,10 +182,10 @@ int main(int argc, char **argv){
 
 		//free (ports);
 		//jack_client_close (client);
-	}else if(sdl_init()){
+	}else if(!sdl_init()){
 #else
-	if(sdl_init()){
-#endif // Windows
+	if(!sdl_init()){
+#endif
 		initchip();
 		initgui();
 

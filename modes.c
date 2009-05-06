@@ -113,7 +113,7 @@ void _insertc(int c){
 
 			// when switching to the note command, change to param if it's
 			// higher than H7
-			if(instrument[currinstr].line[instry].cmd == '+'){
+			if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '='){
 				// save current param
 				_oldfxparam = instrument[currinstr].line[instry].param;
 				instrument[currinstr].line[instry].param = 96; //H7

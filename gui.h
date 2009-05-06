@@ -44,10 +44,6 @@ char filename[1024];
 char *validcmds;
 char *keymap[2];
 
-struct instrument instrument[256], iclip[256];
-struct track track[256], tclip[256];
-struct songline song[256];
-
 void initsonglines(void);
 void inittracks(void);
 void initinstrs(void);

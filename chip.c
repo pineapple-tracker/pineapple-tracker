@@ -1,8 +1,9 @@
 /* vi:set ts=4 sts=4 sw=4: */
 #include "pineapple.h"
 
-volatile u8 callbackwait;
-u8 callbacktime = 180;
+//volatile u8 callbackwait;
+//u8 callbacktime = 180;
+//u8 interruptwait = 0;
 
 u8 trackwait;
 u8 trackpos;
@@ -10,8 +11,6 @@ u8 songpos;
 
 u8 playsong;
 u8 playtrack;
-
-u8 interruptwait = 0;
 
 /*const u16 freqtable[] = {
 	0x010b, 0x011b, 0x012c, 0x013e, 0x0151, 0x0165, 0x017a, 0x0191, 0x01a9,
@@ -62,19 +61,35 @@ const s8 sinetable[] = {
 	-71, -60, -49, -37, -25, -12
 };
 
+typedef enum {
+	WF_TRI = 0,
+	WF_SAW,
+	WF_PUL,
+	WF_NOI,
+	WF_SINE
+} waveform_t;
+
+volatile struct oscillator {
+	u16	freq;
+	u16	phase;
+	u16	duty;
+	waveform_t waveform;
+	u8 volume;	// 0-255
+} osc[4];
+
 struct channel {
-	u8	tnum;
+	u8	tracknum;
 	s8	transp;
-	u8	tnote;
+	u8	tracknote;
 	u8	lastinstr;
-	u8	inum;
-	u8	iptr;
-	u8	iwait;
-	u8	inote;
-	s8	bendd;
+	u8	instrnum;
+	u8	instrptr;
+	u8	instrwait;
+	u8	instrnote;
+	s8	benddelta;
 	s16	bend;
-	s8	volumed;
-	s16	dutyd;
+	s8	volumedelta;
+	s16	dutydelta;
 	u8	vdepth;
 	u8	vrate;
 	u8	vpos;
@@ -82,36 +97,80 @@ struct channel {
 	u16	slur;
 } channel[4];
 
-void silence(void){
-	u8 i;
+void runcmd(u8 ch, u8 cmd, u8 param){
+	switch(cmd){
+		case 'd':
+			osc[ch].duty = param << 8;
+			break;
+		case 'f':
+			channel[ch].volumedelta = param;
+			break;
+		case 'i':
+			channel[ch].inertia = param << 1;
+			break;
+		case 's':
+			channel[ch].benddelta = param;
+			break;
+		case 'm':
+			channel[ch].dutydelta = param << 6;
+			break;
+		case 't':
+			channel[ch].instrwait = param;
+			break;
+		case 'v':
+			osc[ch].volume = param;
+			break;
+		case 'w':
+			osc[ch].waveform = param;
+			break;
+		case '@':
+			channel[ch].instrptr = param;
+			break;
+		case '=':
+			channel[ch].instrnote = param;
+			break;
+		case '+':
+			// 12 * 4 = C4;
+			channel[ch].instrnote = param + channel[ch].tracknote - 12 * 4;
+			break;
+		case '~':
+			if(channel[ch].vdepth != (param >> 4)){
+				channel[ch].vpos = 0;
+			}
+			channel[ch].vdepth = param >> 4;
+			channel[ch].vrate = param & 0xf;
+			break;
+		case '*':
+			callbacktime = -param;
+			break;
+	}
+}
 
-	for(i = 0; i < 4; i++){
+void silence(void){
+	for(u8 i = 0; i < 4; i++){
 		osc[i].volume = 0;
 	}
 	playsong = 0;
 	playtrack = 0;
 }
 
-void runcmd(u8 ch, u8 cmd, u8 param){
-}
-
 void iedplonk(int note, int instr){
-	channel[0].tnote = note;
-	channel[0].inum = instr;
-	channel[0].iptr = 0;
-	channel[0].iwait = 0;
+	channel[0].tracknote = note;
+	channel[0].instrnum = instr;
+	channel[0].instrptr = 0;
+	channel[0].instrwait = 0;
 	channel[0].bend = 0;
-	channel[0].bendd = 0;
-	channel[0].volumed = 0;
-	channel[0].dutyd = 0;
+	channel[0].benddelta = 0;
+	channel[0].volumedelta = 0;
+	channel[0].dutydelta = 0;
 	channel[0].vdepth = 0;
 }
 
 void startplaytrack(int t){
-	channel[0].tnum = t;
-	channel[1].tnum = 0;
-	channel[2].tnum = 0;
-	channel[3].tnum = 0;
+	channel[0].tracknum = t;
+	channel[1].tracknum = 0;
+	channel[2].tracknum = 0;
+	channel[3].tracknum = 0;
 	trackpos = 0;
 	trackwait = 0;
 	playtrack = 1;
@@ -133,17 +192,37 @@ void initchip(void){
 	playtrack = 0;
 
 	osc[0].volume = 0;
-	channel[0].inum = 0;
+	channel[0].instrnum = 0;
 	osc[1].volume = 0;
-	channel[1].inum = 0;
+	channel[1].instrnum = 0;
 	osc[2].volume = 0;
-	channel[2].inum = 0;
+	channel[2].instrnum = 0;
 	osc[3].volume = 0;
-	channel[3].inum = 0;
+	channel[3].instrnum = 0;
 }
 
-void playroutine(void){			// called at 50 Hz
+/*void playroutine(void){
+}*/
+
+void process_(struct trackline *tl, struct oscillator *o){
 }
 
 u8 interrupthandler(void){
+	u8 hai = 0;
+
+	//playroutine();
+
+	for(u8 i=0; i<4; i++){
+		s8 amplitude;
+
+		switch(osc[i].waveform){
+			case WF_SAW:
+				break;
+			default:
+				break;
+		}
+		osc[i].phase += osc[i].freq;
+	}
+
+	return hai;
 }

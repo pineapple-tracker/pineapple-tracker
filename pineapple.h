@@ -13,20 +13,8 @@ typedef int8_t s8;
 typedef int16_t s16;
 typedef int32_t s32;
 
-typedef char BOOL;
-#define FALSE 0
-#define TRUE 1
-
 u8 callbacktime;
 char filename[1024];
-
-enum {
-	WF_TRI,
-	WF_SAW,
-	WF_PUL,
-	WF_NOI,
-	WF_SINE
-};
 
 /* MODES */
 enum {
@@ -41,7 +29,6 @@ void cmdlinemode(void);
 void insertmode(void);
 void jammermode(void);
 void visualmode(void);
-
 
 struct trackline {
 	u8	note;
@@ -69,15 +56,11 @@ struct songline {
 	u8			transp[4];
 };
 
-int songlen, tracklen;
+struct instrument instrument[256], iclip[256];
+struct track track[256], tclip[256];
+struct songline song[256];
 
-volatile struct oscillator {
-	u16	freq;
-	u16	phase;
-	u16	duty;
-	u8	waveform;
-	u8	volume;	// 0-255
-} osc[4];
+int songlen, tracklen;
 
 void initchip(void);
 u8 interrupthandler(void);
