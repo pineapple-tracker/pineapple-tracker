@@ -2,7 +2,7 @@
 #include "pineapple.h"
 #include "gui.h"
 
-static int _oldfxparam = 0;
+static u8 _oldfxparam = 0;
 
 /* move cursor left one column */
 void act_mvleft(void){
@@ -366,10 +366,15 @@ void act_fxinc(void){
 
 				// when switching to the note command, change to param if it's
 				// higher than H7
-				if(instrument[currinstr].line[instry].cmd == '+'){
+				if((instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=')
+				//&& _oldfxparam
+				&& instrument[currinstr].line[instry].param>96){
 					// save current param
 					_oldfxparam = instrument[currinstr].line[instry].param;
 					instrument[currinstr].line[instry].param = 96; //H7
+				}else if(_oldfxparam){
+					instrument[currinstr].line[instry].param = _oldfxparam;
+					_oldfxparam = 0;
 				}
 
 				continue;
@@ -410,10 +415,15 @@ void act_fxdec(void){
 
 				// when switching to the note command, change to param if it's
 				// higher than H7
-				if(instrument[currinstr].line[instry].cmd == '+'){
+				if((instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '=')
+				//&& _oldfxparam
+				&& instrument[currinstr].line[instry].param>96){
 					// save current param
 					_oldfxparam = instrument[currinstr].line[instry].param;
 					instrument[currinstr].line[instry].param = 96; //H7
+				}else if(_oldfxparam){
+					instrument[currinstr].line[instry].param = _oldfxparam;
+					_oldfxparam = 0;
 				}
 
 				continue;
