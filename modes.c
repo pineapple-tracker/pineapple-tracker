@@ -1,4 +1,6 @@
-/* vi:set ts=4 sts=4 sw=4: */
+/* vi:set syntax= ts=8 sts=8 sw=8: */
+/* ROSS STYLE */
+
 #include "pineapple.h"
 #include "gui.h"
 #include "musicchip_file.h"
@@ -9,6 +11,25 @@ int tcliplen, icliplen = 0;
 int _hexdigit(char c);
 int _nextfreetrack(void);
 int _nextfreeinstr(void);
+
+/* Let's make a linked list! */
+/* i was gonna use this sick implementation:
+ * http://en.literateprograms.org/Singly_linked_list_(C) but Ross told me to
+ * write my own especially if I am not a pointer wizard so I'm just gonna use
+ * their node struct.
+ */
+typedef struct list_node{
+	void *element;
+	struct list_node *next;
+} NODE;
+
+NODE *list_create(void *e){
+	NODE *firstnode;
+	if(!(firstnode=malloc(sizeof(NODE)))) return NULL;
+	firstnode->element = e;
+	firstnode->next = NULL;
+	return firstnode;
+}
 
 int _hexdigit(char c){
 	if(c >= '0' && c <= '9') return c - '0';
