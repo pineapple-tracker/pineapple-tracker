@@ -1,4 +1,4 @@
-/* vi:set ts=4 sts=4 sw=4: */
+/* vi:set ts=4 sts=4 sw=4 noexpandtab: */
 #include <stdint.h>
 
 #ifndef PINEAPPLE_H
@@ -15,6 +15,7 @@ typedef int32_t s32;
 
 u8 callbacktime;
 char filename[1024];
+char *infinitemsg;
 
 /* MODES */
 enum {
@@ -31,9 +32,6 @@ void insertmode(void);
 void jammermode(void);
 void visualmode(void);
 void visuallinemode(void);
-
-/* lines to be highlighted in visual line mode */
-u8 highlightlines[256];
 
 typedef enum {
 	WF_TRI = 0,
@@ -96,14 +94,27 @@ void iedplonk(int, int);
 void initgui(void);
 void guiloop(void);
 
-//void initjoystick();
-//void sdlmainloop();
 void display(void);
 
 void startplaysong(int);
 void startplaytrack(int);
 
 void parsecmd(char cmd[]);
+
+/* a linked list */
+/*typedef struct list_node{
+	void *element;
+	struct list_node *next;
+} NODE;
+
+NODE *list_create(void *e);
+NODE *list_contains(NODE *n, int(*func)(void *, void *), void *match);
+int findu8(void *a, void *b);
+
+NODE *highlightlines;*/
+
+/* lines to be highlight in visual line mode */
+int highlight_firstline, highlight_lastline, highlight_lineamount;
 
 /* ACTIONS */
 void act_bigmvdown(void);
@@ -128,6 +139,7 @@ void act_trackdec(void);
 void act_trackinc(void);
 void act_transpdec(void);
 void act_transpinc(void);
+void act_undo(void);
 void act_viewinstrdec(void);
 void act_viewinstrinc(void);
 void act_viewphrasedec(void);

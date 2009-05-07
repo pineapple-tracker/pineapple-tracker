@@ -1,4 +1,4 @@
-/* vi:set ts=4 sts=4 sw=4: */
+/* vi:set ts=4 sts=4 sw=4 noexpandtab: */
 #include "pineapple.h"
 #include "gui.h"
 

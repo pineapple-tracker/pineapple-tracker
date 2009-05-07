@@ -1,4 +1,4 @@
-Specification for pineappletracker's user interface
+Specification for pineappletracker
 
 
 ***************
@@ -44,7 +44,8 @@ Modifying commands
 		Increase/Decrease step amount.
 
 	^
-		Yank entire current column and paste it in the next empty phrase or instrument.
+		Yank entire current column and paste it in the next empty phrase or
+		instrument.
 
 	a
 		Add a line to the end of the current song/instrument.
@@ -276,7 +277,7 @@ Mode commands
 		Set tempo to xx.
 
 	+<note>
-		Set the pitch to <note>. This can be used to create arepeggios
+		Set the pitch to <note>. This can be used to create arpeggios
 		with the jump command. This is relative to the note in the track column.
 
 	=<note>

@@ -1,3 +1,4 @@
+/* vi:set ts=4 sts=4 sw=4 noexpandtab: */
 #include <stdio.h>
 #include <SDL/SDL.h>
 #include <caca.h>

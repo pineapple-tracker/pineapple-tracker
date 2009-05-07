@@ -1,4 +1,4 @@
-/* vi:set ts=4 sts=4 sw=4: */
+/* vi:set ts=4 sts=4 sw=4 noexpandtab: */
 
 /* welcome to gui.c, enjoy your stay 8-) */
 
@@ -201,6 +201,7 @@ void initgui(){
 void drawsonged(int x, int y, int height){
 	int i, j;
 	char buf[1024];
+	//NODE *match;
 
 	if(songy < songoffs) songoffs = songy;
 	if(songy >= songoffs + height) songoffs = songy - height + 1;
@@ -209,6 +210,7 @@ void drawsonged(int x, int y, int height){
 		if(i >= songoffs && i - songoffs < height){
 			move(y + i - songoffs, x + 0);
 			if(i == songy) attrset(A_BOLD);
+
 			snprintf(buf, sizeof(buf), "%02x", i);
 
 			if(i == 0){ addch(ACS_ULCORNER); }
@@ -216,6 +218,14 @@ void drawsonged(int x, int y, int height){
 			else if(i%4 == 0){ addch(ACS_LTEE); }
 			else if(i < songlen-1){ addch(ACS_VLINE); }
 			addch(' ');
+
+			// should this line be highlight?
+			//if( (match = list_contains(highlightlines, findu8, &i)) ){
+			if( currtab == 0 && currmode == PM_VISUALLINE &&
+				((i <= highlight_firstline && i >= highlight_lastline)
+				|| (i >= highlight_firstline && i <= highlight_lastline)) ){
+				attrset(A_REVERSE);
+			}
 
 			addstr(buf);
 			for(j = 0; j < 4; j++){
@@ -233,7 +243,7 @@ void drawsonged(int x, int y, int height){
 }
 
 void drawtracked(int x, int y, int height){
-	int i, j;
+	u8 i, j;
 	char buf[1024];
 
 	if(tracky < trackoffs) trackoffs = tracky;
@@ -243,6 +253,7 @@ void drawtracked(int x, int y, int height){
 		if(i >= trackoffs && i - trackoffs < height){
 			move(y + i - trackoffs, x + 0);
 			if(i == tracky) attrset(A_BOLD);
+
 			snprintf(buf, sizeof(buf), "%02x", i);
 			addstr(buf);
 
@@ -252,6 +263,14 @@ void drawtracked(int x, int y, int height){
 			else if(i%4 == 0){ addch(ACS_LTEE); }
 			else if(i < tracklen-1){ addch(ACS_VLINE); }
 			addch(' ');
+
+			// should this line be highlight?
+			//if( (match = list_contains(highlightlines, findu8, &i)) ){
+			if( currtab == 1 && currmode == PM_VISUALLINE &&
+				((i <= highlight_firstline && i >= highlight_lastline)
+				|| (i >= highlight_firstline && i <= highlight_lastline)) ){
+				attrset(A_REVERSE);
+			}
 
 			if(track[currtrack].line[i].note){
 				snprintf(buf, sizeof(buf), "%s%d",
@@ -283,7 +302,7 @@ void drawtracked(int x, int y, int height){
 }
 
 void drawinstred(int x, int y, int height){
-	int i;
+	u8 i;
 	char buf[1024];
 
 	if(instry >= instrument[currinstr].length) instry = instrument[currinstr].length - 1;
@@ -295,6 +314,7 @@ void drawinstred(int x, int y, int height){
 		if(i >= instroffs && i - instroffs < height){
 			move(y + i - instroffs, x + 0);
 			if(i == instry) attrset(A_BOLD);
+
 			snprintf(buf, sizeof(buf), "%02x", i);
 			addstr(buf);
 
@@ -303,6 +323,14 @@ void drawinstred(int x, int y, int height){
 			else if(i == instrument[currinstr].length-1){ addch(ACS_LLCORNER); }
 			else if(i < instrument[currinstr].length-1){ addch(ACS_VLINE); }
 			addch(' ');
+
+			// should this line be highlight?
+			//if( (match = list_contains(highlightlines, findu8, &i)) ){
+			if( currtab == 2 && currmode == PM_VISUALLINE &&
+				((i <= highlight_firstline && i >= highlight_lastline)
+				|| (i >= highlight_firstline && i <= highlight_lastline)) ){
+				attrset(A_REVERSE);
+			}
 
 			snprintf(buf, sizeof(buf), "%c ", instrument[currinstr].line[i].cmd);
 			addstr(buf);
@@ -874,6 +902,10 @@ void drawgui(){
 		move(getmaxy(stdscr)-1,0);
 		clrtoeol();
 		mvaddstr(getmaxy(stdscr) - 1, 0, cmdstr);
+	}else if(infinitemsg != NULL){
+		move(getmaxy(stdscr)-1,0);
+		clrtoeol();
+		mvaddstr(getmaxy(stdscr) - 1, 0, infinitemsg);
 	}
     
 	switch(currtab){

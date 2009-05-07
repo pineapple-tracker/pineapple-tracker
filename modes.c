@@ -1,5 +1,5 @@
-/* vi:set syntax= ts=8 sts=8 sw=8: */
-/* ROSS STYLE */
+/* vi:set syntax= ts=8 sts=8 sw=8 noexpandtab: */
+/* WARNING: this file is ROSS STYLE */
 
 #include "pineapple.h"
 #include "gui.h"
@@ -13,23 +13,38 @@ int _nextfreetrack(void);
 int _nextfreeinstr(void);
 
 /* Let's make a linked list! */
-/* i was gonna use this sick implementation:
- * http://en.literateprograms.org/Singly_linked_list_(C) but Ross told me to
- * write my own especially if I am not a pointer wizard so I'm just gonna use
- * their node struct.
+/* Here's a great generic implementation:
+ * http://en.literateprograms.org/Singly_linked_list_(C)
  */
-typedef struct list_node{
-	void *element;
-	struct list_node *next;
-} NODE;
-
-NODE *list_create(void *e){
-	NODE *firstnode;
-	if(!(firstnode=malloc(sizeof(NODE)))) return NULL;
-	firstnode->element = e;
-	firstnode->next = NULL;
-	return firstnode;
+/*NODE *list_create(void *e){
+	NODE *n;
+	if(!(n=malloc(sizeof(NODE)))) return NULL;
+	n->element = e;
+	n->next = NULL;
+	return n;
 }
+
+NODE *list_insertafter(NODE *oldnode, void *newelement){
+	NODE *newnode;
+	newnode = list_create(newelement);
+	newnode->next = oldnode->next;
+	oldnode->next = newnode;
+	return newnode;
+}
+
+
+// have a look at this wizardry! wow. what does int(*func) do?
+NODE *list_contains(NODE *n, int (*func) (void *, void *), void *match){
+	while(n){
+		if(func(n->element, match) > 0) return n;
+		n = n->next;
+	}
+	return NULL;
+}
+
+int findu8(void *a, void *b){
+	return a==b;
+}*/
 
 int _hexdigit(char c){
 	if(c >= '0' && c <= '9') return c - '0';
@@ -1091,8 +1106,12 @@ void visualmode(void){
 	attrset(A_REVERSE);
 	while(currmode == PM_VISUAL){
 		if((c = getch()) != ERR) switch(c){
+			case 'v':
 			case KEY_ESCAPE:
 				currmode = PM_NORMAL;
+				break;
+			case 'V':
+				visuallinemode();
 				break;
 			case 'h':
 				act_mvleft();
@@ -1116,38 +1135,109 @@ void visualmode(void){
 /* visual line mode */
 void visuallinemode(void){
 	int c;
-	u8 firstline;
+	char buf[1024];
+	//NODE *firstnode, *lastnode;
 
 	currmode = PM_VISUALLINE;
 
-	/* Save the line under the cursor when entering this mode */
+	/* Store the current line as the first and last node of a linked list */
 	if(currtab==0){
-		firstline = songy;
+		//firstnode = list_create((void *) songy);
+		//lastnode = list_insertafter(firstnode, (void *)songy);
+		highlight_firstline = songy;
+		highlight_lastline = songy;
 	}else if(currtab==1){
-		firstline = tracky;
+		//firstnode = list_create((void *) tracky);
+		//lastnode = list_insertafter(firstnode, (void *)tracky);
+		highlight_firstline = tracky;
+		highlight_lastline = tracky;
 	}else if(currtab==2){
-		firstline = instry;
+		//firstnode = list_create((void *) instry);
+		//lastnode = list_insertafter(firstnode, (void *)instry);
+		highlight_firstline = instry;
+		highlight_lastline = instry;
+	}else{
+		//firstnode = NULL;
+		//lastnode = NULL;
+		highlight_firstline = -1;
+		highlight_lastline = -1;
 	}
+
+	// initialize difference
+	highlight_lineamount = 1;
+
+	// make it visible to gui.c
+	//highlightlines = firstnode;
 
 	while(currmode == PM_VISUALLINE){
 		if((c = getch()) != ERR) switch(c){
+			case 'V':
 			case KEY_ESCAPE:
 				currmode = PM_NORMAL;
 				break;
+			case 'v':
+				visualmode();
 			case 'h':
 				act_mvleft();
 				break;
 			case 'j':
 				act_mvdown();
+				// update lastnode
+				if(currtab==0){
+					//lastnode = list_insertafter(firstnode, (void *)songy);
+					highlight_lastline = songy;
+				}else if(currtab==1){
+					//lastnode = list_insertafter(firstnode, (void *)tracky);
+					highlight_lastline = tracky;
+				}else if(currtab==2){
+					//lastnode = list_insertafter(firstnode, (void *)instry);
+					highlight_lastline = instry;
+				}
 				break;
 			case 'k':
 				act_mvup();
+				// update lastnode
+				if(currtab==0){
+					//lastnode = list_insertafter(firstnode, (void *)songy);
+					highlight_lastline = songy;
+				}else if(currtab==1){
+					//lastnode = list_insertafter(firstnode, (void *)tracky);
+					highlight_lastline = tracky;
+				}else if(currtab==2){
+					//lastnode = list_insertafter(firstnode, (void *)instry);
+					highlight_lastline = instry;
+				}
 				break;
 			case 'l':
 				act_mvright();
 				break;
+			// y: copy every line that is highlight to the paste buffer
+			case 'y':
+				if(currtab == 0){
+					tcliplen = 1;
+					memcpy(&tclip, &song[songy], sizeof(struct songline)*highlight_lineamount);
+				}else if(currtab == 1){
+					tcliplen = 1;
+					memcpy(&tclip, &track[currtrack].line[tracky], sizeof(struct trackline)*highlight_lineamount);
+				}else if(currtab == 2){
+					icliplen = 1;
+					memcpy(&iclip, &instrument[currinstr].line[instry], sizeof(struct instrline)*highlight_lineamount);
+				}
+
+				snprintf(buf, sizeof(buf), "%d lines yanked", highlight_lineamount);
+				infinitemsg = buf;
+				currmode = PM_NORMAL;
+				break;
 		}
 		drawgui();
+
+		// update the highlight length
+		highlight_lineamount = (highlight_firstline>highlight_lastline)?
+				highlight_firstline - highlight_lastline +1
+				: highlight_lastline - highlight_firstline +1;
 	}
+	highlight_firstline = -1;
+	highlight_lastline = -1;
+
 	return;
 }
