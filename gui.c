@@ -219,7 +219,7 @@ void drawsonged(int x, int y, int height){
 			else if(i < songlen-1){ addch(ACS_VLINE); }
 			addch(' ');
 
-			// should this line be highlight?
+			// should this line be highlighted?
 			//if( (match = list_contains(highlightlines, findu8, &i)) ){
 			if( currtab == 0 && currmode == PM_VISUALLINE &&
 				((i <= highlight_firstline && i >= highlight_lastline)
@@ -264,7 +264,7 @@ void drawtracked(int x, int y, int height){
 			else if(i < tracklen-1){ addch(ACS_VLINE); }
 			addch(' ');
 
-			// should this line be highlight?
+			// should this line be highlighted?
 			//if( (match = list_contains(highlightlines, findu8, &i)) ){
 			if( currtab == 1 && currmode == PM_VISUALLINE &&
 				((i <= highlight_firstline && i >= highlight_lastline)
@@ -324,7 +324,7 @@ void drawinstred(int x, int y, int height){
 			else if(i < instrument[currinstr].length-1){ addch(ACS_VLINE); }
 			addch(' ');
 
-			// should this line be highlight?
+			// should this line be highlighted?
 			//if( (match = list_contains(highlightlines, findu8, &i)) ){
 			if( currtab == 2 && currmode == PM_VISUALLINE &&
 				((i <= highlight_firstline && i >= highlight_lastline)
@@ -883,22 +883,32 @@ void drawgui(){
 	}
 
 	if(currmode == PM_INSERT){
+		infinitemsg = NULL;
+
 		move(getmaxy(stdscr)-1,0);
 		clrtoeol();
 		mvaddstr(getmaxy(stdscr)-1, 0, "-- INSERT --");
 	}else if(currmode == PM_VISUAL){
+		infinitemsg = NULL;
+
 		move(getmaxy(stdscr)-1,0);
 		clrtoeol();
 		mvaddstr(getmaxy(stdscr)-1, 0, "-- VISUAL --");
 	}else if(currmode == PM_VISUALLINE){
+		infinitemsg = NULL;
+
 		move(getmaxy(stdscr)-1,0);
 		clrtoeol();
 		mvaddstr(getmaxy(stdscr)-1, 0, "-- VISUAL LINE --");
 	}else if(currmode == PM_JAMMER){
+		infinitemsg = NULL;
+
 		move(getmaxy(stdscr)-1,0);
 		clrtoeol();
 		mvaddstr(getmaxy(stdscr)-1, 0, "-- JAMMER --");
 	}else if(currmode == PM_CMDLINE){
+		infinitemsg = NULL;
+
 		move(getmaxy(stdscr)-1,0);
 		clrtoeol();
 		mvaddstr(getmaxy(stdscr) - 1, 0, cmdstr);
