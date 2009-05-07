@@ -24,8 +24,6 @@ bugs:
 
 * speed of vibrato, arpeggio, slide, faster than when we were running at 16khz
 
-* M acts weird
-
 * backspace doesn't work on some computers
 
 * yj and yk only work in track tab.
@@ -35,3 +33,5 @@ bugs:
 * ui doesn't update in cmdline mode
 
 * ui doesn't update after pressing the first key of a two-key command like yy
+
+* from normal mode, press Vv, then exit visual mode with <esc> or v. the cursor moves left... why?

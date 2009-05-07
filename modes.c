@@ -323,35 +323,45 @@ void normalmode(int c){
 					break;
 			}
 			break;
+
+		// the second cases (to the right of the colon) for M and L
+		// took some serious guesswork, so I'm not sure if they're
+		// correct but they seem to work.
 		case 'M':
 			switch(currtab){
 				case 0:
-					songy = (songlen+1<getmaxy(stdscr)-2)?
-							songlen/2 : (getmaxy(stdscr)-2+songoffs)/2;
+					songy = (songlen <= getmaxy(stdscr)-2)?
+							songlen/2
+							: ((getmaxy(stdscr)-6)/2) + songoffs;
 					break;
 				case 1:
-					tracky = (tracklen+1<getmaxy(stdscr)-2)?
-							tracklen/2 : (getmaxy(stdscr)-2+trackoffs)/2;
+					tracky = (tracklen <= getmaxy(stdscr)-2)?
+							tracklen/2
+							: ((getmaxy(stdscr)-6)/2) + trackoffs;
 					break;
 				case 2:
-					instry = (instrument[currinstr].length-1<getmaxy(stdscr)-2)?
-							(instrument[currinstr].length-1)/2 : (getmaxy(stdscr)-2+instroffs)/2;
+					instry = (instrument[currinstr].length <= getmaxy(stdscr)-2)?
+							instrument[currinstr].length/2
+							: ((getmaxy(stdscr)-6)/2) + instroffs;
 					break;
 			}
 			break;
 		case 'L':
 			switch(currtab){
 				case 0:
-					songy = (songlen+1<getmaxy(stdscr)-2)?
-							songlen-1 : getmaxy(stdscr)-3+songoffs;
+					songy = (songlen <= getmaxy(stdscr)-2)?
+							songlen-1
+							: getmaxy(stdscr)-3+songoffs;
 					break;
 				case 1:
-					tracky = (tracklen+1<getmaxy(stdscr)-2)?
-							tracklen-1 : getmaxy(stdscr)-3+trackoffs;
+					tracky = (tracklen <= getmaxy(stdscr)-2)?
+							tracklen-1
+							: getmaxy(stdscr)-3+trackoffs;
 					break;
 				case 2:
-					instry = (instrument[currinstr].length-1<getmaxy(stdscr)-2)?
-							instrument[currinstr].length-1 : getmaxy(stdscr)-3+instroffs;
+					instry = (instrument[currinstr].length <= getmaxy(stdscr)-2)?
+							instrument[currinstr].length-1
+							: getmaxy(stdscr)-3+instroffs;
 					break;
 			}
 			break;
@@ -1211,7 +1221,7 @@ void visuallinemode(void){
 			case 'l':
 				act_mvright();
 				break;
-			// y: copy every line that is highlight to the paste buffer
+			// y: copy every line that is highlighted to the paste buffer
 			case 'y':
 				if(currtab == 0){
 					tcliplen = 1;
@@ -1231,7 +1241,7 @@ void visuallinemode(void){
 		}
 		drawgui();
 
-		// update the highlight length
+		// update the highlighted length
 		highlight_lineamount = (highlight_firstline>highlight_lastline)?
 				highlight_firstline - highlight_lastline +1
 				: highlight_lastline - highlight_firstline +1;

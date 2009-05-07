@@ -113,7 +113,7 @@ int findu8(void *a, void *b);
 
 NODE *highlightlines;*/
 
-/* lines to be highlight in visual line mode */
+/* lines to be highlighted in visual line mode */
 int highlight_firstline, highlight_lastline, highlight_lineamount;
 
 /* ACTIONS */
