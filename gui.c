@@ -874,7 +874,10 @@ void drawgui(){
 
 	if(currmode == PM_NORMAL){
 		mvaddstr(getmaxy(stdscr)-1, 0, filename);
-		if(!saved && currmode != PM_INSERT) addstr(" [+]");
+		if(!saved && currmode != PM_INSERT){
+			addstr(" [+]");
+			infinitemsg = NULL;
+		}
 	}
 
 	if(disptick > 0){

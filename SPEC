@@ -18,7 +18,7 @@ Window movement
 	] [
 		Switch to next/last instrument from any column.
 
-		} {
+	} {
 		Switch to next/last phrase from any column.
 
 	^d ^u
@@ -149,7 +149,7 @@ Modifying commands
 *********************
 * COMMAND LINE MODE *
 *********************
-	<number>
+	:<number>
 		Move cursor to that line number.
 
 	:q
@@ -186,6 +186,9 @@ Modifying commands
 	
 	:clear all
 		Clear song, track, and instruments.
+
+	:colorscheme <scheme>
+		Change gui colors.
 	
 	:wavexport filename
 		Render to .wav format filename.

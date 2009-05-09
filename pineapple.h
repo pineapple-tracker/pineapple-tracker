@@ -101,6 +101,12 @@ void startplaytrack(int);
 
 void parsecmd(char cmd[]);
 
+// just some poorly-named variables for hackin together the repeat command
+int cmdrepeat;
+int cmdrepeatnum;
+int lastaction;
+int lastrepeatnum;
+
 /* a linked list */
 /*typedef struct list_node{
 	void *element;
