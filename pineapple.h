@@ -16,6 +16,7 @@ typedef int32_t s32;
 u8 callbacktime;
 char filename[1024];
 char *infinitemsg;
+char comment[1024];
 
 /* MODES */
 enum {

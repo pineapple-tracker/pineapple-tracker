@@ -207,6 +207,8 @@ void _parsecmd(char cmd[]){
 				else{ instry = gotoline; }
 				break;
 		}
+	}else if(cmd[1] == 'c' && cmd[2] == ' '){
+		strncpy(comment, cmd+3, sizeof(comment));
 	}else 
 		setdisplay("not a tracker command!");
 	return;

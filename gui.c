@@ -161,6 +161,10 @@ void readinstr(int num, int pos, u8 *il){
 
 void exitgui(){
 	endwin();
+	printf("hello\n");
+	for(int i = 0; i < 1024; i++)
+		printf("%c", comment[i]);
+	printf("\n");
 }
 
 void initgui(){
@@ -871,6 +875,11 @@ void drawgui(){
 	mvaddstr(0, 60, "step -=");
 	snprintf(buf, sizeof(buf), "%0x", step); 
 	mvaddstr(0, 68, buf);
+
+	// display comment
+	mvaddstr(2, 60, "comment:");
+	snprintf(buf, sizeof(buf), "%s", comment);
+	mvaddstr(3, 60, buf);
 
 	if(currmode == PM_NORMAL){
 		mvaddstr(getmaxy(stdscr)-1, 0, filename);

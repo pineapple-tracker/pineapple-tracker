@@ -5,6 +5,7 @@
  ()_)()_)()_)()_)()_)()_)()_)()_)()_*/
 
 #include <stdio.h>
+#include <string.h>
 
 #include "pineapple.h"
 #include "musicchip_file.h"
@@ -21,6 +22,10 @@ void savefile(char *fname){
 
 	fprintf(f, "musicchip tune\n");
 	fprintf(f, "version 1\n");
+	fprintf(f, "\n");
+	fprintf(f, "%s\n", filename);
+	fprintf(f, "\n");
+	fprintf(f, "#%s\n", comment);
 	fprintf(f, "\n");
 	fprintf(f, "tempo: %d\n", callbacktime);
 	for(i = 0; i < songlen; i++){
@@ -75,6 +80,7 @@ int loadfile(char *fname){
 	int cmd[3];
 	int i1, i2, trk[4], transp[4], param[3], note, instr;
 	int i;
+	char c;
 
 	snprintf(filename, sizeof(filename), "%s", fname);
 
@@ -85,7 +91,9 @@ int loadfile(char *fname){
 
 	songlen = 1;
 	while(!feof(f) && fgets(buf, sizeof(buf), f)){
-		if(1 == sscanf(buf, "tempo: %hhd", &callbacktime)){
+		if(1 == sscanf(buf, "#%1024c", &comment)){
+		}
+		else if(1 == sscanf(buf, "tempo: %hhd", &callbacktime)){
 			callbacktime = (u8)callbacktime;
 		}else if(9 == sscanf(buf, "songline %x %x %x %x %x %x %x %x %x",
 			&i1,
