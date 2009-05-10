@@ -187,11 +187,14 @@ Modifying commands
 	:clear all
 		Clear song, track, and instruments.
 
-	:colorscheme <scheme>
+	:colorscheme (scheme)
 		Change gui colors.
 	
-	:wavexport filename
+	:wavexport (filename)
 		Render to .wav format filename.
+	
+	:c (comment)
+		Add comment (comment) to the current file.
 
 Mode commands
 	<Escape>

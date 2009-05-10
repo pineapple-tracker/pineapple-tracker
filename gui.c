@@ -161,10 +161,6 @@ void readinstr(int num, int pos, u8 *il){
 
 void exitgui(){
 	endwin();
-	printf("hello\n");
-	for(int i = 0; i < 1024; i++)
-		printf("%c", comment[i]);
-	printf("\n");
 }
 
 void initgui(){
