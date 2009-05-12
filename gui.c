@@ -4,28 +4,6 @@
 
 #include "pineapple.h"
 #include "gui.h"
-#include <iostream.h>
-/*									*/
-// ** CONFIG FILE ** //
-/*									*/
-int conf_open()
-{
-	ifstream file;
-	string fName = ".pineapplerc"
-	file.open(fName.c_str());
-	if(!file){
-		//keep default variables
-	}
-	else{
-		string lineread;
-		while(std::getline(file, lineread){
-			{
-				//parse lines
-				
-			}
-		}
-	}
-}
 
 /*                  */
 // ** LOCAL VARS ** //
