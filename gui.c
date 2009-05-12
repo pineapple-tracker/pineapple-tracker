@@ -21,6 +21,7 @@ int conf_open()
 		while(std::getline(file, lineread){
 			{
 				//parse lines
+				
 			}
 		}
 	}
