@@ -33,11 +33,6 @@ int saved;
 int disptick;
 int step;
 
-int cmdrepeat;
-int cmdrepeatnum;
-int lastrepeat;
-int lastaction;
-
 char cmdstr[500];
 char filename[1024];
 char *validcmds;

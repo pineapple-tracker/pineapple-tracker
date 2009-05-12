@@ -1,6 +1,11 @@
 musicchip tune
 version 1
 
+songs/morelikeahumangnome.song
+
+#do you ever feel like a gnome?
+
+
 tempo: 132
 songline 00 01 00 06 00 00 00 00 00
 songline 01 01 00 07 00 00 00 00 00

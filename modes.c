@@ -7,6 +7,7 @@
 
 int f;
 int tcliplen, icliplen = 0;
+int lastinsert = 0;
 
 int _hexdigit(char c);
 int _nextfreetrack(void);
@@ -31,7 +32,6 @@ NODE *list_insertafter(NODE *oldnode, void *newelement){
 	oldnode->next = newnode;
 	return newnode;
 }
-
 
 // have a look at this wizardry! wow. what does int(*func) do?
 NODE *list_contains(NODE *n, int (*func) (void *, void *), void *match){
@@ -152,6 +152,8 @@ void _insertc(int c){
 			track[currtrack].line[tracky].cmd[(trackx - 3) / 3] = c;
 		}
 	}
+	// for repeat
+	lastinsert = c;
 }
 
 void _parsecmd(char cmd[]){
@@ -205,6 +207,8 @@ void _parsecmd(char cmd[]){
 				else{ instry = gotoline; }
 				break;
 		}
+	}else if(cmd[1] == 'c' && cmd[2] == ' '){
+		strncpy(comment, cmd+3, sizeof(comment));
 	}else 
 		setdisplay("not a tracker command!");
 	return;
@@ -214,7 +218,9 @@ void _parsecmd(char cmd[]){
 void normalmode(int c){
 	int i;
 
-	// don't save the action if it's a movement or a repeat
+
+	// don't save the action for repeat if it's a movement or a repeat, or
+	// something else that doesnt make sense to repeat
 	if(c != 'h' &&
 		c != 'j' && 
 		c != 'k' && 
@@ -223,11 +229,14 @@ void normalmode(int c){
 		c != CTRL('U') && 
 		c != CTRL('H') && 
 		c != CTRL('L') && 
+		c != 'H' && 
+		c != 'M' && 
+		c != 'L' && 
 		c != 'g' && 
 		c != 'G' && 
 		c != '.'){
 		lastaction = c;
-		lastrepeat = cmdrepeatnum;
+		lastrepeatnum = cmdrepeatnum;
 	}
 
 	for(i=0; i<cmdrepeatnum; i++){
@@ -254,8 +263,13 @@ void normalmode(int c){
 			}
 			break;
 		case '.':
-			cmdrepeatnum = lastrepeat;
-			normalmode(lastaction);
+			// if the last command was a replace, just insert the last thing
+			// inserted instead of calling insertmode()
+			if(lastaction == 'r')
+				_insertc(lastinsert);
+			else
+				normalmode(lastaction);
+			cmdrepeatnum = lastrepeatnum;
 			break;
 		case KEY_ESCAPE:
 			disptick = 0;

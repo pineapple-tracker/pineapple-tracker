@@ -893,9 +893,17 @@ void drawgui(){
 	snprintf(buf, sizeof(buf), "%0x", step); 
 	mvaddstr(0, 68, buf);
 
+	// display comment
+	mvaddstr(2, 60, "comment:");
+	snprintf(buf, sizeof(buf), "%s", comment);
+	mvaddstr(3, 60, buf);
+
 	if(currmode == PM_NORMAL){
 		mvaddstr(getmaxy(stdscr)-1, 0, filename);
-		if(!saved && currmode != PM_INSERT) addstr(" [+]");
+		if(!saved && currmode != PM_INSERT){
+			addstr(" [+]");
+			infinitemsg = NULL;
+		}
 	}
 
 	if(disptick > 0){

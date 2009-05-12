@@ -16,6 +16,7 @@ typedef int32_t s32;
 u8 callbacktime;
 char filename[1024];
 char *infinitemsg;
+char comment[1024];
 
 /* MODES */
 enum {
@@ -101,6 +102,12 @@ void startplaytrack(int);
 
 void parsecmd(char cmd[]);
 
+// just some poorly-named variables for hackin together the repeat command
+int cmdrepeat;
+int cmdrepeatnum;
+int lastaction;
+int lastrepeatnum;
+
 /* a linked list */
 /*typedef struct list_node{
 	void *element;
@@ -145,14 +152,10 @@ void act_viewinstrinc(void);
 void act_viewphrasedec(void);
 void act_viewphraseinc(void);
 
-extern u8 trackpos;
-extern u8 playtrack;
-extern u8 playsong;
-extern u8 songpos;
-extern int songlen;
-
-extern struct instrument instrument[256], iclip[256];
-extern struct track track[256], tclip[256];
-extern struct songline song[256];
+u8 trackpos;
+u8 playtrack;
+u8 playsong;
+u8 songpos;
+int songlen;
 
 #endif /* PINEAPPLE_H */

@@ -8,7 +8,10 @@ enhancements:
 
 * JACK driver
 
-* config files
+* .pineapplerc
+	Ability to configure:
+	* colorschemes
+	* initial/default step value?
 
 * MORE MODULAR
 	* gui.c => ncurses_ui.c
@@ -35,3 +38,5 @@ bugs:
 * ui doesn't update after pressing the first key of a two-key command like yy
 
 * from normal mode, press Vv, then exit visual mode with <esc> or v. the cursor moves left... why?
+
+* M still acts weird if you are ^e'd down in a column
