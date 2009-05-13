@@ -156,8 +156,9 @@ typedef struct pineapple_tune{
 	u8 trackpos;
 	u8 songpos;
 	int songlen;
-	int trackx, tracky, trackoffs;
 	int instrx, instry, instroffs;
+	int songx, songy, songoffs;
+	int trackx, tracky, trackoffs;
 	int currtrack, currinstr;
 	int currtab;
 	int saved;

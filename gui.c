@@ -203,18 +203,18 @@ void drawsonged(PT_TUNE *pt, int x, int y, int height){
 	char buf[1024];
 	//NODE *match;
 
-	if(songy < songoffs) songoffs = songy;
-	if(songy >= songoffs + height) songoffs = songy - height + 1;
+	if(pt->songy < pt->songoffs) pt->songoffs = pt->songy;
+	if(pt->songy >= pt->songoffs + height) pt->songoffs = pt->songy - height + 1;
 
-	for(i = 0; i < songlen; i++){
-		if(i >= songoffs && i - songoffs < height){
-			move(y + i - songoffs, x + 0);
-			if(i == songy) attrset(A_BOLD);
+	for(i = 0; i < pt->songlen; i++){
+		if(i >= pt->songoffs && i - pt->songoffs < height){
+			move(y + i - pt->songoffs, x + 0);
+			if(i == pt->songy) attrset(A_BOLD);
 
 			snprintf(buf, sizeof(buf), "%02x", i);
 
 			if(i == 0){ addch(ACS_ULCORNER); }
-			else if(i == songlen-1){ addch(ACS_LLCORNER); }
+			else if(i == pt->songlen-1){ addch(ACS_LLCORNER); }
 			else if(i%4 == 0){ addch(ACS_LTEE); }
 			else if(i < songlen-1){ addch(ACS_VLINE); }
 			addch(' ');
@@ -352,10 +352,10 @@ void drawinstred(PT_TUNE *pt, int x, int y, int height){
 }
 
 /* you guys KNOW we arn't using this and probably won't....
-/* ....
-/* ....
-/* EVER
-*/
+ * ....
+ * ....
+ * EVER
+ */
 
 /*static FILE *exportfile = 0;
 static int exportbits = 0;
@@ -514,7 +514,7 @@ void export(){
 */
 
 /* main input loop */
-void handleinput(){
+void handleinput(PT_TUNE *pt){
 	int c;
 
 	/*if(currmode == PM_NORMAL){*/
@@ -529,7 +529,7 @@ void handleinput(){
 				cmdrepeatnum = (cmdrepeatnum*10) + _char2int(c);
 			}
 		}else{
-			normalmode(c);
+			normalmode(pt, c);
 		}
 	}
 	usleep(10000);
@@ -560,7 +560,7 @@ void _display(void){
 	mvaddch(cy+1, cx+strlen(dispmesg)+1, ACS_LRCORNER);
 }
 
-void drawgui(){
+void drawgui(PT_TUNE *pt){
 	char buf[1024];
 	int lines = LINES;
 	int songcols[] = {0, 1, 3, 4, 6, 7, 9, 10, 12, 13, 15, 16, 18, 19, 21, 22};
@@ -577,19 +577,19 @@ void drawgui(){
 	mvaddch(0, 31, ACS_ULCORNER);
 	snprintf(buf, sizeof(buf), "%02x{}", currtrack);
 	mvaddstr(0, 32, buf);
-	drawtracked(29, 1, lines - 2);
+	drawtracked(pt, 29, 1, lines - 2);
 
 	// display instrument num
 	mvaddch(0, 51, ACS_ULCORNER);
 	snprintf(buf, sizeof(buf), "%02x[]", currinstr);
 	mvaddstr(0, 52, buf);
-	drawinstred(49, 1, lines - 2);
+	drawinstred(pt, 49, 1, lines - 2);
 
 	mvaddstr(1, 0, "Song");
-	drawsonged(0, 1, lines - 2);
+	drawsonged(pt, 0, 1, lines - 2);
 
 	// just a wild guess here..
-	tempo = callbacktime * (-1) + 300;
+	tempo = pt->callbacktime * (-1) + 300;
 	// display tempo
 	mvaddch(0, 17, ACS_DEGREE);
 	snprintf(buf, sizeof(buf), "%d()", tempo);
@@ -607,7 +607,7 @@ void drawgui(){
 
 	// display comment
 	mvaddstr(2, 60, "comment:");
-	snprintf(buf, sizeof(buf), "%s", comment);
+	snprintf(buf, sizeof(buf), "%s", pt->comment);
 	mvaddstr(3, 60, buf);
 
 	if(currmode == PM_NORMAL){
@@ -661,13 +661,13 @@ void drawgui(){
     
 	switch(currtab){
 		case 0:
-			move(1 + songy - songoffs, 0 + 4 + songcols[songx]);
+			move(1 + pt->songy - pt->songoffs, 0 + 4 + songcols[pt->songx]);
 			break;
 		case 1:
-			move(1 + pt->tracky - pt->trackoffs, 29 + 4 + trackcols[trackx]);
+			move(1 + pt->tracky - pt->trackoffs, 29 + 4 + trackcols[pt->trackx]);
 			break;
 		case 2:
-			move(1 + instry - instroffs, 49 + 4 + instrcols[instrx]);
+			move(1 + pt->instry - pt->instroffs, 49 + 4 + instrcols[pt->instrx]);
 			break;
 	}
 
@@ -684,8 +684,8 @@ void guiloop(PT_TUNE *pt){
 	ESCDELAY = 50;
 #endif
 	for(;;){
-		drawgui();
-		handleinput();
+		drawgui(pt);
+		handleinput(pt);
 	}
 }
 

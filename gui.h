@@ -25,7 +25,6 @@ int currmode;
 char currcmd;
 //int instrx, instry, instroffs;
 int octave;
-int songx, songy, songoffs;
 //int trackx, tracky, trackoffs;
 //int currtrack, currinstr;
 //int currtab;
