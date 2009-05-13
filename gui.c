@@ -103,41 +103,41 @@ int freqkey(int c){
 	return f;
 }
 
-void initsonglines(void){
-	for(int i=0; i < songlen; i++){
-		memmove(&song[i + 0], &song[i + 1], sizeof(struct songline) * (songlen - i - 1));
+void initsonglines(PT_TUNE *pt){
+	for(int i=0; i < pt->songlen; i++){
+		memmove(&pt->song[i + 0], &pt->song[i + 1], sizeof(struct songline) * (songlen - i - 1));
 		if(i < 4){
-			song[0].track[i] = 0x000;
-			song[0].transp[i] = 0x000;
+			pt->song[0].track[i] = 0x000;
+			pt->song[0].transp[i] = 0x000;
 		}
 	}
-	songlen = 1;
+	pt->songlen = 1;
 }
 
-void inittracks(void){
+void inittracks(PT_TUNE *pt){
 	for(int i=0; i < 256; i++){
 		for(int j=0; j < TRACKLEN; j++){
-			track[i].line[j].note = 0x0000;
-			track[i].line[j].instr = 0x0000;
+			pt->track[i].line[j].note = 0x0000;
+			pt->track[i].line[j].instr = 0x0000;
 			for(int k=0; k < 2; k++){
-				track[i].line[j].cmd[k] = 0x0000;
-				track[i].line[j].param[k] = 0x0000;
+				pt->track[i].line[j].cmd[k] = 0x0000;
+				pt->track[i].line[j].param[k] = 0x0000;
 			}
 		}
 	}
 }
 
-void initinstrs(void){
+void initinstrs(PT_TUNE *pt){
 	for(int i=1; i < 256; i++){
-		instrument[i].length = 1;
-		instrument[i].line[0].cmd = '0';
-		instrument[i].line[0].param = 0;
+		pt->instrument[i].length = 1;
+		pt->instrument[i].line[0].cmd = '0';
+		pt->instrument[i].line[0].param = 0;
 	}
 }
 
-void readsong(int pos, int ch, u8 *dest){ 
-	dest[0] = song[pos].track[ch];
-	dest[1] = song[pos].transp[ch];
+void readsong(PT_TUNE *pt, int pos, int ch, u8 *dest){ 
+	dest[0] = pt->song[pos].track[ch];
+	dest[1] = pt->song[pos].transp[ch];
 }
 
 void readtrack(int num, int pos, struct trackline *tl){
@@ -163,7 +163,7 @@ void exitgui(){
 	endwin();
 }
 
-void initgui(){
+void initgui(PT_TUNE *pt){
 	initscr();
 
 	//if(setlocale(LC_CTYPE,"en_US.utf8") != NULL) setdisplay("UTF-8 enabled!");
@@ -193,7 +193,7 @@ void initgui(){
 	// on that yet.
 	nodelay(stdscr, TRUE);
 
-	initinstrs();
+	initinstrs(pt);
 
 	atexit(exitgui);
 }

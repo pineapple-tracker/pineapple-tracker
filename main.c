@@ -20,6 +20,8 @@
 void sdl_callbackbuffer(void *userdata, Uint8 *buf, int len);
 struct pine_tune *tune;
 
+PT_TUNE *tune;
+
 #ifdef JACK
 jack_nframes_t sr; // The current sample rate
 jack_port_t *output_port;
@@ -163,20 +165,16 @@ int main(int argc, char **argv){
 
 #ifdef JACK
 	if(!j_init()){
+
 		if(argc != 2){
-			filename = "untitled.song";
+			tune = loadfile("untitled.song");
 		}else{
-			filename = argv[1];
+			tune = loadfile(argv[1]);
 		}
 
-		//tune = load_tune(filename, FREQ);
-
-		if(tune){
-			initchip();
-			initgui();
-
-			guiloop();
-		}
+		initchip(tune);
+		initgui(tune);
+		guiloop();
 
 		//free (ports);
 		//jack_client_close (client);
@@ -184,19 +182,18 @@ int main(int argc, char **argv){
 #else
 	if(!sdl_init()){
 #endif
+
 		if(argc != 2){
-			filename = "untitled.song";
+			tune =loadfile("untitled.song");
 		}else{
-			filename = argv[1];
+			tune = loadfile(argv[1]);
 		}
 
-		//tune = load_tune(filename, FREQ);
-
-		if(tune){
-			initchip();
-			initgui();
-
-			SDL_PauseAudio(0);
+		initchip(tune);
+		initgui(tune);
+		
+		SDL_PauseAudio(0);
+		guiloop();
 
 			guiloop();
 

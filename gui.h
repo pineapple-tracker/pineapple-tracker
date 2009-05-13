@@ -38,9 +38,9 @@ char filename[1024];
 char *validcmds;
 char *keymap[2];
 
-void initsonglines(void);
-void inittracks(void);
-void initinstrs(void);
+void initsonglines(PT_TUNE *pt);
+void inittracks(PT_TUNE *pt);
+void initinstrs(PT_TUNE *pt);
 
 void drawgui(void);
 int freqkey(int c);
