@@ -156,7 +156,7 @@ void _insertc(int c){
 	lastinsert = c;
 }
 
-void _parsecmd(char cmd[]){
+void _parsecmd(PT_TUNE *pt, char cmd[]){
 	//if(cmd[1] == 'w'){
 	//switch(strcmp(cmd,
 	if(strcmp(cmd, ":w") == 0){
@@ -185,9 +185,9 @@ void _parsecmd(char cmd[]){
 	}else if(cmd[1]=='e' && cmd[2]==' '){
 		// if the file doesn't exist, clear the song
 		if(loadfile(cmd+3)){
-			initsonglines();
-			inittracks();
-			initinstrs();
+			initsonglines(pt);
+			inittracks(pt);
+			initinstrs(pt);
 		}
 	}else if(isdigit(cmd[1])){
 		int gotoline = atoi(cmd+1);
@@ -926,7 +926,7 @@ void normalmode(int c){
 }
 
 /* vi cmdline mode */
-void cmdlinemode(void){
+void cmdlinemode(PT_TUNE *pt){
 	u16 c;
 	keypad(stdscr, TRUE);
 
@@ -942,7 +942,7 @@ void cmdlinemode(void){
 				currmode = PM_NORMAL;
 				goto end;
 			case ENTER:
-				_parsecmd(cmdstr);
+				_parsecmd(PT_TUNE *pt, cmdstr);
 				goto end;
 #ifndef WINDOWS
 			case BACKSPACE:

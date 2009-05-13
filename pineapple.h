@@ -13,6 +13,23 @@ typedef int8_t s8;
 typedef int16_t s16;
 typedef int32_t s32;
 
+typedef enum {
+	WF_TRI,
+	WF_SAW,
+	WF_PUL,
+	WF_NOI,
+	WF_SINE
+} WAVEFORM_T;
+
+typedef volatile struct oscillator {
+	u16	freq;
+	u16	phase;
+	u16	duty;
+	WAVEFORM_T waveform;
+	u8 volume;	// 0-255
+} OSCILLATOR;
+
+
 u8 callbacktime;
 char filename[1024];
 char *infinitemsg;
@@ -27,6 +44,7 @@ enum {
 	PM_INSERT,
 	PM_JAMMER
 };
+
 void normalmode(int c);
 void cmdlinemode(void);
 void insertmode(void);
@@ -34,21 +52,6 @@ void jammermode(void);
 void visualmode(void);
 void visuallinemode(void);
 
-typedef enum {
-	WF_TRI = 0,
-	WF_SAW,
-	WF_PUL,
-	WF_NOI,
-	WF_SINE
-} waveform_t;
-
-volatile struct oscillator {
-	u16	freq;
-	u16	phase;
-	u16	duty;
-	waveform_t waveform;
-	u8 volume;	// 0-255
-} osc[4];
 
 struct trackline {
 	u8	note;
@@ -57,24 +60,24 @@ struct trackline {
 	u8	param[2];
 };
 
-struct track {
+typedef struct track {
 	struct trackline	line[TRACKLEN];
-};
+}TRACK;
 
 struct instrline {
 	u8			cmd;
 	u8			param;
 };
 
-struct instrument {
+typedef struct instrument {
 	int			length;
 	struct instrline	line[256];
-};
+}INSTRUMENT;
 
-struct songline {
+typedef struct songline {
 	u8			track[4];
 	u8			transp[4];
-};
+}SONGLINE;
 
 struct instrument instrument[256], iclip[256];
 struct track track[256], tclip[256];
@@ -82,17 +85,12 @@ struct songline song[256];
 
 int songlen, tracklen;
 
-void initchip(void);
-u8 interrupthandler(void);
 
-void readsong(int pos, int ch, u8 *dest);
 void readtrack(int num, int pos, struct trackline *tl);
 void readinstr(int num, int pos, u8 *il);
 
-void silence(void);
 void iedplonk(int, int);
 
-void initgui(void);
 void guiloop(void);
 
 void display(void);
@@ -157,5 +155,28 @@ u8 playtrack;
 u8 playsong;
 u8 songpos;
 int songlen;
+
+typedef struct pineapple_tune{
+	u8 callbacktime;
+	char filename[1024];
+	char comment[1024];
+	OSCILLATOR osc[4];
+	INSTRUMENT instrument[256];
+	TRACK track[256];
+	SONGLINE song[256];
+	u8 trackpos;
+	u8 songpos;
+	int songlen;
+	int trackx, tracky, trackoffs;
+	int currtrack, currinstr;
+	int currtab;
+	int saved;
+}PT_TUNE;
+
+void silence(PT_TUNE *pt);
+void initchip(PT_TUNE *pt);
+u8 interrupthandler(PT_TUNE *pt);
+void readsong(PT_TUNE *pt, int pos, int ch, u8 *dest);
+void initgui(PT_TUNE *pt);
 
 #endif /* PINEAPPLE_H */
