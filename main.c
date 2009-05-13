@@ -15,7 +15,10 @@
 #include "pineapple.h"
 #include "musicchip_file.h"
 
+#define FREQ 48000
+
 void sdl_callbackbuffer(void *userdata, Uint8 *buf, int len);
+struct pine_tune *tune;
 
 #ifdef JACK
 jack_nframes_t sr; // The current sample rate
@@ -42,14 +45,13 @@ u8 sdl_init(void){
 
 	atexit(SDL_Quit);
 
-	requested.freq = 48000;
+	requested.freq = FREQ;
 	//requested.freq = 16000;
-	//requested.format = AUDIO_S16SYS;
-	requested.format = AUDIO_U8;
-	//requested.samples = 4096;
+	requested.format = AUDIO_S16SYS;
 	requested.samples = 256;
+	requested.channels = 2;
 	requested.callback = sdl_callbackbuffer;
-	requested.channels = 1;
+	requested.userdata = tune;
 
 	SDL_OpenAudio(&requested, &obtained);
 
@@ -62,7 +64,8 @@ u8 sdl_init(void){
 }
 
 /* called by SDL */
-void sdl_callbackbuffer(void *userdata, Uint8 *buf, int len){
+void sdl_callbackbuffer(struct pine_tune *pt, Uint8 *buf, int len){
+	s16 *out;
 	for(int i = 0; i < len; i++){
 		//buf[i] = interrupthandler();
 	}
@@ -156,18 +159,24 @@ void j_shutdown(void *arg){
 #endif // JACK
 
 int main(int argc, char **argv){
+	char *filename = NULL;
+
 #ifdef JACK
 	if(!j_init()){
-		initchip();
-		initgui();
-
 		if(argc != 2){
-			loadfile("untitled.song");
+			filename = "untitled.song";
 		}else{
-			loadfile(argv[1]);
+			filename = argv[1];
 		}
 
-		guiloop();
+		//tune = load_tune(filename, FREQ);
+
+		if(tune){
+			initchip();
+			initgui();
+
+			guiloop();
+		}
 
 		//free (ports);
 		//jack_client_close (client);
@@ -175,20 +184,24 @@ int main(int argc, char **argv){
 #else
 	if(!sdl_init()){
 #endif
-		initchip();
-		initgui();
-
 		if(argc != 2){
-			loadfile("untitled.song");
+			filename = "untitled.song";
 		}else{
-			loadfile(argv[1]);
+			filename = argv[1];
 		}
 
-		SDL_PauseAudio(0);
+		//tune = load_tune(filename, FREQ);
 
-		guiloop();
+		if(tune){
+			initchip();
+			initgui();
 
-		SDL_Quit();
+			SDL_PauseAudio(0);
+
+			guiloop();
+
+			SDL_Quit();
+		}
 	}
 	
 	exit (0);
