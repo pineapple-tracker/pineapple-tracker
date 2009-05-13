@@ -66,10 +66,9 @@ u8 sdl_init(void){
 }
 
 /* called by SDL */
-void sdl_callbackbuffer(void *userdata, Uint8 *buf, int len){
-	//s16 *out;
+void sdl_callbackbuffer(PT_TUNE *pt, Uint8 *buf, int len){
 	for(int i = 0; i < len; i++){
-		buf[i] = interrupthandler();
+		buf[i] = interrupthandler(pt);
 	}
 }
 
@@ -174,7 +173,7 @@ int main(int argc, char **argv){
 
 		initchip(tune);
 		initgui(tune);
-		guiloop();
+		guiloop(tune);
 
 		//free (ports);
 		//jack_client_close (client);
@@ -193,15 +192,11 @@ int main(int argc, char **argv){
 		initgui(tune);
 		
 		SDL_PauseAudio(0);
-		guiloop();
+		guiloop(tune);
 
-			guiloop();
-
-			SDL_Quit();
-		}
+		SDL_Quit();
 	}
 	
-	exit (0);
 	return 0;
 
 }

@@ -30,10 +30,9 @@ typedef volatile struct oscillator {
 } OSCILLATOR;
 
 
-u8 callbacktime;
-char filename[1024];
+//char filename[1024];
 char *infinitemsg;
-char comment[1024];
+//char comment[1024];
 
 /* MODES */
 enum {
@@ -45,12 +44,6 @@ enum {
 	PM_JAMMER
 };
 
-void normalmode(int c);
-void cmdlinemode(void);
-void insertmode(void);
-void jammermode(void);
-void visualmode(void);
-void visuallinemode(void);
 
 
 struct trackline {
@@ -79,19 +72,15 @@ typedef struct songline {
 	u8			transp[4];
 }SONGLINE;
 
-struct instrument instrument[256], iclip[256];
-struct track track[256], tclip[256];
-struct songline song[256];
+//struct instrument instrument[256], iclip[256];
+//struct track track[256], tclip[256];
+//struct songline song[256];
 
-int songlen, tracklen;
+int tracklen;
 
-
-void readtrack(int num, int pos, struct trackline *tl);
-void readinstr(int num, int pos, u8 *il);
 
 void iedplonk(int, int);
 
-void guiloop(void);
 
 void display(void);
 
@@ -150,11 +139,11 @@ void act_viewinstrinc(void);
 void act_viewphrasedec(void);
 void act_viewphraseinc(void);
 
-u8 trackpos;
+//u8 trackpos;
 u8 playtrack;
 u8 playsong;
-u8 songpos;
-int songlen;
+//u8 songpos;
+//int songlen;
 
 typedef struct pineapple_tune{
 	u8 callbacktime;
@@ -167,16 +156,29 @@ typedef struct pineapple_tune{
 	u8 trackpos;
 	u8 songpos;
 	int songlen;
+	int instrx, instry, instroffs;
+	int songx, songy, songoffs;
 	int trackx, tracky, trackoffs;
 	int currtrack, currinstr;
 	int currtab;
 	int saved;
 }PT_TUNE;
 
+void guiloop(PT_TUNE *pt);
+
 void silence(PT_TUNE *pt);
 void initchip(PT_TUNE *pt);
 u8 interrupthandler(PT_TUNE *pt);
 void readsong(PT_TUNE *pt, int pos, int ch, u8 *dest);
 void initgui(PT_TUNE *pt);
+void readtrack(PT_TUNE *pt, int num, int pos, struct trackline *tl);
+void readinstr(PT_TUNE *pt, int num, int pos, u8 *il);
+
+void normalmode(PT_TUNE *pt, int c);
+void cmdlinemode(PT_TUNE *pt);
+void insertmode(PT_TUNE *pt);
+void jammermode(void);
+void visualmode(void);
+void visuallinemode(void);
 
 #endif /* PINEAPPLE_H */

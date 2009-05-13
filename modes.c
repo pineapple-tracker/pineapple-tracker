@@ -160,7 +160,7 @@ void _parsecmd(PT_TUNE *pt, char cmd[]){
 	//if(cmd[1] == 'w'){
 	//switch(strcmp(cmd,
 	if(strcmp(cmd, ":w") == 0){
-		savefile(filename);
+		savefile(filename, pt);
 		saved = 1;
 	}else if(strcmp(cmd, ":q") == 0){
 		erase();
@@ -168,10 +168,10 @@ void _parsecmd(PT_TUNE *pt, char cmd[]){
 		endwin();
 		exit(0);
 	}else if(strcmp(cmd, ":write") == 0){
-		savefile(filename);
+		savefile(filename, pt);
 		saved = 1;
 	}else if(strcmp(cmd, ":wq") == 0){
-		savefile(filename);
+		savefile(filename, pt);
 		saved = 1;
 		erase();
 		refresh();
@@ -215,7 +215,7 @@ void _parsecmd(PT_TUNE *pt, char cmd[]){
 }
 
 /* normal mode */
-void normalmode(int c){
+void normalmode(PT_TUNE *pt, int c){
 	int i;
 
 
@@ -268,7 +268,7 @@ void normalmode(int c){
 			if(lastaction == 'r')
 				_insertc(lastinsert);
 			else
-				normalmode(lastaction);
+				normalmode(pt, lastaction);
 			cmdrepeatnum = lastrepeatnum;
 			break;
 		case KEY_ESCAPE:
@@ -619,10 +619,10 @@ void normalmode(int c){
 		case ENTER:
 			if(currtab != 2){
 				if(currtab == 1){
-					silence();
+					silence(pt);
 					startplaytrack(currtrack);
 				}else if(currtab == 0){
-					silence();
+					silence(pt);
 					startplaysong(songy);
 				}
 			}
@@ -631,7 +631,7 @@ void normalmode(int c){
 			c = nextchar();
 			switch(c){
 				case 'Z':
-					savefile(filename);
+					savefile(filename, pt);
 					erase();
 					refresh();
 					endwin();
@@ -647,10 +647,10 @@ void normalmode(int c){
 			break;
 		/* Enter command mode */
 		case ':':
-			cmdlinemode();
+			cmdlinemode(pt);
 			break;
 		case ' ':
-			silence();
+			silence(pt);
 			break;
 		case '`':
 			if(currtab == 0){
@@ -669,7 +669,7 @@ void normalmode(int c){
 			break;
 		/* Enter insert mode */
 		case 'i':
-			insertmode();
+			insertmode(pt);
 			break;
 		/* Enter visual mode */
 		case 'v':
@@ -703,7 +703,7 @@ void normalmode(int c){
 					memset(&song[songy], 0, sizeof(struct songline));
 				}
 			}
-			insertmode();
+			insertmode(pt);
 			break;
 		case 'h':
 		case KEY_LEFT:
@@ -876,10 +876,10 @@ void normalmode(int c){
 			act_viewinstrinc();
 			break;
 		case '(':
-			callbacktime++;
+			pt->callbacktime++;
 			break;
 		case ')':
-			callbacktime--;
+			pt->callbacktime--;
 			break;
 		case '-':
 			if(step > 0) 
@@ -942,7 +942,7 @@ void cmdlinemode(PT_TUNE *pt){
 				currmode = PM_NORMAL;
 				goto end;
 			case ENTER:
-				_parsecmd(PT_TUNE *pt, cmdstr);
+				_parsecmd(pt, cmdstr);
 				goto end;
 #ifndef WINDOWS
 			case BACKSPACE:
@@ -964,7 +964,7 @@ end:
 }
 
 /* vi insert mode */
-void insertmode(void){
+void insertmode(PT_TUNE *pt){
 	int c;
 	currmode = PM_INSERT;
 	drawgui();
@@ -1030,7 +1030,7 @@ void insertmode(void){
 				c = nextchar();
 				switch(c){
 					case 'Z':
-						savefile(filename);
+						savefile(filename, pt);
 						erase();
 						refresh();
 						endwin();
@@ -1045,17 +1045,17 @@ void insertmode(void){
 				}
 				break;
 			case ' ':
-				silence();
+				silence(pt);
 				currmode = PM_NORMAL;
 				guiloop();
 				break;
 			case ENTER:
 				if(currtab != 2){
 					if(currtab == 1){
-						silence();
+						silence(pt);
 						startplaytrack(currtrack);
 					}else if(currtab == 0){
-						silence();
+						silence(pt);
 						startplaysong(songy);
 					}
 				}

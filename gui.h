@@ -23,13 +23,12 @@
 
 int currmode;
 char currcmd;
-int instrx, instry, instroffs;
+//int instrx, instry, instroffs;
 int octave;
-int songx, songy, songoffs;
-int trackx, tracky, trackoffs;
-int currtrack, currinstr;
-int currtab;
-int saved;
+//int trackx, tracky, trackoffs;
+//int currtrack, currinstr;
+//int currtab;
+//int saved;
 int disptick;
 int step;
 
@@ -42,7 +41,7 @@ void initsonglines(PT_TUNE *pt);
 void inittracks(PT_TUNE *pt);
 void initinstrs(PT_TUNE *pt);
 
-void drawgui(void);
+void drawgui(PT_TUNE *pt);
 int freqkey(int c);
 int hexinc(int x);
 int hexdec(int x);
