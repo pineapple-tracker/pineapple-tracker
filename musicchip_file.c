@@ -43,7 +43,7 @@ void savefile(char *fname, PT_TUNE *pt){
 	fprintf(f, "\n");
 	for(i = 1; i < 256; i++){
 		for(j = 0; j < tracklen; j++){
-			struct trackline *tl = pt->&track[i].line[j];
+			struct trackline *tl = &pt->track[i].line[j];
 
 			if(tl->note || tl->instr || tl->cmd[0] || tl->cmd[1]){
 				fprintf(f, "trackline %02x %02x %02x %02x %02x %02x %02x %02x\n",
@@ -92,9 +92,9 @@ PT_TUNE *loadfile(char *fname){
 
 	pt->songlen = 1;
 	while(!feof(f) && fgets(buf, sizeof(buf), f)){
-		if(1 == sscanf(buf, "#%1024c", pt->&comment)){
+		if(1 == sscanf(buf, "#%1024c", &pt->comment)){
 		}
-		else if(1 == sscanf(buf, "tempo: %hhd", pt->&callbacktime)){
+		else if(1 == sscanf(buf, "tempo: %hhd", &pt->callbacktime)){
 			pt->callbacktime = (u8)pt->callbacktime;
 		}else if(9 == sscanf(buf, "songline %x %x %x %x %x %x %x %x %x",
 			&i1,

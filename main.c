@@ -18,7 +18,6 @@
 #define FREQ 48000
 
 void sdl_callbackbuffer(void *userdata, Uint8 *buf, int len);
-struct pine_tune *tune;
 
 PT_TUNE *tune;
 
@@ -66,7 +65,7 @@ u8 sdl_init(void){
 }
 
 /* called by SDL */
-void sdl_callbackbuffer(struct pine_tune *pt, Uint8 *buf, int len){
+void sdl_callbackbuffer(void *userdata, Uint8 *buf, int len){
 	s16 *out;
 	for(int i = 0; i < len; i++){
 		//buf[i] = interrupthandler();
@@ -198,10 +197,8 @@ int main(int argc, char **argv){
 			guiloop();
 
 			SDL_Quit();
-		}
 	}
 	
-	exit (0);
 	return 0;
 
 }
