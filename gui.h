@@ -23,12 +23,13 @@
 
 int currmode;
 char currcmd;
-//int instrx, instry, instroffs;
+int instrx, instry, instroffs;
 int octave;
-//int trackx, tracky, trackoffs;
-//int currtrack, currinstr;
-//int currtab;
-//int saved;
+int songx, songy, songoffs;
+int trackx, tracky, trackoffs;
+int currtrack, currinstr;
+int currtab;
+int saved;
 int disptick;
 int step;
 
@@ -37,11 +38,11 @@ char filename[1024];
 char *validcmds;
 char *keymap[2];
 
-void initsonglines(PT_TUNE *pt);
-void inittracks(PT_TUNE *pt);
-void initinstrs(PT_TUNE *pt);
+void initsonglines(void);
+void inittracks(void);
+void initinstrs(void);
 
-void drawgui(PT_TUNE *pt);
+void drawgui(void);
 int freqkey(int c);
 int hexinc(int x);
 int hexdec(int x);
