@@ -134,7 +134,7 @@ void act_bigmvdown(void){
 	}
 }
 
-void act_viewphraseinc(void){
+void act_viewtrackinc(void){
 	if(currtrack < 0xff){
 		currtrack++;
 	}else if(currtrack == 0xff){
@@ -145,7 +145,7 @@ void act_viewphraseinc(void){
 	}
 }
 
-void act_viewphrasedec(void){
+void act_viewtrackdec(void){
 	if(currtrack > 1){
 		currtrack--;
 	}else if(currtrack == 1){

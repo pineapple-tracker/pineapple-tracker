@@ -652,11 +652,15 @@ void normalmode(int c){
 		case ' ':
 			silence();
 			break;
+		// TODO: make an act_ function for '`'
 		case '`':
 			if(currtab == 0){
 				int t = song[songy].track[songx / 4];
 				if(t) currtrack = t;
 				currtab = 1;
+				if(playtrack){
+					startplaytrack(currtrack);
+				}
 			}else if((currtab == 1) && ((trackx == 2) || (trackx == 3))){
 				int i = track[currtrack].line[tracky].instr;
 				if(i) currinstr = i;
@@ -859,14 +863,14 @@ void normalmode(int c){
 			if(currtab == 2){
 				act_viewinstrdec();
 			}else if(currtab == 1){
-				act_viewphrasedec();
+				act_viewtrackdec();
 			}
 			break;
 		case CTRL('K'):
 			if(currtab == 2){
 				act_viewinstrinc();
 			}else if(currtab == 1){
-				act_viewphraseinc();
+				act_viewtrackinc();
 			}
 			break;
 		case '[':
@@ -1001,14 +1005,14 @@ void insertmode(void){
 				if(currtab == 2){
 					act_viewinstrdec();
 				}else if(currtab == 1){
-					act_viewphrasedec();
+					act_viewtrackdec();
 				}
 				break;
 			case CTRL('K'):
 				if(currtab == 2){
 					act_viewinstrinc();
 				}else if(currtab == 1){
-					act_viewphraseinc();
+					act_viewtrackinc();
 				}
 				break;
 			case '[':

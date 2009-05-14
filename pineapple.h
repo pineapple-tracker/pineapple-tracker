@@ -149,8 +149,8 @@ void act_transpinc(void);
 void act_undo(void);
 void act_viewinstrdec(void);
 void act_viewinstrinc(void);
-void act_viewphrasedec(void);
-void act_viewphraseinc(void);
+void act_viewtrackdec(void);
+void act_viewtrackinc(void);
 
 u8 trackpos;
 u8 playtrack;
