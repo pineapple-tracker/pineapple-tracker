@@ -165,14 +165,14 @@ int main(int argc, char **argv){
 #ifdef JACK
 	if(!j_init()){
 
+		initchip();
+		initgui();
+
 		if(argc != 2){
 			loadfile("untitled.song");
 		}else{
 			loadfile(argv[1]);
 		}
-
-		initchip();
-		initgui();
 		guiloop();
 
 		//free (ports);
@@ -181,15 +181,14 @@ int main(int argc, char **argv){
 #else
 	if(!sdl_init()){
 #endif
+		initchip();
+		initgui();
 
 		if(argc != 2){
 			loadfile("untitled.song");
 		}else{
 			loadfile(argv[1]);
 		}
-
-		initchip();
-		initgui();
 		
 		SDL_PauseAudio(0);
 		guiloop();
