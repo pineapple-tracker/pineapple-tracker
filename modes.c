@@ -1239,6 +1239,14 @@ void visuallinemode(void){
 			case 'l':
 				act_mvright();
 				break;
+			// d: copy every line that is highlighted to the paste buffer and clear them, too
+			case 'd':
+				// TODO: call act_clritall_p() here
+				if(currtab == 0){
+				}else if(currtab == 1){
+				}else if(currtab == 2){
+				}
+				break;
 			// y: copy every line that is highlighted to the paste buffer
 			case 'y':
 				if(currtab == 0){
