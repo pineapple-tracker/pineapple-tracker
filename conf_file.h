@@ -1,0 +1,1 @@
+int conf_open();
