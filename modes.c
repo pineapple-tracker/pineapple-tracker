@@ -1163,6 +1163,7 @@ void visualmode(void){
 /* visual line mode */
 void visuallinemode(void){
 	int c;
+	int min, max;
 	char buf[1024];
 	//NODE *firstnode, *lastnode;
 
@@ -1241,11 +1242,25 @@ void visuallinemode(void){
 				break;
 			// d: copy every line that is highlighted to the paste buffer and clear them, too
 			case 'd':
-				// TODO: call act_clritall_p() here
+				min = (highlight_firstline < highlight_lastline)?
+						highlight_firstline
+						: highlight_lastline;
+				max = (highlight_firstline < highlight_lastline)?
+						highlight_lastline
+						: highlight_firstline;
 				if(currtab == 0){
+					for(int i=min; i<=max; i++)
+						act_clrinsongtab(i);
 				}else if(currtab == 1){
+					for(int i=min; i<=max; i++)
+						act_clrintracktab(currtrack, i);
 				}else if(currtab == 2){
+					for(int i=min; i<=max; i++)
+						act_clrininstrtab(currinstr, i);
 				}
+				//snprintf(buf, sizeof(buf), "%d fewer lines", highlight_lineamount);
+				//infinitemsg = buf;
+				currmode = PM_NORMAL;
 				break;
 			// y: copy every line that is highlighted to the paste buffer
 			case 'y':
