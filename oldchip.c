@@ -82,23 +82,23 @@ struct channel {
 	u16	slur;
 } channel[4];
 
-void silence(PT_TUNE *pt){
+void silence(){
 	u8 i;
 
 	for(i = 0; i < 4; i++){
-		pt->osc[i].volume = 0;
+		osc[i].volume = 0;
 	}
 	playsong = 0;
 	playtrack = 0;
 }
 
-void runcmd(PT_TUNE *pt, u8 ch, u8 cmd, u8 param){
+void runcmd(u8 ch, u8 cmd, u8 param){
 	switch(cmd){
 		case 0:
 			channel[ch].inum = 0;
 			break;
 		case 'd':
-			pt->osc[ch].duty = param << 8;
+			osc[ch].duty = param << 8;
 			break;
 		case 'f':
 			channel[ch].volumed = param;
@@ -119,10 +119,10 @@ void runcmd(PT_TUNE *pt, u8 ch, u8 cmd, u8 param){
 			channel[ch].iwait = (param*2);
 			break;
 		case 'v':
-			pt->osc[ch].volume = param;
+			osc[ch].volume = param;
 			break;
 		case 'w':
-			pt->osc[ch].waveform = param;
+			osc[ch].waveform = param;
 			break;
 		case '+':
 			channel[ch].inote = param + channel[ch].tnote - 12 * 4;
@@ -139,7 +139,7 @@ void runcmd(PT_TUNE *pt, u8 ch, u8 cmd, u8 param){
 			//channel[ch].vrate = param & 0xf;
 			break;
 		case '*':
-			pt -> callbacktime = -param;
+			callbacktime = -param;
 			break;
 	}
 }
@@ -175,7 +175,7 @@ void startplaysong(int p){
 	playsong = 1;
 }
 
-void playroutine(PT_TUNE *pt){			// called at 50 Hz
+void playroutine(){			// called at 50 Hz
 	u8 ch;
 
 	if(playtrack || playsong){
@@ -228,9 +228,9 @@ void playroutine(PT_TUNE *pt){			// called at 50 Hz
 							channel[ch].vdepth = 0;
 						}
 						if(tl.cmd[0])
-							runcmd(pt, ch, tl.cmd[0], tl.param[0]);
+							runcmd(ch, tl.cmd[0], tl.param[0]);
 						if(tl.cmd[1])
-							runcmd(pt, ch, tl.cmd[1], tl.param[1]);
+							runcmd(ch, tl.cmd[1], tl.param[1]);
 					}
 				}
 
@@ -252,7 +252,7 @@ void playroutine(PT_TUNE *pt){			// called at 50 Hz
 			readinstr(channel[ch].inum, channel[ch].iptr, il);
 			channel[ch].iptr++;
 
-			runcmd(pt, ch, il[0], il[1]);
+			runcmd(ch, il[0], il[1]);
 		}
 		if(channel[ch].iwait) channel[ch].iwait--;
 
@@ -272,42 +272,42 @@ void playroutine(PT_TUNE *pt){			// called at 50 Hz
 		}else{
 			slur = freqtable[channel[ch].inote];
 		}
-		pt->osc[ch].freq =
+		osc[ch].freq =
 			slur +
 			channel[ch].bend +
 			((channel[ch].vdepth * sinetable[channel[ch].vpos & 63]) >> 2);
 		channel[ch].bend += channel[ch].bendd;
-		vol = pt->osc[ch].volume + channel[ch].volumed;
+		vol = osc[ch].volume + channel[ch].volumed;
 		if(vol < 0) vol = 0;
 		if(vol > 255) vol = 255;
-		pt->osc[ch].volume = vol;
+		osc[ch].volume = vol;
 
-		duty = pt->osc[ch].duty + channel[ch].dutyd;
+		duty = osc[ch].duty + channel[ch].dutyd;
 		if(duty > 0xe000) duty = 0x2000;
 		if(duty < 0x2000) duty = 0xe000;
-		pt->osc[ch].duty = duty;
+		osc[ch].duty = duty;
 
 		channel[ch].vpos += channel[ch].vrate;
 	}
 }
 
-void initchip(PT_TUNE *pt){
+void initchip(){
 	trackwait = 0;
 	trackpos = 0;
 	playsong = 0;
 	playtrack = 0;
 
-	pt->osc[0].volume = 0;
+	osc[0].volume = 0;
 	channel[0].inum = 0;
-	pt->osc[1].volume = 0;
+	osc[1].volume = 0;
 	channel[1].inum = 0;
-	pt->osc[2].volume = 0;
+	osc[2].volume = 0;
 	channel[2].inum = 0;
-	pt->osc[3].volume = 0;
+	osc[3].volume = 0;
 	channel[3].inum = 0;
 }
 
-u8 interrupthandler(PT_TUNE *pt)        // called at 9000 Hz
+u8 interrupthandler()        // called at 9000 Hz
 {
 	u8 i;
 	u8 j = 0;
@@ -324,27 +324,27 @@ u8 interrupthandler(PT_TUNE *pt)        // called at 9000 Hz
 	if(callbackwait){
 		callbackwait--;
 	}else{
-		playroutine(pt);
-		callbackwait = pt->callbacktime - 1;
+		playroutine();
+		callbackwait = callbacktime - 1;
 	}
 
 	acc = 0;
 	for(i = 0; i < 4; i++){
 		s8 value; // [-32,31]
 
-		switch(pt->osc[i].waveform){
+		switch(osc[i].waveform){
 			case WF_TRI:
-				if(pt->osc[i].phase < 0x8000){
-					value = -32 + (pt->osc[i].phase >> 9);
+				if(osc[i].phase < 0x8000){
+					value = -32 + (osc[i].phase >> 9);
 				}else{
-					value = 31 - ((pt->osc[i].phase - 0x8000) >> 9);
+					value = 31 - ((osc[i].phase - 0x8000) >> 9);
 				}
 				break;
 			case WF_SAW:
-				value = -32 + (pt->osc[i].phase >> 10);
+				value = -32 + (osc[i].phase >> 10);
 				break;
 			case WF_PUL:
-				value = (pt->osc[i].phase > pt->osc[i].duty)? -32 : 31;
+				value = (osc[i].phase > osc[i].duty)? -32 : 31;
 				break;
 			case WF_NOI:
 				value = (noiseseed & 63) - 32;
@@ -358,9 +358,9 @@ u8 interrupthandler(PT_TUNE *pt)        // called at 9000 Hz
 				break;
 		}
 
-		pt->osc[i].phase += pt->osc[i].freq;
+		osc[i].phase += osc[i].freq;
 
-		acc += value * pt->osc[i].volume; // rhs = [-8160,7905]
+		acc += value * osc[i].volume; // rhs = [-8160,7905]
 	}
 
 	// acc [-32640,31620]

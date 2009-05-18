@@ -17,10 +17,10 @@
 
 #define FREQ 48000
 
+//void sdl_callbackbuffer(PT_TUNE *tune, Uint8 *buf, int len);
 void sdl_callbackbuffer(void *userdata, Uint8 *buf, int len);
-//struct pine_tune *tune;
 
-PT_TUNE *tune;
+//PT_TUNE *tune;
 
 #ifdef JACK
 jack_nframes_t sr; // The current sample rate
@@ -49,11 +49,12 @@ u8 sdl_init(void){
 
 	requested.freq = FREQ;
 	//requested.freq = 16000;
-	requested.format = AUDIO_S16SYS;
+	//requested.format = AUDIO_S16SYS;
+	requested.format = AUDIO_U8;
 	requested.samples = 256;
-	requested.channels = 2;
+	requested.channels = 1;
 	requested.callback = sdl_callbackbuffer;
-	requested.userdata = tune;
+	//requested.userdata = tune;
 
 	SDL_OpenAudio(&requested, &obtained);
 
@@ -66,9 +67,10 @@ u8 sdl_init(void){
 }
 
 /* called by SDL */
-void sdl_callbackbuffer(PT_TUNE *pt, Uint8 *buf, int len){
+//void sdl_callbackbuffer(PT_TUNE *pt, Uint8 *buf, int len){
+void sdl_callbackbuffer(void *userdata, Uint8 *buf, int len){
 	for(int i = 0; i < len; i++){
-		buf[i] = interrupthandler(pt);
+		buf[i] = interrupthandler();
 	}
 }
 
@@ -160,20 +162,18 @@ void j_shutdown(void *arg){
 #endif // JACK
 
 int main(int argc, char **argv){
-	char *filename = NULL;
-
 #ifdef JACK
 	if(!j_init()){
 
-		if(argc != 2){
-			tune = loadfile("untitled.song");
-		}else{
-			tune = loadfile(argv[1]);
-		}
+		initchip();
+		initgui();
 
-		initchip(tune);
-		initgui(tune);
-		guiloop(tune);
+		if(argc != 2){
+			loadfile("untitled.song");
+		}else{
+			loadfile(argv[1]);
+		}
+		guiloop();
 
 		//free (ports);
 		//jack_client_close (client);
@@ -181,18 +181,17 @@ int main(int argc, char **argv){
 #else
 	if(!sdl_init()){
 #endif
+		initchip();
+		initgui();
 
 		if(argc != 2){
-			tune =loadfile("untitled.song");
+			loadfile("untitled.song");
 		}else{
-			tune = loadfile(argv[1]);
+			loadfile(argv[1]);
 		}
-
-		initchip(tune);
-		initgui(tune);
 		
 		SDL_PauseAudio(0);
-		guiloop(tune);
+		guiloop();
 
 		SDL_Quit();
 	}

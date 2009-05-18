@@ -134,7 +134,7 @@ void act_bigmvdown(void){
 	}
 }
 
-void act_viewphraseinc(void){
+void act_viewtrackinc(void){
 	if(currtrack < 0xff){
 		currtrack++;
 	}else if(currtrack == 0xff){
@@ -145,7 +145,7 @@ void act_viewphraseinc(void){
 	}
 }
 
-void act_viewphrasedec(void){
+void act_viewtrackdec(void){
 	if(currtrack > 1){
 		currtrack--;
 	}else if(currtrack == 1){
@@ -607,8 +607,7 @@ void act_clronething(void){
 
 void act_clritall(void){
 	if(currtab == 0){
-		int ci;
-		for(ci = 0; ci < 4; ci++){
+		for(int ci = 0; ci < 4; ci++){
 			song[songy].track[ci] = 0;
 			song[songy].transp[ci] = 0;
 		}
@@ -630,3 +629,31 @@ void act_clritall(void){
 	saved = 0;
 }
 
+// clear line y in the song tab
+void act_clrinsongtab(int y){
+	for(int ci = 0; ci < 4; ci++){
+		song[songy].track[ci] = 0;
+		song[songy].transp[ci] = 0;
+	}
+	saved = 0;
+}
+
+void act_clrintracktab(int t, int y){
+	track[t].line[y].note = 0;
+	track[t].line[y].instr = 0;
+	SETHI(track[t].line[y].instr, 0);
+	SETLO(track[t].line[y].instr, 0);
+	track[t].line[y].cmd[0] = 0;
+	SETHI(track[t].line[y].param[0],0);
+	SETLO(track[t].line[y].param[0],0);
+	track[t].line[y].cmd[1] = 0;
+	SETHI(track[t].line[y].param[1],0);
+	SETLO(track[t].line[y].param[1],0);
+	saved = 0;
+}
+
+void act_clrininstrtab(int instr, int y){
+	instrument[instr].line[y].cmd = '0';
+	instrument[instr].line[y].param = 0;
+	saved = 0;
+}
