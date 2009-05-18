@@ -56,8 +56,33 @@ void drawtracked()
 		if(tune->ht_Tracks[currtrack][i].stp_Instrument)
 			snprintf(buf, sizeof(buf), "%02x  ", tune->ht_Tracks[currtrack][i].stp_Instrument);
 		else
+			snprintf(buf, sizeof(buf), "--  ");
+		addstr(buf);
+
+		if(tune->ht_Tracks[currtrack][i].stp_FX)
+			snprintf(buf, sizeof(buf), "%02x ", tune->ht_Tracks[currtrack][i].stp_FX);
+		else
 			snprintf(buf, sizeof(buf), "-- ");
 		addstr(buf);
+
+		if(tune->ht_Tracks[currtrack][i].stp_FXParam)
+			snprintf(buf, sizeof(buf), "%02x ", tune->ht_Tracks[currtrack][i].stp_FXParam);
+		else
+			snprintf(buf, sizeof(buf), "-- ");
+		addstr(buf);
+		
+		if(tune->ht_Tracks[currtrack][i].stp_FXb)
+			snprintf(buf, sizeof(buf), "%02x ", tune->ht_Tracks[currtrack][i].stp_FX);
+		else
+			snprintf(buf, sizeof(buf), "-- ");
+		addstr(buf);
+
+		if(tune->ht_Tracks[currtrack][i].stp_FXbParam)
+			snprintf(buf, sizeof(buf), "%02x ", tune->ht_Tracks[currtrack][i].stp_FXParam);
+		else
+			snprintf(buf, sizeof(buf), "-- ");
+		addstr(buf);
+
 		move(i + 1, 35);
 	}
 }
@@ -66,6 +91,8 @@ void drawgui()
 {
 	drawposed();
 	drawtracked();
+
+	refresh();
 
 }
 
