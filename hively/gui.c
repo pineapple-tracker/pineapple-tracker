@@ -1,6 +1,7 @@
 #include <ncurses.h>
 #include "hvl_replay.h"
 
+int currtrack = 1;
 
 void initgui()
 {
@@ -36,14 +37,35 @@ void drawposed()
 
 void drawtracked()
 {
-	int i, j;
+	int i;
 	char buf[1024];
+	snprintf(buf, sizeof(buf), "Track: %02x", currtrack);
+	mvaddstr(0, 26, buf);
+	move(0, 35);
+	for(i = 0; i < tune->ht_TrackLength; i++){
+		snprintf(buf, sizeof(buf), "%02x", i);
+		addstr(buf);
+		addch(ACS_VLINE);
+
+		if(tune->ht_Tracks[currtrack][i].stp_Note)
+			snprintf(buf, sizeof(buf), "%02x  ", tune->ht_Tracks[currtrack][i].stp_Note);
+		else
+			snprintf(buf, sizeof(buf), "--- ");
+		addstr(buf);
+
+		if(tune->ht_Tracks[currtrack][i].stp_Instrument)
+			snprintf(buf, sizeof(buf), "%02x  ", tune->ht_Tracks[currtrack][i].stp_Instrument);
+		else
+			snprintf(buf, sizeof(buf), "-- ");
+		addstr(buf);
+		move(i + 1, 35);
+	}
 }
 
 void drawgui()
 {
 	drawposed();
-	//drawtracked();
+	drawtracked();
 
 }
 
@@ -56,6 +78,14 @@ void handleinput(){
 			refresh();
 			endwin();
 			exit(0);
+			break;
+		case 'J':
+			if(currtrack > 1)
+				currtrack--;
+			break;
+		case 'K':
+			if(currtrack < 0xff)
+				currtrack++;
 			break;
 		default:
 			break;
