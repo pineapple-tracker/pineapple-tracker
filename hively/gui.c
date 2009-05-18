@@ -33,6 +33,8 @@ void drawposed()
 		}
 		move(i + 1, 0);
 	}
+	snprintf(buf, sizeof(buf), "PosNr: %02x", tune->ht_PosNr);
+	mvaddstr(0, 60, buf);
 }
 
 void drawtracked()

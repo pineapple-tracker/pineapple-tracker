@@ -19,57 +19,57 @@ void mix_and_play( struct hvl_tune *ht, uint8 *stream, int length );
 
 BOOL init( void )
 {
-  //uint32 i;
-  SDL_AudioSpec wanted;
+	//uint32 i;
+	SDL_AudioSpec wanted;
 
-  if(SDL_Init(SDL_INIT_AUDIO)< 0) {
-    printf("Could not initialize SDL: %s\n", SDL_GetError());
-    SDL_Quit();
-    return FALSE;
-  }
+	if(SDL_Init(SDL_INIT_AUDIO)< 0) {
+		printf("Could not initialize SDL: %s\n", SDL_GetError());
+		SDL_Quit();
+		return FALSE;
+	}
 
-  wanted.freq = FREQ; 
-  wanted.format = AUDIO_S16SYS; 
-  wanted.channels = 2; /* 1 = mono, 2 = stereo */
-  wanted.samples = OUTPUT_LEN; // HIVELY_LEN;
+	wanted.freq = FREQ; 
+	wanted.format = AUDIO_S16SYS; 
+	wanted.channels = 2; /* 1 = mono, 2 = stereo */
+	wanted.samples = OUTPUT_LEN; // HIVELY_LEN;
 
-  wanted.callback = (void*) mix_and_play;
-  wanted.userdata = tune;
+	wanted.callback = (void*) mix_and_play;
+	wanted.userdata = tune;
 
-  if(SDL_OpenAudio(&wanted, NULL) < 0) {
-    printf("Failed to open audio device.\n");
-    SDL_Quit();
-    return FALSE;
-  }
+	if(SDL_OpenAudio(&wanted, NULL) < 0) {
+		printf("Failed to open audio device.\n");
+		SDL_Quit();
+		return FALSE;
+	}
 
-  return TRUE;
+	return TRUE;
 }
 
 void mix_and_play( struct hvl_tune *ht, uint8 *stream, int length )
 {
-  int16 *out;
-  int i;
-  size_t streamPos = 0;
-  length = length >> 1;
+	int16 *out;
+	int i;
+	size_t streamPos = 0;
+	length = length >> 1;
 
-  if(tune) {
-    // Mix to 16bit interleaved stereo
-    out = (int16*) stream;
-    // Flush remains of previous frame
-    for(i = hivelyIndex; i < (HIVELY_LEN); i++) {
-      out[streamPos++] = hivelyLeft[i];
-      out[streamPos++] = hivelyRight[i];
-    }
+	if(tune) {
+		// Mix to 16bit interleaved stereo
+		out = (int16*) stream;
+		// Flush remains of previous frame
+		for(i = hivelyIndex; i < (HIVELY_LEN); i++) {
+			out[streamPos++] = hivelyLeft[i];
+			out[streamPos++] = hivelyRight[i];
+		}
 
-    while(streamPos < length) {
-	hvl_DecodeFrame( tune, (int8 *) hivelyLeft, (int8 *) hivelyRight, 2 );
-	for(i = 0; i < (HIVELY_LEN) && streamPos < length; i++) {
-           out[streamPos++] = hivelyLeft[i];
-	   out[streamPos++] = hivelyRight[i];
+		while(streamPos < length) {
+			hvl_DecodeFrame( tune, (int8 *) hivelyLeft, (int8 *) hivelyRight, 2 );
+			for(i = 0; i < (HIVELY_LEN) && streamPos < length; i++) {
+				out[streamPos++] = hivelyLeft[i];
+		 		out[streamPos++] = hivelyRight[i];
+			}
+		}
+		hivelyIndex = i;
 	}
-    }
-    hivelyIndex = i;
-  }
 }
 
 int main(int argc, char *argv[])
@@ -84,16 +84,16 @@ int main(int argc, char *argv[])
 		hvl_InitReplayer();
 		tune = hvl_LoadTune(argv[1], FREQ, 4);
 		if(tune){
-		  //BOOL done;
-		  uint32 gotsigs;
+			//BOOL done;
+			uint32 gotsigs;
 
-		  hvl_InitSubsong( tune, 0 );
-		  initgui();
-		  SDL_PauseAudio(0);
-		  guiloop();
+			hvl_InitSubsong( tune, 0 );
+			initgui();
+			SDL_PauseAudio(0);
+			guiloop();
 		}
 	}
-	
+
 	SDL_PauseAudio(1);
 	hvl_FreeTune(tune);
 	SDL_Quit();
