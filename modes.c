@@ -470,14 +470,16 @@ void normalmode(int c){
 		case 'p':
 			if(currtab == 0){
 				if(songlen < 256){
-					// insert new line
-					memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
-					songy++;
-					songlen++;
-					memset(&song[songy], 0, sizeof(struct songline));
+					for(int i = 0; i < tcliplen; i++){
+						// insert new line
+						memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
+						songy++;
+						songlen++;
+						memset(&song[songy], 0, sizeof(struct songline));
 
-					// paste to new line
-					memcpy(&song[songy], &tclip, sizeof(struct songline));
+						// paste to new line
+						memcpy(&song[songy], &tclip[i], sizeof(struct songline));
+					}
 				}
 			}else if(currtab == 1){
 					for(int i = 0; i < tcliplen; i++){
