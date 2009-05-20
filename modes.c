@@ -1222,6 +1222,10 @@ void visuallinemode(void){
 					//lastnode = list_insertafter(firstnode, (void *)instry);
 					highlight_lastline = instry;
 				}
+				// update the highlighted length
+				highlight_lineamount = (highlight_firstline>highlight_lastline)?
+						highlight_firstline - highlight_lastline +1
+						: highlight_lastline - highlight_firstline +1;
 				break;
 			case 'k':
 				act_mvup();
@@ -1236,6 +1240,10 @@ void visuallinemode(void){
 					//lastnode = list_insertafter(firstnode, (void *)instry);
 					highlight_lastline = instry;
 				}
+				// update the highlighted length
+				highlight_lineamount = (highlight_firstline>highlight_lastline)?
+						highlight_firstline - highlight_lastline +1
+						: highlight_lastline - highlight_firstline +1;
 				break;
 			case 'l':
 				act_mvright();
@@ -1268,8 +1276,17 @@ void visuallinemode(void){
 					tcliplen = 1;
 					memcpy(&tclip, &song[songy], sizeof(struct songline)*highlight_lineamount);
 				}else if(currtab == 1){
-					tcliplen = 1;
-					memcpy(&tclip, &track[currtrack].line[tracky], sizeof(struct trackline)*highlight_lineamount);
+					tcliplen = highlight_lineamount;
+					//moved up, then yanked
+					if(highlight_firstline > highlight_lastline){
+						for(int i = 0; i < highlight_lineamount; i++)
+							memcpy(&tclip[i], &track[currtrack].line[tracky+i], sizeof(struct trackline));
+					//moved down, then yanked
+					}else if(highlight_lastline > highlight_firstline){
+						for(int i = highlight_lineamount-1, j = 0; i >= 0; i--, j++){
+								memcpy(&tclip[i], &track[currtrack].line[tracky-j], sizeof(struct trackline));
+						}
+					}
 				}else if(currtab == 2){
 					icliplen = 1;
 					memcpy(&iclip, &instrument[currinstr].line[instry], sizeof(struct instrline)*highlight_lineamount);
@@ -1283,9 +1300,10 @@ void visuallinemode(void){
 		drawgui();
 
 		// update the highlighted length
-		highlight_lineamount = (highlight_firstline>highlight_lastline)?
+		/*highlight_lineamount = (highlight_firstline>highlight_lastline)?
 				highlight_firstline - highlight_lastline +1
 				: highlight_lastline - highlight_firstline +1;
+				*/
 	}
 	highlight_firstline = -1;
 	highlight_lastline = -1;
