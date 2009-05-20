@@ -233,8 +233,8 @@ Mode commands
 ********************
 * VISUAL LINE MODE *
 ********************
-	h j k l
-		Move cursor left/down/up/right in current column. j and k modify the
+	j k
+		Move cursor down/up in current column. j and k modify the
 		selection.
 
 	y

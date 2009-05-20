@@ -1,6 +1,7 @@
 enhancements:
 -------------
 * complete and implement the SPEC
+	* Visual mode, visual line mode
 
 * make the sampling rate not affect the pitch of notes
 

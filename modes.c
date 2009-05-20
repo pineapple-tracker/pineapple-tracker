@@ -470,14 +470,16 @@ void normalmode(int c){
 		case 'p':
 			if(currtab == 0){
 				if(songlen < 256){
-					// insert new line
-					memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
-					songy++;
-					songlen++;
-					memset(&song[songy], 0, sizeof(struct songline));
+					for(int i = 0; i < tcliplen; i++){
+						// insert new line
+						memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
+						songy++;
+						songlen++;
+						memset(&song[songy], 0, sizeof(struct songline));
 
-					// paste to new line
-					memcpy(&song[songy], &tclip, sizeof(struct songline));
+						// paste to new line
+						memcpy(&song[songy], &tclip[i], sizeof(struct songline));
+					}
 				}
 			}else if(currtab == 1){
 					for(int i = 0; i < tcliplen; i++){
@@ -488,16 +490,18 @@ void normalmode(int c){
 			}else if(currtab == 2){
 				if(instrument[currinstr].length < 256){
 					// insert new line
-					struct instrument *in = &instrument[currinstr];
+					for(int i = 0; i < icliplen; i++){
+						struct instrument *in = &instrument[currinstr];
 
-					instry++;
-					memmove(&in->line[instry + 1], &in->line[instry + 0], sizeof(struct instrline) * (in->length - instry));
-					in->length++;
-					in->line[instry].cmd = '0';
-					in->line[instry].param = 0;
+						instry++;
+						memmove(&in->line[instry + 1], &in->line[instry + 0], sizeof(struct instrline) * (in->length - instry));
+						in->length++;
+						in->line[instry].cmd = '0';
+						in->line[instry].param = 0;
 
-					// paste to new line
-					memcpy(&instrument[currinstr].line[instry], &iclip, sizeof(struct instrline));
+						// paste to new line
+						memcpy(&instrument[currinstr].line[instry], &iclip[i], sizeof(struct instrline));
+					}
 				}
 				//if(instry < instrument[currinstr].length-1) instry++;
 			}
@@ -1222,6 +1226,10 @@ void visuallinemode(void){
 					//lastnode = list_insertafter(firstnode, (void *)instry);
 					highlight_lastline = instry;
 				}
+				// update the highlighted length
+				highlight_lineamount = (highlight_firstline>highlight_lastline)?
+						highlight_firstline - highlight_lastline +1
+						: highlight_lastline - highlight_firstline +1;
 				break;
 			case 'k':
 				act_mvup();
@@ -1236,6 +1244,10 @@ void visuallinemode(void){
 					//lastnode = list_insertafter(firstnode, (void *)instry);
 					highlight_lastline = instry;
 				}
+				// update the highlighted length
+				highlight_lineamount = (highlight_firstline>highlight_lastline)?
+						highlight_firstline - highlight_lastline +1
+						: highlight_lastline - highlight_firstline +1;
 				break;
 			case 'l':
 				act_mvright();
@@ -1265,14 +1277,45 @@ void visuallinemode(void){
 			// y: copy every line that is highlighted to the paste buffer
 			case 'y':
 				if(currtab == 0){
-					tcliplen = 1;
-					memcpy(&tclip, &song[songy], sizeof(struct songline)*highlight_lineamount);
+					//tcliplen = 1;
+					//memcpy(&tclip, &song[songy], sizeof(struct songline)*highlight_lineamount);
+					tcliplen = highlight_lineamount;
+					//moved up, then yanked
+					if(highlight_firstline > highlight_lastline){
+						for(int i = 0; i < highlight_lineamount; i++)
+							memcpy(&tclip[i], &song[songy+i], sizeof(struct songline));
+					//moved down, then yanked
+					}else if(highlight_lastline > highlight_firstline){
+						for(int i = highlight_lineamount-1, j = 0; i >= 0; i--, j++){
+								memcpy(&tclip[i], &song[songy-j], sizeof(struct songline));
+						}
+					}
 				}else if(currtab == 1){
-					tcliplen = 1;
-					memcpy(&tclip, &track[currtrack].line[tracky], sizeof(struct trackline)*highlight_lineamount);
+					tcliplen = highlight_lineamount;
+					//moved up, then yanked
+					if(highlight_firstline > highlight_lastline){
+						for(int i = 0; i < highlight_lineamount; i++)
+							memcpy(&tclip[i], &track[currtrack].line[tracky+i], sizeof(struct trackline));
+					//moved down, then yanked
+					}else if(highlight_lastline > highlight_firstline){
+						for(int i = highlight_lineamount-1, j = 0; i >= 0; i--, j++){
+								memcpy(&tclip[i], &track[currtrack].line[tracky-j], sizeof(struct trackline));
+						}
+					}
 				}else if(currtab == 2){
-					icliplen = 1;
-					memcpy(&iclip, &instrument[currinstr].line[instry], sizeof(struct instrline)*highlight_lineamount);
+					//icliplen = 1;
+					//memcpy(&iclip, &instrument[currinstr].line[instry], sizeof(struct instrline)*highlight_lineamount);
+					icliplen = highlight_lineamount;
+					//moved up, then yanked
+					if(highlight_firstline > highlight_lastline){
+						for(int i = 0; i < highlight_lineamount; i++)
+							memcpy(&iclip[i], &instrument[currinstr].line[instry+i], sizeof(struct instrline));
+					//moved down, then yanked
+					}else if(highlight_lastline > highlight_firstline){
+						for(int i = highlight_lineamount-1, j = 0; i >= 0; i--, j++){
+								memcpy(&iclip[i], &instrument[currinstr].line[instry-j], sizeof(struct instrline));
+						}
+					}
 				}
 
 				snprintf(buf, sizeof(buf), "%d lines yanked", highlight_lineamount);
@@ -1283,9 +1326,10 @@ void visuallinemode(void){
 		drawgui();
 
 		// update the highlighted length
-		highlight_lineamount = (highlight_firstline>highlight_lastline)?
+		/*highlight_lineamount = (highlight_firstline>highlight_lastline)?
 				highlight_firstline - highlight_lastline +1
 				: highlight_lastline - highlight_firstline +1;
+				*/
 	}
 	highlight_firstline = -1;
 	highlight_lastline = -1;
