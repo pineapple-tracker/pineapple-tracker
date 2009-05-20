@@ -1,1 +1,2 @@
-int conf_open();
+int conf_file();
+#define length(a) (sizeof (a) / sizeof *(a))
