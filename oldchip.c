@@ -110,13 +110,13 @@ void runcmd(u8 ch, u8 cmd, u8 param){
 			channel[ch].iptr = param;
 			break;
 		case 's':
-			channel[ch].bendd = (param/3);
+			channel[ch].bendd = param;
 			break;
 		case 'm':
 			channel[ch].dutyd = param << 6;
 			break;
 		case 't':
-			channel[ch].iwait = (param*2);
+			channel[ch].iwait = (param*6);
 			break;
 		case 'v':
 			osc[ch].volume = param;
