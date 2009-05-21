@@ -1,35 +1,70 @@
 #include "pineapple.h"
 #include "gui.h"
 #include "conf_file.h"
+static const int fvar_nums = 5000;
+static const char cfilename[] = ".pineapplerc";
 
+/* Struct for name,value pairs*/
 struct variable {
     char *name;
     int value;
 };
 /*
-Just a test array, will be replaced by file line by line
+* Is supposed to parse through the file, but is being a dumb cluster-f.
 */
-static const char *ini[] = {
-    "var1=5",
-    "var2=80"
-};
+char** parse_file(const char filename[], int fvar_nums){
+	FILE *file = fopen ( filename, "r" );
+	int i, j;
+	char line[500]; /* or other suitable maximum line size */
+	char **conf_vars;
+	conf_vars=malloc( fvar_nums * sizeof(char *));
+	for(i=0;i<fvar_nums;i++)
+	{
+		conf_vars[i]=malloc(fvar_nums * sizeof(char *));
+	}
+	
+	for(i=0; i<fvar_nums; i++)
+	{
+		for(j=0; j<fvar_nums; j++)
+		{
+		conf_vars[i][j] = '\0';
+		}
+	}
 
-static const char *lines[];
+	for(i=0; i<500; i++)
+	{
+		line[i] = '\0';
+	}
 
-int conf_file ( void )
-{
-		//static const char filename[] = ".pineapplerc";
-		//FILE *file = fopen(filename, "r");
-		//if (file){
-		//				char line[BUFSIZ];
-		
-		
-		//Put all desired variable names in here, such as bigmv, or whatev
+	if ( file != NULL )
+	{
+		i=0;
+		while ( fgets ( line, sizeof line, file ) != NULL ) /* read a line */
+		{
+			strcpy(conf_vars[i], line);
+			i++;
+		}
+		fclose ( file );
+	}
+	return conf_vars;
+	//return 0;
+}
+
+/*
+*Assigns variables
+*/
+void filevars ( const char **blah[], int el ){
+	char *ini[el];
+	size_t i;
+	for(i=0;i<el;i++){
+		ini[i] = &(*blah[i]);
+		//printf("%s\n", blah[i]);
+	}
     struct variable vars[] = {
-        {"var1"},
-        {"var2"}
+        {"poop"},
+        {"butt"}
     };
-    size_t i;
+    
 
     for ( i = 0; i < length ( ini ); i++ ) {
         char temp[BUFSIZ];
@@ -51,7 +86,7 @@ int conf_file ( void )
             /*
                 - Assumes there's another token
                 - Assumes the next token is a valid int
-								- Should have some precautionary measure
+				- Should have some precautionary measure
             */
             vars[j].value = atoi ( strtok ( NULL, "=" ) );
         }
@@ -60,6 +95,21 @@ int conf_file ( void )
     for ( i = 0; i < length ( vars ); i++ )
         printf ( "%s = %d\n", vars[i].name, vars[i].value );
 
-    return 0;
+    //return 0;
 }
 
+int like_main( void){
+	//int i;
+	//char ** array = parse_file(filename, fvar_nums);
+	/*char *ini[fvar_nums];
+	for(i=0; i<=sizeof(array)/sizeof(int); i++){
+		ini[i] = array[i];
+		printf("%s", ini[i]);
+	}*/
+	char *ini[] = {
+    "var1=5",
+    "butt=80"
+	};
+	filevars(ini, length(ini));
+	return 0;
+}
