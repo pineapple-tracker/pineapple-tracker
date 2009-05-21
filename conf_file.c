@@ -2,18 +2,27 @@
 #include "gui.h"
 #include "conf_file.h"
 static const int fvar_nums = 5000;
-static const char cfilename[] = ".pineapplerc";
-
+static const char configfile[] = ".pineapplerc";
+int lines;
 /* Struct for name,value pairs*/
 struct variable {
     char *name;
     int value;
 };
 /*
-* Is supposed to parse through the file, but is being a dumb cluster-f.
+IMPORTANT: Put variable names here. Like bigmv or whatever you want to be set 
+			by .pineapplerc
 */
-char** parse_file(const char filename[], int fvar_nums){
-	FILE *file = fopen ( filename, "r" );
+struct variable vars[] = {
+    {"poop"},
+    {"butt"}
+};
+
+/*
+Parses the file and returns shit to caller function.
+*/
+char** parse_file(const char configfile[], int fvar_nums){
+	FILE *file = fopen ( configfile, "r" );
 	int i, j;
 	char line[500]; /* or other suitable maximum line size */
 	char **conf_vars;
@@ -43,13 +52,12 @@ char** parse_file(const char filename[], int fvar_nums){
 		{
 			strcpy(conf_vars[i], line);
 			i++;
+			lines++;
 		}
 		fclose ( file );
 	}
 	return conf_vars;
-	//return 0;
 }
-
 /*
 *Assigns variables
 */
@@ -59,12 +67,7 @@ void filevars ( const char **blah[], int el ){
 	for(i=0;i<el;i++){
 		ini[i] = &(*blah[i]);
 		//printf("%s\n", blah[i]);
-	}
-    struct variable vars[] = {
-        {"poop"},
-        {"butt"}
-    };
-    
+	}    
 
     for ( i = 0; i < length ( ini ); i++ ) {
         char temp[BUFSIZ];
@@ -97,19 +100,16 @@ void filevars ( const char **blah[], int el ){
 
     //return 0;
 }
-
-int like_main( void){
-	//int i;
-	//char ** array = parse_file(filename, fvar_nums);
-	/*char *ini[fvar_nums];
-	for(i=0; i<=sizeof(array)/sizeof(int); i++){
+/*
+We can put this in main or whatever, I don't care
+*/
+int caller_function( void){
+	int i;
+	char ** array = parse_file(configfile, fvar_nums);
+	char *ini[fvar_nums];
+	for(i=0; i<fvar_nums; i++){
 		ini[i] = array[i];
-		printf("%s", ini[i]);
-	}*/
-	char *ini[] = {
-    "var1=5",
-    "butt=80"
-	};
-	filevars(ini, length(ini));
+	}
+	filevars(ini, lines);
 	return 0;
 }
