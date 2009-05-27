@@ -1,3 +1,5 @@
+/* vi:set syntax=help */
+
 Specification for pineappletracker
 
 
@@ -144,6 +146,10 @@ Modifying commands
 
 	<number>
 		If the cursor is on top of a number, replace it.
+
+	-
+		Clear whatever is under the cursor and move the cursor down.
+			
 
 
 *********************
