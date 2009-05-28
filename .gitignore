@@ -5,5 +5,7 @@
 pineapple-tracker
 player
 songs
-*.log
 tags
+*.out
+*.aux
+*.pdf

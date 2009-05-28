@@ -1,0 +1,37 @@
+\documentclass[12pt,letterpaper]{article}
+
+\usepackage[left=2.5cm,top=2cm,right=2.5cm,bottom=2cm,nohead,nofoot]{geometry}
+\usepackage{setspace}
+
+%\pagestyle{empty}
+
+\begin{document}
+
+\begin{flushright}
+Tony Miller\\
+Nik Nyby\\
+Matt Hurtado
+\end{flushright}
+
+\begin{center}
+\section*{Pineapple Tracker project summary}
+\end{center}
+
+% outline:
+% ~~~~~~~~
+% par 1: intro -- what is this project about?
+% par 2: audio engine
+% par 3: UI
+% par 4:
+
+\doublespacing
+\par
+Our aim for this project was to extend a music sequencer's user interface to behave more like vi, and to learn a little bit about sound synthesis. For our user interface, we had a pretty clear goal of being able to control the tracker with our favorite vi commands. It's surprising that there isn't a tracker that already does this, because a tracker's interface can really benefit from being fast and efficient to use. Our other goals included rewriting the audio engine, adding more functionality such as filtering and granular synthesis, and a general effort to try to keep the code understandable and orthogonal.
+
+\par
+Because we started the quarter not knowing much about digital sound processing, we didn't do anything to the audio engine for the first five weeks. We decided we wanted to be able to change the sampling rate, so we ended up creating a different frequency table to keep the tracker in tune. We found out this wasn't the best solution because certain effects like vibrato and note-bend were still affected by the frequency changed. We learned from our contract sponsor that we will need to resample our output wave if we want to arbitrarily change the sample rate.
+
+\par
+
+
+\end{document}
