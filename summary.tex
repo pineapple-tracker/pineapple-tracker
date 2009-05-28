@@ -22,7 +22,8 @@ Matt Hurtado
 % par 1: intro -- what is this project about?
 % par 2: audio engine
 % par 3: UI
-% par 4:
+% par 4: plans for the future
+% par 5:
 
 \doublespacing
 \par
@@ -31,9 +32,12 @@ A "tracker" is a type of computer music composition tool. Most computer music to
 Our aim for this project was to extend a music tracker's user interface to behave more like vi, and to learn a little bit about sound synthesis. For our user interface, we had a pretty clear goal of being able to control the tracker with our favorite vi commands. It's surprising that there isn't a tracker that already does this, because a tracker's interface can really benefit from being fast and efficient to use. Our other goals included rewriting the audio engine, adding more functionality such as filtering and granular synthesis, and a general effort to try to keep the code understandable and orthogonal.
 
 \par
-Because we started the quarter not knowing much about digital sound processing, we didn't do anything to the audio engine for the first five weeks. We decided we wanted to be able to change the sampling rate, so we ended up creating a different frequency table to keep the tracker in tune. We found out this wasn't the best solution because certain effects like vibrato and note-bend were still affected by the frequency changed. We learned from our contract sponsor that we will need to resample our output wave if we want to arbitrarily change the sample rate.
+We started the quarter not knowing much about digital sound processing, so we didn't do anything to the audio engine for the first five weeks. We decided we wanted to be able to change the sampling rate, so we ended up creating a different frequency table to keep the tracker in tune with the new sampling rate. We found out this wasn't the best solution because certain effects like vibrato and note-bend were still affected by the frequency changed. We learned from our contract sponsor that we will need to resample our output wave if we want to arbitrarily change the sample rate.
 
 \par
+The work we put into the user interface was probably the most fruitful, as it led us closest to our goal. This is due to a couple of things. I think the most important is that we knew exactly what we wanted before we started coding. Because we already know how to use Vi, we sort of got a specification for free since we knew exactly how we wanted the commands to behave. Since we didn't do much planning, this allowed our work on the user interface to be successful. We did make our own specification about halfway through the quarter.
 
+\par
+There are some things we want to work on in the future to make Pineapple Tracker more useful. One is the ability to import MOD files. We also have a goal of rewriting the audio engine for educational purposes.
 
 \end{document}
