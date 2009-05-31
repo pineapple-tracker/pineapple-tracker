@@ -37,7 +37,13 @@ We wanted to control our tracker just like we controlled Vi. We were surprised t
 We started the quarter not knowing much about digital sound processing, so we didn't do anything to the audio engine for the first five weeks. We decided we wanted to be able to change the sampling rate, so we ended up creating a different frequency table to keep the tracker in tune with the new sampling rate. We found out this wasn't the best solution because certain effects like vibrato and note-bend were still affected by the frequency changed. We learned from our contract sponsor that we will need to resample our output wave if we want to arbitrarily change the sample rate.
 
 \par
+%write something else about the audio engine here maybe.... ???
+
+\par
 The work we put into the user interface was probably the most fruitful, as it led us closest to our goal. This is due to a couple of things. I think the most important is that we knew exactly what we wanted before we started coding. Because we already know how to use Vi, we sort of got a specification for free since we knew exactly how we wanted the commands to behave. Since we didn't do much planning, this allowed our work on the user interface to be successful. We did make our own specification about halfway through the quarter.
+
+\par
+Of course not all commands from a text editor can be directly translated into commands for a music editor! Most of the commands worked fairly wel, for example, cursor movement, copy and paste translated well from vi to our music editor.
 
 \par
 When we began working on this project we had lots of ideas for features, but since we lack experience it was hard to gauge which ones would be more challenging than others. Tempo control turned out to be a feature that was easier to implement than we had expected, while others that seem trivial (like JACK support) aren't done yet. This made it hard to plan before-hand, and sometimes it wasn't clear what to focus on.
