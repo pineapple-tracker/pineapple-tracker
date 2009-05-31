@@ -42,11 +42,20 @@ We started the quarter not knowing much about digital sound processing, so we di
 \par
 The work we put into the user interface was probably the most fruitful, as it led us closest to our goal. This is due to a couple of things. I think the most important is that we knew exactly what we wanted before we started coding. Because we already know how to use Vi, we sort of got a specification for free since we knew exactly how we wanted the commands to behave. Since we didn't do much planning, this allowed our work on the user interface to be successful. We did make our own specification about halfway through the quarter.
 
+
+
 \par
-Of course not all commands from a text editor can be directly translated into commands for a music editor! Most of the commands worked fairly wel, for example, cursor movement, copy and paste translated well from vi to our music editor.
+The specification describes all of the user commands and how they should behave. An entry in the specification states the key that is pressed, and what should happen. We tried to use very precise english in the specification.
+
+\par
+Of course not all commands from a text editor can be directly translated into commands for a music editor! Most of the commands worked fairly well, for example, cursor movement, copy and paste translated well from vi to our music editor.
+
+\par
+Our code grew surprisingly fast and before we knew it we had 2000 lines of functions and 100 lines of global variables. We tried to encapsulate most of the global variables into a single struct, and then pass the struct around into each function. This probably would have worked except we tried to do it all at once. With some more planning I'm sure we could successfully make our code more orthogonal.
 
 \par
 When we began working on this project we had lots of ideas for features, but since we lack experience it was hard to gauge which ones would be more challenging than others. Tempo control turned out to be a feature that was easier to implement than we had expected, while others that seem trivial (like JACK support) aren't done yet. This made it hard to plan before-hand, and sometimes it wasn't clear what to focus on.
+
 
 \par
 There are some things we want to work on in the future to make Pineapple Tracker more useful. One is the ability to import MOD files, a popular tracker file format. We also have a goal of rewriting the audio engine for educational purposes. We have also considering the addition of adding a scripting language, perhaps similar to Vi's scripting language, for generating algorithmic music.
