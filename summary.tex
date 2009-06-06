@@ -39,8 +39,19 @@ Trackers started to gain popularity in the 80s, and were mainly developed for th
 Since then, there have been many variations on this particular style of sequencing sound samples.
 There are still many trackers being developed for modern operating systems.
 Vi is a text editor that makes an effort to be efficient to use, and friendly to everyday users.
-The commands are obscure, for example the h, j, k, and l keys move the cursor, instead of the expected arrow keys.
-Vi has a learning curve that is initially steep but once you learn the basics you can combine commands in ways that other editors don't allow.
+Pineapple Tracker is now very usable if you know Vi
+The commands are obscure, for example the h, j, k, and l keys move the cursor instead of the expected arrow keys.
+Vi has a learning curve that is initially steep, but once you learn the basics you can combine commands in ways that other editors don't allow.
+
+\par
+We wanted to make a tracker that had lots of consideration put into the user interface.
+Little Sound DJ is a gameboy tracker that is very efficient to use, given that the gameboy only has 4 buttons and a D-pad.
+We believe that the same amount of effectiveness can be possible for a tracker that uses a computer keyboard.
+One tracker we researched, called {\tt jch}, had an amazingly featureful set of documented key commands.
+However, there are a couple problems with {\tt jch}.
+Aside from only running on the Commodore 64, {\tt jch}'s key commands are very obscure, just like Vi's.
+The difference is that {\tt jch}'s command set doesn't combine commands in the same way Vi does, and {\tt jch}'s commands are only found in {\tt jch}.
+In other words, those commands haven't been rehashed and refined for over 30 years like Vi's commands have.
 
 \par
 We wanted to control our tracker just like we controlled Vi.
@@ -49,20 +60,21 @@ We were surprised that there isn't already a tracker that does this, because a t
 Our other goals included rewriting the audio engine and adding more functionality such as filtering and granular synthesis.
 The idea was to support the audio portion of our project with the contract with Ian Burleigh.
 There was also a general effort to try to make our code understandable and orthogonal.
-To do this we tried to use as few global variables as possible and seperate functions into different files based on what their purpose is.
+To do this we tried to use as few global variables as possible and separate functions into different files based on what their purpose is.
 
 \par
 Our code grew surprisingly fast.
 Before we knew it we had 2000 lines of functions and 100 lines of global variables.
 We split up our code into multiple .c and .h files to try to organize it.
-To try to reduce the number of global variables our program relies on, we tried to encapsulate most of them into a single {\tt struct}, and then pass the {\tt struct} around into each function.
-This probably would have worked except we tried to do it all at once.
+To reduce the number of global variables our program relies on, we tried to encapsulate most of them into a single {\tt struct}, and then pass the {\tt struct} around to each function.
+This probably would have worked if we hadn't tried to do it all at once.
 With some more design and planning I'm sure we could successfully make our code more orthogonal.
 
 \par
-We started the quarter not knowing much about digital sound processing, so we didn't do anything to the audio engine for the first five weeks.We decided we wanted to be able to change the sampling rate, so we ended up creating a different frequency table to keep the tracker in tune with the new sampling rate.
-We found out this wasn't the best solution because certain effects like vibrato and note-bend were still affected by the frequency changed.
-We learned from our contract sponsor that we will need to resample our output wave if we want to arbitrarily change the sample rate.
+We started the quarter not knowing much about digital sound processing, so we didn't do anything to the audio engine for the first five weeks.
+We decided we wanted to be able to change the sampling rate, so we ended up creating a different frequency table to keep the tracker in tune with the new sampling rate.
+We found out this wasn't the best solution because certain effects like vibrato and note-bend were still affected by the frequency change.
+We learned from our contract sponsor that we will need to resample our output wave using a method like interpolation if we want to arbitrarily change the sample rate.
 
 %\par
 %write something else about the audio engine here maybe.... ???
@@ -76,34 +88,36 @@ Since we didn't do much planning, this allowed our work on the user interface to
 We did make our own specification about halfway through the quarter.
 
 \par
-The specification describes all of the user commands and how they should behave.
-An entry in the specification states the key that is pressed and what should happen.
+The specification describes all of the tracker's commands and how they should behave.
+Each entry in the specification states what happens when each key is pressed.
 We tried to be very precise with our descriptions of the commands, and tried to foresee any potential conflicts with other commands to make sure they all work well together.
 Of course, not all commands from a text editor can be directly translated into commands for a music editor!
 Most commands, like cursor/window movement and copy and paste translated fairly well from Vi to our music editor.
 
 \par
 When we began working on this project we had lots of ideas for features, but since we lack experience it was hard to gauge which ones would be more challenging than others.
-Tempo control turned out to be a feature that was easier to implement than we had expected, while others that seem trivial (like JACK support) aren't done yet.
-This made it hard to plan before-hand, and sometimes it wasn't clear what we should be focusing on.
+Tempo control turned out to be a feature that was easier to implement than we had expected, while others that seem trivial (like JACK support) still aren't done yet.
+This made it hard to plan before-hand, and sometimes after we had finished a feature, it wasn't clear what we should be focusing on next.
 
 \par
 There are some things we want to work on in the future to make Pineapple Tracker more useful.
-One is the ability to import MOD files, a popular tracker file format.
+One is support for MOD files, a popular tracker file format.
 We also have a goal of rewriting the audio engine for educational purposes.
+Our completion of our digital sound processing contract will help us complete this goal.
 % Tony I changed the wording here so it sounds more like we mean business 8-)
-Another feature we are going to implement is a scripting language for generating algorithmic music.
+Another feature we are going to implement is a scripting language that can be used for generating algorithmic music.
 
 \par
 % this paragraph needs to be finished.. what is it about?
 Since not much work was done on the audio side of things, we have an idea about Pineapple Tracker evolving into a sort of "framework" to fit around existing music trackers.
 Most trackers tend to focus on the audio aspects much more than the user interface aspects.
-This is unfortunate because a tracker is used to create music and thus should strive to be as comfortable as possible for the user.
+This is unfortunate, because a tracker is used to create music and thus should strive to be as comfortable as possible for the user.
 
 %conclusion
 \par
-We certainly feel like we accomplished creating a Vi-like interface.
-Although we learned alot about digital audio through our contract, not as much was accomplished in the audio area of our program.
+We certainly feel like we accomplished our Vi-like interface.
+Pineapple Tracker is now very usable if you know Vi, and editing songs is quick and easy.
+Although we learned a lot about digital audio through our contract, not as much was accomplished in the audio area of our program.
 We did learn a little about how to develop software as a team, including some experience using the Git version control system.
 If we were to do this project over we would try to plan more, and we probably would have drawn more diagrams on whiteboards to design our user interface and how it interacts with our data structures to make the program less messy.
 
