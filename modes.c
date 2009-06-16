@@ -390,31 +390,11 @@ void normalmode(int c){
 			break;
 		case 'g':
 			if(nextchar() == 'g'){
-				switch(currtab){
-					case 0:
-						songy = 0;
-						break;
-					case 1:
-						tracky = 0;
-						break;
-					case 2:
-						instry = 0;
-						break;
-				}
+				act_mvtop();
 			}
 			break;
 		case 'G':
-			switch(currtab){
-				case 0:
-					songy = songlen - 1;
-					break;
-				case 1:
-					tracky = tracklen - 1;
-					break;
-				case 2:
-					instry = instrument[currinstr].length - 1;
-					break;
-			}
+			act_mvbottom();
 			break;
 
 		// yank
@@ -1212,29 +1192,20 @@ void visuallinemode(void){
 	int c;
 	int min, max;
 	char buf[1024];
-	//NODE *firstnode, *lastnode;
 
 	currmode = PM_VISUALLINE;
 
 	/* Store the current line as the first and last node of a linked list */
 	if(currtab==0){
-		//firstnode = list_create((void *) songy);
-		//lastnode = list_insertafter(firstnode, (void *)songy);
 		highlight_firstline = songy;
 		highlight_lastline = songy;
 	}else if(currtab==1){
-		//firstnode = list_create((void *) tracky);
-		//lastnode = list_insertafter(firstnode, (void *)tracky);
 		highlight_firstline = tracky;
 		highlight_lastline = tracky;
 	}else if(currtab==2){
-		//firstnode = list_create((void *) instry);
-		//lastnode = list_insertafter(firstnode, (void *)instry);
 		highlight_firstline = instry;
 		highlight_lastline = instry;
 	}else{
-		//firstnode = NULL;
-		//lastnode = NULL;
 		highlight_firstline = -1;
 		highlight_lastline = -1;
 	}
@@ -1260,13 +1231,10 @@ void visuallinemode(void){
 				act_mvdown();
 				// update lastnode
 				if(currtab==0){
-					//lastnode = list_insertafter(firstnode, (void *)songy);
 					highlight_lastline = songy;
 				}else if(currtab==1){
-					//lastnode = list_insertafter(firstnode, (void *)tracky);
 					highlight_lastline = tracky;
 				}else if(currtab==2){
-					//lastnode = list_insertafter(firstnode, (void *)instry);
 					highlight_lastline = instry;
 				}
 				// update the highlighted length
@@ -1278,13 +1246,10 @@ void visuallinemode(void){
 				act_mvup();
 				// update lastnode
 				if(currtab==0){
-					//lastnode = list_insertafter(firstnode, (void *)songy);
 					highlight_lastline = songy;
 				}else if(currtab==1){
-					//lastnode = list_insertafter(firstnode, (void *)tracky);
 					highlight_lastline = tracky;
 				}else if(currtab==2){
-					//lastnode = list_insertafter(firstnode, (void *)instry);
 					highlight_lastline = instry;
 				}
 				// update the highlighted length
@@ -1294,6 +1259,14 @@ void visuallinemode(void){
 				break;
 			case 'l':
 				act_mvright();
+				break;
+			case 'g':
+				if(nextchar() == 'g'){
+					act_mvtop();
+				}
+				break;
+			case 'G':
+				act_mvbottom();
 				break;
 			// d: copy every line that is highlighted to the paste buffer and clear them, too
 			case 'd':

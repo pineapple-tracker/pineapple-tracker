@@ -1,4 +1,4 @@
-/* vi:set ts=4 sts=4 sw=4 noexpandtab: */
+/* vi:set ts=8 sts=8 sw=8 noexpandtab: */
 
 /*()_)()_)()_)()_)()_)()_)()_)()_)()_
  / the MUSICCHIP file format by LFT /

@@ -14,7 +14,8 @@ Directions
 		Move cursor left/down/up/right in current column.
 
 	H M L
-		Move cursor to the highest, middle, or lowest line on the screen.
+		Move cursor to the highest, middle, or lowest line on the
+		screen.
 
 Window movement
 	] [
@@ -33,7 +34,8 @@ Window movement
 		Switch current column to the left/right.
 
 	^k ^j
-		Switch to next/last phrase or instrument based on the current column.
+		Switch to next/last phrase or instrument based on the current
+		column.
 
 Modifying commands
 	) (
@@ -46,32 +48,34 @@ Modifying commands
 		Increase/Decrease step amount.
 
 	^
-		Yank entire current column and paste it in the next empty phrase or
-		instrument.
+		Yank entire current column and paste it in the next empty
+		phrase or instrument.
 
 	a
 		Add a line to the end of the current song/instrument.
 
 	d<direction>
-		Delete everything towards the direction. If track column is focused,
-		just clear everything.
+		Delete everything towards the direction. If track column is
+		focused, just clear everything.
 
 	dd D
 		Delete current line. If track column is focused, just clear it.
 
 	J K
-		Increment/Decrement whatever is under the cursor. Wrap around at
-		min/max values.
+		Increment/Decrement whatever is under the cursor. Wrap around
+		at min/max values.
 
 	p
-		Paste whatever is in the current column's paste buffer onto this line.
-		If the whole line was yanked into the buffer, replace the whole
-		existing line with the new one. Otherwise, replace only what is in the 
-		buffer, and leave everything else as is.
+		Paste whatever is in the current column's paste buffer onto
+		this line. If the whole line was yanked into the buffer,
+		replace the whole existing line with the new one. Otherwise,
+		replace only what is in the buffer, and leave everything else
+		as is.
 	
 	r
-		Replace whatever is under the cursor with a note or number. Kind of
-		like going into insert mode for just one insertion, then returning.
+		Replace whatever is under the cursor with a note or number.
+		Kind of like going into insert mode for just one insertion,
+		then returning.
 
 	x
 		Clear whatever is under the cursor.
@@ -81,8 +85,8 @@ Modifying commands
 
 Yank commands
 	y<direction>
-		Yank everything from the cursor to the direction into the current
-		column's buffer.
+		Yank everything from the cursor to the direction into the
+		current column's buffer.
 
 	yy 
 		Yank the current line into the current column's buffer.
@@ -122,9 +126,9 @@ Mode commands
 		Enter insert mode.
 
 	o
-		Insert new line then go into insert mode. If the current column is the
-		track column, just move the cursor down one line and enter insert
-		mode.
+		Insert new line then go into insert mode. If the current column
+		is the track column, just move the cursor down one line and
+		enter insert mode.
 
 	v
 		Enter visual mode.
@@ -226,11 +230,16 @@ Mode commands
 * VISUAL MODE *
 ***************
 	h j k l
-		Move cursor left/down/up/right in current column. Modify selection
-		based on where the cursor was when visual mode was entered.
+		Move cursor left/down/up/right in current column. Modify
+		selection based on where the cursor was when visual mode was
+		entered.
+
+	gg G
+		Move cursor to the top/bottom of the current column.
 
 	y
-		Yank whatever is under the cursor into the current column's buffer.
+		Yank whatever is under the cursor into the current column's
+		buffer.
 
 Mode commands
 	<Escape>
@@ -240,12 +249,16 @@ Mode commands
 ********************
 * VISUAL LINE MODE *
 ********************
+	gg G
+		Move cursor to the top/bottom of the current column.
+
 	j k
 		Move cursor down/up in current column. j and k modify the
 		selection.
 
 	y
-		Yank whatever is under the cursor into the current column's buffer.
+		Yank whatever is under the cursor into the current column's
+		buffer.
 
 Mode commands
 	<Escape>
@@ -258,12 +271,12 @@ Mode commands
 		Set duty cycle (pulse width) to xx.
 	
 	fxx 
-		Set volume fade speed to xx. So, fff is a slow fadeout, f01 is a slow
-		fadein.
+		Set volume fade speed to xx. So, fff is a slow fadeout, f01 is
+		a slow fadein.
 
 	ixx 
-		Set channel inertia to xx. A high inertia causes automatic slides between
-		notes. Default 0.
+		Set channel inertia to xx. A high inertia causes automatic
+		slides between notes. Default 0.
   
 	sxx
 		Set slide. 0-7f is slide up, 80-ff is slide down.
@@ -291,8 +304,9 @@ Mode commands
 
 	+<note>
 		Set the pitch to <note>. This can be used to create arpeggios
-		with the jump command. This is relative to the note in the track column.
+		with the jump command. This is relative to the note in the
+		track column.
 
 	=<note>
-		Set the pitch to <note>. Using this command will cause all notes
-		specified in the track column to be ignored.
+		Set the pitch to <note>. Using this command will cause all
+		notes specified in the track column to be ignored.

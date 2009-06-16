@@ -1,4 +1,4 @@
-/* vi:set ts=4 sts=4 sw=4 noexpandtab: */
+/* vi:set ts=8 sts=8 sw=8 noexpandtab: */
 #include "pineapple.h"
 #include "gui.h"
 
@@ -130,6 +130,34 @@ void act_bigmvdown(void){
 			break;
 		case 2:
 			if(instry < instrument[currinstr].length - 8) instry += 8;
+			break;
+	}
+}
+
+void act_mvbottom(void){
+	switch(currtab){
+		case 0:
+			songy = songlen - 1;
+			break;
+		case 1:
+			tracky = tracklen - 1;
+			break;
+		case 2:
+			instry = instrument[currinstr].length - 1;
+			break;
+	}
+}
+
+void act_mvtop(void){
+	switch(currtab){
+		case 0:
+			songy = 0;
+			break;
+		case 1:
+			tracky = 0;
+			break;
+		case 2:
+			instry = 0;
 			break;
 	}
 }

@@ -129,6 +129,8 @@ int highlight_firstx, highlight_firsty, highlight_lasty, highlight_lastx;
 /* ACTIONS */
 void act_bigmvdown(void);
 void act_bigmvup(void);
+void act_mvbottom(void);
+void act_mvtop(void);
 void act_clritall(void);
 void act_clronething(void);
 void act_clrinsongtab(int y);
