@@ -163,6 +163,15 @@ void _parsecmd(char cmd[]){
 		savefile(filename);
 		saved = 1;
 	}else if(strcmp(cmd, ":q") == 0){
+		if(!saved){
+			setdisplay("current buffer not saved! use :q! to override");
+		}else{
+			erase();
+			refresh();
+			endwin();
+			exit(0);
+		}
+	}else if(strcmp(cmd, ":q!") == 0){
 		erase();
 		refresh();
 		endwin();
