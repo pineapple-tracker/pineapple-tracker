@@ -24,6 +24,8 @@ enhancements:
 
 bugs:
 ----
+* :<number> doesnt work if you enter the number in hex. is this ok?
+
 * '-' will delete notes in tracktab for some reason, but this is actually 
 	useful, so I think we should keep it. However, it should work in 
 	song and instrument tabs too.
