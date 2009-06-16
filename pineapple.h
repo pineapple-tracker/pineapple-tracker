@@ -123,6 +123,9 @@ NODE *highlightlines;*/
 /* lines to be highlighted in visual line mode */
 int highlight_firstline, highlight_lastline, highlight_lineamount;
 
+/* lines to be highlighted in visual mode */
+int highlight_firstx, highlight_firsty, highlight_lasty, highlight_lastx; 
+
 /* ACTIONS */
 void act_bigmvdown(void);
 void act_bigmvup(void);

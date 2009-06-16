@@ -273,6 +273,7 @@ void normalmode(int c){
 			break;
 		case KEY_ESCAPE:
 			disptick = 0;
+			jammermode();
 			break;
 		case CTRL('Y'):
 			switch(currtab){
@@ -1135,7 +1136,21 @@ void visualmode(void){
 	int c;
 
 	currmode = PM_VISUAL;
-	attrset(A_REVERSE);
+	//attrset(A_REVERSE);
+	if(currtab == 0){
+	}else if(currtab == 1){
+		highlight_firstx = trackx;
+		highlight_lastx = trackx;
+		highlight_firsty = tracky;
+		highlight_lasty = tracky;
+	}else if(currtab == 2){
+	}else{
+		highlight_firstx = -1;
+		highlight_lastx = -1;
+		highlight_firsty = -1;
+		highlight_lasty = -1;
+	}
+
 	while(currmode == PM_VISUAL){
 		if((c = getch()) != ERR) switch(c){
 			case 'v':
@@ -1147,15 +1162,35 @@ void visualmode(void){
 				break;
 			case 'h':
 				act_mvleft();
+				if(currtab==0){
+				}else if(currtab==1){
+					highlight_lastx = trackx;
+				}else if(currtab==2){
+				}
 				break;
 			case 'j':
 				act_mvdown();
+				if(currtab==0){
+				}else if(currtab==1){
+					highlight_lasty = tracky;
+				}else if(currtab==2){
+				}
 				break;
 			case 'k':
 				act_mvup();
+				if(currtab==0){
+				}else if(currtab==1){
+					highlight_lasty = tracky;
+				}else if(currtab==2){
+				}
 				break;
 			case 'l':
 				act_mvright();
+				if(currtab==0){
+				}else if(currtab==1){
+					highlight_lastx = trackx;
+				}else if(currtab==2){
+				}
 				break;
 		}
 		drawgui();

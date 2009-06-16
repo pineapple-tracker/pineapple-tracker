@@ -266,11 +266,14 @@ void drawtracked(int x, int y, int height){
 
 			// should this line be highlighted?
 			//if( (match = list_contains(highlightlines, findu8, &i)) ){
-			if( currtab == 1 && currmode == PM_VISUALLINE &&
-				((i <= highlight_firstline && i >= highlight_lastline)
+			if(currtab == 1 && currmode == PM_VISUALLINE
+				&& ((i <= highlight_firstline && i >= highlight_lastline)
 				|| (i >= highlight_firstline && i <= highlight_lastline)) ){
 				attrset(A_REVERSE);
 			}
+
+			if (currtab == 1 && currmode == PM_VISUAL)
+				attrset(A_REVERSE);
 
 			if(track[currtrack].line[i].note){
 				snprintf(buf, sizeof(buf), "%s%d",
