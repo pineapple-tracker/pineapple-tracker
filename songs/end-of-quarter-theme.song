@@ -5,11 +5,16 @@ songs/end-of-quarter-theme.song
 
 #did you get any credit????
 
+
 tempo: 180
 songline 00 01 00 02 00 03 00 00 00
 songline 01 01 00 02 ff 03 00 00 00
 songline 02 01 00 02 fd 03 00 00 00
-songline 03 01 00 02 fb 03 00 00 00
+songline 03 04 00 02 fb 05 00 00 00
+songline 04 01 00 02 00 03 00 06 00
+songline 05 01 00 02 ff 03 00 06 00
+songline 06 01 00 02 fd 03 00 06 00
+songline 07 04 00 02 fb 05 00 06 00
 
 trackline 01 00 2c 01 00 00 00 00
 trackline 01 06 2a 01 00 00 00 00
@@ -20,6 +25,26 @@ trackline 03 02 2c 01 76 80 00 00
 trackline 03 08 2a 01 76 80 00 00
 trackline 03 0c 29 01 76 80 00 00
 trackline 03 12 25 01 76 80 00 00
+trackline 04 00 2c 01 00 00 00 00
+trackline 04 06 2a 01 00 00 00 00
+trackline 04 0a 29 01 00 00 00 00
+trackline 04 10 25 01 00 00 00 00
+trackline 04 18 27 01 00 00 00 00
+trackline 05 02 2c 01 76 80 00 00
+trackline 05 08 2a 01 76 80 00 00
+trackline 05 0c 29 01 76 80 00 00
+trackline 05 12 25 01 76 80 00 00
+trackline 05 1a 27 01 76 80 00 00
+trackline 06 00 3d 03 00 00 00 00
+trackline 06 08 3d 04 00 00 00 00
+trackline 06 10 3d 03 00 00 00 00
+trackline 06 18 3d 04 00 00 00 00
+trackline 07 00 3d 03 00 00 00 00
+trackline 07 08 3d 04 00 00 00 00
+trackline 07 10 3d 03 00 00 00 00
+trackline 07 18 3d 04 73 3f 00 00
+trackline 07 1c 49 04 00 00 00 00
+trackline 07 1e 49 04 00 00 00 00
 
 instrumentline 01 00 77 02
 instrumentline 01 01 76 ff
@@ -30,3 +55,25 @@ instrumentline 02 00 77 02
 instrumentline 02 01 6d 04
 instrumentline 02 02 2b 25
 instrumentline 02 03 76 f0
+instrumentline 03 00 77 03
+instrumentline 03 01 76 ff
+instrumentline 03 02 74 01
+instrumentline 03 03 77 02
+instrumentline 03 04 64 80
+instrumentline 03 05 73 a0
+instrumentline 03 06 66 f0
+instrumentline 04 00 76 e1
+instrumentline 04 01 77 03
+instrumentline 04 02 74 01
+instrumentline 04 03 77 02
+instrumentline 04 04 74 03
+instrumentline 04 05 77 03
+instrumentline 04 06 74 02
+instrumentline 04 07 77 03
+instrumentline 04 08 74 02
+instrumentline 04 09 77 02
+instrumentline 04 0a 7e ff
+instrumentline 04 0b 73 82
+instrumentline 04 0c 30 00
+instrumentline 04 0d 30 00
+instrumentline 04 0e 30 00
