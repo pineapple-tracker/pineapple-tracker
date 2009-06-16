@@ -156,7 +156,8 @@ Modifying commands
 * COMMAND LINE MODE *
 *********************
 	:<number>
-		Move cursor to that line number.
+		Move cursor to that line number in the song tab. Jump to that
+		track or instrument number if in another tab.
 
 	:q
 	:quit

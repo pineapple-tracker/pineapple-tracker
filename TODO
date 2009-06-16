@@ -19,6 +19,9 @@ enhancements:
 		* port gui to libcaca?
 	* 
 
+* make :q not quit if there are unmodified changes, but :q! should quit no
+	matter what.
+
 bugs:
 ----
 * '-' will delete notes in tracktab for some reason, but this is actually 
