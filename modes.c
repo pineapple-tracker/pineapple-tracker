@@ -194,17 +194,16 @@ void _parsecmd(char cmd[]){
 
 		switch(currtab){
 			case 0:
-				if(gotoline>songlen){ songy=songlen-1; }
-				else{ songy = gotoline; }
+				songy = (gotoline>songlen)?
+					songlen-1 : gotoline;
 				break;
 			case 1:
-				if(gotoline>tracklen){ tracky=tracklen-1; }
-				else{ tracky = gotoline; }
+				currtrack = (gotoline>0xff)?
+					0xff : gotoline;
 				break;
 			case 2:
-				if(gotoline>instrument[currinstr].length){
-					instry=instrument[currinstr].length-1; }
-				else{ instry = gotoline; }
+				currinstr = (gotoline>0xff)?
+					0xff : gotoline;
 				break;
 		}
 	}else if(cmd[1] == 'c' && cmd[2] == ' '){

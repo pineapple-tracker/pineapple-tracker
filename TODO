@@ -1,7 +1,7 @@
 enhancements:
 -------------
 * complete and implement the SPEC
-	* Visual mode, visual line mode
+	* Visual mode
 
 * make the sampling rate not affect the pitch of notes
 
@@ -19,8 +19,15 @@ enhancements:
 		* port gui to libcaca?
 	* 
 
+* make :q not quit if there are unmodified changes, but :q! should quit no
+	matter what.
+
 bugs:
 ----
+* '-' will delete notes in tracktab for some reason, but this is actually 
+	useful, so I think we should keep it. However, it should work in 
+	song and instrument tabs too.
+
 * '.' doesn't work with insert/replace
 
 * tempo gets really fast if you set it too low... and weird things happen if

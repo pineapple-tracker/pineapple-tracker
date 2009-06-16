@@ -1,3 +1,5 @@
+/* vi:set syntax=help */
+
 Specification for pineappletracker
 
 
@@ -145,12 +147,17 @@ Modifying commands
 	<number>
 		If the cursor is on top of a number, replace it.
 
+	-
+		Clear whatever is under the cursor and move the cursor down.
+			
+
 
 *********************
 * COMMAND LINE MODE *
 *********************
 	:<number>
-		Move cursor to that line number.
+		Move cursor to that line number in the song tab. Jump to that
+		track or instrument number if in another tab.
 
 	:q
 	:quit
@@ -208,7 +215,7 @@ Mode commands
 		Play the note with the current instrument.
 	
 	> <
-		Incrase/Decrase current octave.
+		Increase/Decrease current octave.
 
 Mode commands
 	<Escape>
