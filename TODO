@@ -40,6 +40,8 @@ bugs:
 
 * M still acts weird if you are ^e'd down in a column
 
+* G/gg don't work in visual line mode.
+
 * sound doesn't always stop at the end of a song
 
 * tempo gets really fast if you set it too low... and weird things happen if

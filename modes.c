@@ -198,9 +198,21 @@ void _parsecmd(char cmd[]){
 			inittracks();
 			initinstrs();
 		}
-	}else if(cmd[1]=='s' && cmd[5]==' '){
+	//yucky if statement below.....probably better way to do it
+	}else if(cmd[1]=='s' && 
+			 cmd[2]=='a' &&
+			 cmd[3]=='v' &&
+			 cmd[4]=='e' &&
+			 cmd[5]==' '){
 		saveinstrument(cmd+6);
 		setdisplay("d-_-b saved ins! d-_-b");
+	}else if(cmd[1]=='l' && 
+			 cmd[2]=='o' &&
+			 cmd[3]=='a' &&
+			 cmd[4]=='d' &&
+			 cmd[5]==' '){
+		loadinstrument(cmd+6);
+		setdisplay("d-_-b loaded ins! d-_-b");
 	}else if(isdigit(cmd[1])){
 		int gotoline = atoi(cmd+1);
 

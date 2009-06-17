@@ -144,7 +144,7 @@ int loadfile(char *fname){
 	return 0;
 }
 
-void saveinstrument(char* fname){
+void saveinstrument(char *fname){
 	FILE *f;
 	int i;
 
@@ -160,13 +160,40 @@ void saveinstrument(char* fname){
 	fprintf(f, "%s\n", filename);
 	fprintf(f, "\n");
 	for(i = 0; i < instrument[currinstr].length; i++){
-			fprintf(f, "instrumentline %02x %02x %02x %02x\n",
+			fprintf(f, "instrumentline %02x %02x %02x\n",
+				i,
 				instrument[currinstr].line[i].cmd,
 				instrument[currinstr].line[i].param);
 	}
+	fclose(f);
 	return;
 }
 
-void loadinstrument(void){
+int loadinstrument(char *fname){
+	FILE *f;
+	char buf[1024];
+	int i, cmd[3], param[3], instr;
+	int fr;
 
+	f = fopen(fname, "r");
+	if(!f){
+		return -1;
+	}
+	
+	fr = _nextfreeinstr();
+
+	while(!feof(f) && fgets(buf, sizeof(buf), f)){
+		if(3 == sscanf(buf, "instrumentline %x %x %x",
+			&i,
+			&cmd[0],
+			&param[0])){
+
+			instrument[fr].line[i].cmd = cmd[0];
+			instrument[fr].line[i].param = param[0];
+			if(instrument[fr].length <= i) instrument[fr].length = i + 1;
+		}
+	}
+
+	fclose(f);
+	return 0;
 }
