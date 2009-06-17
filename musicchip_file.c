@@ -8,6 +8,7 @@
 #include <string.h>
 
 #include "pineapple.h"
+#include "gui.h"
 #include "musicchip_file.h"
 
 void savefile(char *fname){
@@ -141,4 +142,31 @@ int loadfile(char *fname){
 
 	fclose(f);
 	return 0;
+}
+
+void saveinstrument(char* fname){
+	FILE *f;
+	int i;
+
+	f = fopen(fname, "w");
+	if(!f){
+		fprintf(stderr, "save error!\n");
+		return;
+	}
+	
+	fprintf(f, "pineapple tune instrument\n");
+	fprintf(f, "version alphamega\n");
+	fprintf(f, "\n");
+	fprintf(f, "%s\n", filename);
+	fprintf(f, "\n");
+	for(i = 0; i < instrument[currinstr].length; i++){
+			fprintf(f, "instrumentline %02x %02x %02x %02x\n",
+				instrument[currinstr].line[i].cmd,
+				instrument[currinstr].line[i].param);
+	}
+	return;
+}
+
+void loadinstrument(void){
+
 }
