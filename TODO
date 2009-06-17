@@ -17,7 +17,7 @@ enhancements:
 * MORE MODULAR
 	* gui.c => ncurses_ui.c
 		* port gui to libcaca?
-	* 
+	* drawsonged() => drawsonged_hively() or drawsonged_pineapple()
 
 * make :q not quit if there are unmodified changes, but :q! should quit no
 	matter what.
@@ -50,3 +50,6 @@ bugs:
 * from normal mode, press Vv, then exit visual mode with <esc> or v. the cursor moves left... why?
 
 * M still acts weird if you are ^e'd down in a column
+
+* If you press any of the arrow keys, the current instrument decreases, and it 
+also acts like you pressed the escape key!
