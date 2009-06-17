@@ -198,6 +198,9 @@ void _parsecmd(char cmd[]){
 			inittracks();
 			initinstrs();
 		}
+	}else if(cmd[1]=='s' && cmd[5]==' '){
+		saveinstrument(cmd+6);
+		setdisplay("d-_-b saved ins! d-_-b");
 	}else if(isdigit(cmd[1])){
 		int gotoline = atoi(cmd+1);
 
@@ -225,7 +228,6 @@ void _parsecmd(char cmd[]){
 /* normal mode */
 void normalmode(int c){
 	int i;
-
 
 	// don't save the action for repeat if it's a movement or a repeat, or
 	// something else that doesnt make sense to repeat

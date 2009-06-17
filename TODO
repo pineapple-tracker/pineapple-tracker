@@ -32,24 +32,24 @@ bugs:
 
 * '.' doesn't work with insert/replace
 
-* tempo gets really fast if you set it too low... and weird things happen if
-	you set it too high as well.
-
-* speed of vibrato, arpeggio, slide, faster than when we were running at 16khz
-
 * backspace doesn't work on some computers
 
 * yj and yk only work in track tab.
-
-* sound doesn't always stop at the end of a song
-
-* ui doesn't update in cmdline mode
-
-* ui doesn't update after pressing the first key of a two-key command like yy
 
 * from normal mode, press Vv, then exit visual mode with <esc> or v. the cursor moves left... why?
 
 * M still acts weird if you are ^e'd down in a column
 
+* sound doesn't always stop at the end of a song
+
+* tempo gets really fast if you set it too low... and weird things happen if
+	you set it too high as well.
+
+* speed of vibrato, arpeggio, slide, faster than when we were running at 16khz
+
+* ui doesn't update in cmdline mode
+
 * If you press any of the arrow keys, the current instrument decreases, and it 
 also acts like you pressed the escape key!
+
+* ui doesn't update after pressing the first key of a two-key command like yy

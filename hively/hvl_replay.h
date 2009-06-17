@@ -208,8 +208,9 @@ void hvl_FreeTune( struct hvl_tune *ht );
 
 struct hvl_tune *tune;
 void initgui(void);
-void drawposed(void);
-void drawtracked(void);
+void drawsonged(int x, int y, int height);
+void drawtracked(int x, int y, int height);
+void drawinstred(int x, int y, int height);
 void drawgui(void);
 void guiloop(void);
 void handleinput(void);
