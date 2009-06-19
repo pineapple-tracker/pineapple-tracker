@@ -1,12 +1,14 @@
 #include <ncurses.h>
 #include "hvl_replay.h"
+#include "gui-old.h"
 
 int currtrack = 1;
 int currtab = 0;
 int songy = 0;
 
-void initgui()
-{
+static char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#", "A-", "A#", "H-"};
+
+void initgui(){
 	initscr();
 
 	nonl();
@@ -18,8 +20,7 @@ void initgui()
 	//atexit(endwin());
 }
 
-void drawposed()
-{
+void drawposed(){
 	int i, j;
 	char buf[1024];
 	unsigned char trans;
@@ -42,8 +43,7 @@ void drawposed()
 	mvaddstr(0, 60, buf);
 }
 
-void drawtracked()
-{
+void drawtracked(){
 	int i;
 	char buf[1024];
 	snprintf(buf, sizeof(buf), "Track: %02x", currtrack);
@@ -55,7 +55,7 @@ void drawtracked()
 		addch(ACS_VLINE);
 
 		if(tune->ht_Tracks[currtrack][i].stp_Note)
-			snprintf(buf, sizeof(buf), "%02x  ", tune->ht_Tracks[currtrack][i].stp_Note);
+			snprintf(buf, sizeof(buf), "%s%d  ", notenames[(tune->ht_Tracks[currtrack][i].stp_Note - 1) % 12], (tune->ht_Tracks[currtrack][i].stp_Note - 1) / 12);
 		else
 			snprintf(buf, sizeof(buf), "--- ");
 		addstr(buf);
@@ -94,8 +94,7 @@ void drawtracked()
 	}
 }
 
-void drawgui()
-{
+void drawgui(){
 	drawposed();
 	drawtracked();
 
@@ -134,8 +133,7 @@ void handleinput(){
 	}
 }
 
-void guiloop()
-{
+void guiloop(){
 	ESCDELAY=50;
 	for(;;){
 		drawgui();

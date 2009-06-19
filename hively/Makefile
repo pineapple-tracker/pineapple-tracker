@@ -14,6 +14,7 @@ pineapple-tracker:	main.o gui.o hvl_replay.o modes.o actions.o
 	$(CC) -o $@ $^ ${LIBS}
 
 old: main.o gui-old.o hvl_replay.o
+	$(CC) -o $@ $^ ${LIBS}
 
 %.o:	%.c types.h hvl_replay.h Makefile
 

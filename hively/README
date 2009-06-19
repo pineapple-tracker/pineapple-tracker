@@ -11,3 +11,7 @@ drawsonged() functions, and the appropriate one could be assigned to the
 pointer to the drawsonged() function at runtime. This is just one idea
 that sounded cool, however, and may in fact be more complicated than
 necessary.
+
+Makefile
+---------
+use 'make old' to build the version that works......
