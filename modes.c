@@ -156,6 +156,68 @@ void _insertc(int c){
 	lastinsert = c;
 }
 
+// isnumber() determines if a string is a number
+// returns 1 if the given arg is a number, 0 otherwise.
+// for use with isdigit(), isxdigit(), etc...
+int isnumber(const int* str, int (*func) (int)){
+	int i = 0;
+
+	for(;;){
+		if( func(str[i]) ){
+			i++;
+		}else if( str[i]=='\0' ){
+			return 1;
+		}else{
+			return 0;
+		}
+	}
+}
+
+// Converts a hexadecimal string to integer
+// return values:
+//	0: conversion successful
+//	1: string is empty
+//	2: string has more than 8 bytes
+//	4: Conversion is in process but abnormally terminated by
+//		illegal hexadecimal character
+// from http://devpinoy.org/blogs/cvega/archive/2006/06/19/xtoi-hex-to-integer-c-function.aspx
+int xtoi(const char* xs, unsigned int* result){
+	size_t szlen = strlen(xs);
+	int i, xv, fact;
+
+	if(szlen > 0){
+		// Converting more than 32bit hexadecimal value?
+		if (szlen>8) return 2; // exit
+
+		// Begin conversion here
+		*result = 0;
+		fact = 1;
+
+		// Run until no more character to convert
+		for(i=szlen-1; i>=0 ;i--){
+			if(isxdigit(*(xs+i))){
+				if (*(xs+i)>=97){
+					xv = ( *(xs+i) - 97) + 10;
+				}else if( *(xs+i) >= 65){
+					xv = (*(xs+i) - 65) + 10;
+				}else{
+					xv = *(xs+i) - 48;
+				}
+				*result += (xv * fact);
+				fact *= 16;
+			}else{
+				// Conversion was abnormally terminated
+				// by non hexadecimal digit, hence
+				// returning only the converted with
+				// an error value 4 (illegal hex character)
+				return 4;
+			}
+		}
+	}
+	// Nothing to convert
+	return 1;
+}
+
 void _parsecmd(char cmd[]){
 	//if(cmd[1] == 'w'){
 	//switch(strcmp(cmd,
@@ -213,21 +275,28 @@ void _parsecmd(char cmd[]){
 			 cmd[5]==' '){
 		loadinstrument(cmd+6);
 		setdisplay("d-_-b loaded ins! d-_-b");
-	}else if(isdigit(cmd[1])){
-		int gotoline = atoi(cmd+1);
+	}else if( isnumber((int *)cmd+1,isxdigit) ){
+		unsigned int goton = 1;
 
 		switch(currtab){
 			case 0:
-				songy = (gotoline>songlen)?
-					songlen-1 : gotoline;
+				if( isnumber((int *)cmd+1,isdigit) ){
+					int goton = atoi(cmd+1);
+					songy = (goton>songlen)?
+						songlen-1 : goton;
+				}
 				break;
 			case 1:
-				currtrack = (gotoline>0xff)?
-					0xff : gotoline;
+				if ( !(goton = xtoi(cmd+1,&goton)) ){
+					currtrack = (goton>0xff)? 0xff : goton;
+				}else{
+					currtrack = (goton>0xff)? 0xff : goton;
+				}
+
 				break;
 			case 2:
-				currinstr = (gotoline>0xff)?
-					0xff : gotoline;
+				//goton = xtoi(cmd+1,&goton);
+				//currinstr = (goton>0xff)? 0xff : goton;
 				break;
 		}
 	}else if(cmd[1] == 'c' && cmd[2] == ' '){
