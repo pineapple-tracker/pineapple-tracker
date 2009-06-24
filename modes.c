@@ -277,26 +277,17 @@ void _parsecmd(char cmd[]){
 		setdisplay("d-_-b loaded ins! d-_-b");
 	}else if( isnumber((int *)cmd+1,isxdigit) ){
 		unsigned int goton = 1;
+		xtoi(cmd+1,&goton);
 
 		switch(currtab){
 			case 0:
-				if( isnumber((int *)cmd+1,isdigit) ){
-					int goton = atoi(cmd+1);
-					songy = (goton>songlen)?
-						songlen-1 : goton;
-				}
+				songy = (goton>songlen)? songlen-1 : goton;
 				break;
 			case 1:
-				if ( !(goton = xtoi(cmd+1,&goton)) ){
-					currtrack = (goton>0xff)? 0xff : goton;
-				}else{
-					currtrack = (goton>0xff)? 0xff : goton;
-				}
-
+				currtrack = (goton>0xff)? 0xff : goton;
 				break;
 			case 2:
-				//goton = xtoi(cmd+1,&goton);
-				//currinstr = (goton>0xff)? 0xff : goton;
+				currinstr = (goton>0xff)? 0xff : goton;
 				break;
 		}
 	}else if(cmd[1] == 'c' && cmd[2] == ' '){
