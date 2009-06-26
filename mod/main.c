@@ -95,13 +95,16 @@ int main(int argc, char **argv){
 
 	fread(&trash, 4, 1, modfile); //reading the M.K. string
 
-	modheader.pattern = malloc(sizeof(modheader.patternCount));
+	/* XXX this isn't right at all*/
+	modheader.pattern = malloc(sizeof(unsigned char*[modheader.patternCount]));
 
 	if(!modheader.pattern){
 		printf("out of memory!\n");
 	}
+	
 
 	//initialize modheader.pattern to 0
+	/* XXX SEGFAULT */
 	//memset(modheader.pattern, 0, modheader.patternCount*sizeof(unsigned char*));
 
 	unsigned char curPattern, row, column;
@@ -113,7 +116,7 @@ int main(int argc, char **argv){
 		}
 		
 		//initialize to 0
-		//memset(modheader.pattern[curPattern], 0, 1024);
+		memset(modheader.pattern[curPattern], 0, 1024);
 
 		for(row = 0; row < 64; row++) {
 			unsigned char cell[4];
@@ -186,6 +189,8 @@ int main(int argc, char **argv){
 
 	printf("patternCount: %i\n", modheader.patternCount);
 	
+	printf("%i\n", sizeof(unsigned char*[modheader.patternCount])); //36
+	printf("%i\n", sizeof(unsigned char*)); //4
 
 	return 0;
 }
