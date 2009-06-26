@@ -14,17 +14,28 @@ struct sample_header {
 	unsigned short looplength; //2 bytes
 	signed char *smpdata; //1 byte
 };
+struct pattern_entry {
+	unsigned short period;
+	unsigned char sample;
+	unsigned char effect;
+	unsigned char param;
+};
 
-//sizeof(sample_header) == 31 bytes?
+struct pattern {
+	struct pattern_entry pattern_entry[64][4];
+};
+
 
 struct mod_header {
 	char name[20];
 	struct sample_header sample[31];
 	unsigned char order[128];
-	unsigned char **pattern;
+	//unsigned char **pattern;
+	struct pattern *patterns;
 	unsigned char orderCount;
 	unsigned char patternCount;
 };
+
 
 int main(int argc, char **argv){
 	FILE *modfile;
@@ -95,10 +106,9 @@ int main(int argc, char **argv){
 
 	fread(&trash, 4, 1, modfile); //reading the M.K. string
 
-	/* XXX this isn't right at all*/
-	modheader.pattern = malloc(sizeof(unsigned char*[modheader.patternCount]));
+	modheader.patterns = malloc(sizeof(struct pattern*[modheader.patternCount]));
 
-	if(!modheader.pattern){
+	if(!modheader.patterns){
 		printf("out of memory!\n");
 	}
 	
@@ -110,64 +120,70 @@ int main(int argc, char **argv){
 	unsigned char curPattern, row, column;
 
 	for(curPattern = 0; curPattern < modheader.patternCount; curPattern++) {
-		modheader.pattern[curPattern] = malloc(1024);
-		if(!modheader.pattern[curPattern]){
+		//modheader.patterns[curPattern] = malloc(1024); //patterns are always 1k
+		/*modheader.patterns[curPattern] = malloc(sizeof(struct pattern));
+		if(!modheader.patterns[curPattern]){
 			printf("out of memory!\n");
 		}
 		
 		//initialize to 0
-		memset(modheader.pattern[curPattern], 0, 1024);
+		memset(modheader.patterns[curPattern], 0, 1024);
+		*/
 
 		for(row = 0; row < 64; row++) {
-			unsigned char cell[4];
-			unsigned char sample;
-			unsigned short period;
-			unsigned char effect;
-			unsigned char param;
+			for(column = 0; column < 4; column++) {
+				unsigned char cell[4];
+				unsigned char sample;
+				unsigned short period;
+				unsigned char effect;
+				unsigned char param;
 
-			fread(cell, 4, 1, modfile);
+				fread(cell, 4, 1, modfile);
 
-			sample = (cell[0] & 0xf0) | (cell[2] >> 4);
-			period = cell[1] | ((cell[0] & 0xf) << 8);
-			effect = cell[2] & 0xf;
-			param = cell[3];
+				sample = (cell[0] & 0xf0) | (cell[2] >> 4);
+				period = cell[1] | ((cell[0] & 0xf) << 8);
+				effect = cell[2] & 0xf;
+				param = cell[3];
 
-			//looping through the period table
-			unsigned char closestNote = 0; 
-			unsigned short closestDist = 0xffff; //make sure the first comparison sets the closet note
-			unsigned short newDist;
+				//looping through the period table
+				unsigned char closestNote = 0; 
+				unsigned short closestDist = 0xffff; //make sure the first comparison sets the closet note
+				unsigned short newDist;
 
-			if(period == 0) {
-				closestNote = MOD_NO_NOTE; //period 0 is no note
-			}else {
-				for(i = 0; i < 12*5; i++) {
-					newDist = abs(period = periodTable[i]);
-					if(newDist < closestDist){
-						closestNote = (unsigned char)i;
-						closestDist = newDist;
+				if(period == 0) {
+					closestNote = MOD_NO_NOTE; //period 0 is no note
+				}else {
+					for(i = 0; i < 12*5; i++) {
+						newDist = abs(period = periodTable[i]);
+						if(newDist < closestDist){
+							closestNote = (unsigned char)i;
+							closestDist = newDist;
+						}
 					}
 				}
-			}
 
-			if(sample == 0) {
-				sample = MOD_NO_SAMPLE;
-			}else {
-				sample -= 1;
-			}
+				if(sample == 0) {
+					sample = MOD_NO_SAMPLE;
+				}else {
+					sample -= 1;
+				}
 
-			//now that we have our note, we can store the data in our new pattern
-			//calculate the address of the cell to output to
-			// rowoffset = row * 4 columns per row * 4 bytes per cell
-			// columnoffset = column * 4 bytes per cell
-			
-			unsigned char *outCell = &modheader.pattern[curPattern][row*4*4 + column*4];
-			outCell[0] = closestNote;
-			outCell[1] = sample;
-			outCell[2] = effect;
-			outCell[3] = param;
-			
-		
-			
+				//now that we have our note, we can store the data in our new pattern
+				//calculate the address of the cell to output to
+				// rowoffset = row * 4 columns per row * 4 bytes per cell
+				// columnoffset = column * 4 bytes per cell
+				
+				/*unsigned char *outCell = &modheader.pattern[curPattern][row*4*4 + column*4];
+				outCell[0] = closestNote;
+				outCell[1] = sample;
+				outCell[2] = effect;
+				outCell[3] = param;
+				*/
+				modheader.patterns[curPattern].pattern_entry[row][column].period = closestNote;
+				modheader.patterns[curPattern].pattern_entry[row][column].sample = sample;
+				modheader.patterns[curPattern].pattern_entry[row][column].effect = effect;
+				modheader.patterns[curPattern].pattern_entry[row][column].param = param;
+			}
 		}
 	}
 
@@ -189,8 +205,22 @@ int main(int argc, char **argv){
 
 	printf("patternCount: %i\n", modheader.patternCount);
 	
-	printf("%i\n", sizeof(unsigned char*[modheader.patternCount])); //36
-	printf("%i\n", sizeof(unsigned char*)); //4
+	//printf("%i\n", sizeof(unsigned char*[modheader.patternCount])); //36
+	//printf("%i\n", sizeof(unsigned char*)); //4
+
+	/*for(i = 0; i < modheader.patternCount+1; i++)
+		for(row = 0; row < 64; row++)
+				printf("%i\n", modheader.pattern[i][row]);
+				*/
+
+	for(i = 0; i < modheader.orderCount; i++)
+		
+		printf("%i : %i\n", i, modheader.order[i]);
+
+	printf("%i %i %i %i\n", modheader.patterns[7].pattern_entry[0][1].period, 
+		modheader.patterns[7].pattern_entry[0][1].sample,
+		modheader.patterns[7].pattern_entry[0][1].effect,		
+		modheader.patterns[7].pattern_entry[0][1].param);
 
 	return 0;
 }
