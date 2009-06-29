@@ -5,6 +5,8 @@
 #define MOD_NO_NOTE		63
 #define MOD_NO_SAMPLE	31
 
+static char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#", "A-", "A#", "H-"};
+
 struct sample_header {
 	char name[22]; //22 bytes
 	unsigned short length; //2 bytes
@@ -14,6 +16,7 @@ struct sample_header {
 	unsigned short looplength; //2 bytes
 	signed char *smpdata; //1 byte
 };
+
 struct pattern_entry {
 	unsigned short period;
 	unsigned char sample;
@@ -25,7 +28,6 @@ struct pattern {
 	struct pattern_entry pattern_entry[64][4];
 };
 
-
 struct mod_header {
 	char name[20];
 	struct sample_header sample[31];
@@ -35,7 +37,6 @@ struct mod_header {
 	unsigned char orderCount;
 	unsigned char patternCount;
 };
-
 
 int main(int argc, char **argv){
 	FILE *modfile;
@@ -146,21 +147,25 @@ int main(int argc, char **argv){
 				param = cell[3];
 
 				//looping through the period table
-				unsigned char closestNote = 0; 
+				/*unsigned char closestNote = 0; 
 				unsigned short closestDist = 0xffff; //make sure the first comparison sets the closet note
 				unsigned short newDist;
+				*/
 
 				if(period == 0) {
-					closestNote = MOD_NO_NOTE; //period 0 is no note
-				}else {
+					period = MOD_NO_NOTE; //period 0 is no note
+				}
+				
+				/*else {
 					for(i = 0; i < 12*5; i++) {
 						newDist = abs(period = periodTable[i]);
 						if(newDist < closestDist){
-							closestNote = (unsigned char)i;
+							closestNote = i;
 							closestDist = newDist;
 						}
 					}
 				}
+				*/
 
 				if(sample == 0) {
 					sample = MOD_NO_SAMPLE;
@@ -179,7 +184,7 @@ int main(int argc, char **argv){
 				outCell[2] = effect;
 				outCell[3] = param;
 				*/
-				modheader.patterns[curPattern].pattern_entry[row][column].period = closestNote;
+				modheader.patterns[curPattern].pattern_entry[row][column].period = period;
 				modheader.patterns[curPattern].pattern_entry[row][column].sample = sample;
 				modheader.patterns[curPattern].pattern_entry[row][column].effect = effect;
 				modheader.patterns[curPattern].pattern_entry[row][column].param = param;
@@ -214,13 +219,14 @@ int main(int argc, char **argv){
 				*/
 
 	for(i = 0; i < modheader.orderCount; i++)
-		
 		printf("%i : %i\n", i, modheader.order[i]);
 
-	printf("%i %i %i %i\n", modheader.patterns[7].pattern_entry[0][1].period, 
-		modheader.patterns[7].pattern_entry[0][1].sample,
-		modheader.patterns[7].pattern_entry[0][1].effect,		
-		modheader.patterns[7].pattern_entry[0][1].param);
+	for(row = 0; row < 64; row++) {
+		printf("%i %x %x %x\n", modheader.patterns[7].pattern_entry[row][0].period, 
+			modheader.patterns[7].pattern_entry[row][0].sample + 1,
+			modheader.patterns[7].pattern_entry[row][0].effect,		
+			modheader.patterns[7].pattern_entry[row][0].param);
+	}
 
 	return 0;
 }
