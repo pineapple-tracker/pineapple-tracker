@@ -1,6 +1,6 @@
 CC = gcc
 VERSION = alpha-mega
-CFLAGS = -std=c99 -O2 -Wall $(SDL_CFLAGS) $(NCURSES_CFLAGS)
+CFLAGS = -std-c99 -O2 -Wall $(SDL_CFLAGS) $(NCURSES_CFLAGS)
 
 SDL_CFLAGS := $(shell pkg-config --cflags sdl)
 NCURSES_CFLAGS := $(shell ncurses5-config --cflags)

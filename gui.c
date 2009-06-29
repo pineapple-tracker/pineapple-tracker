@@ -107,8 +107,8 @@ void initsonglines(void){
 	for(int i=0; i < songlen; i++){
 		memmove(&song[i + 0], &song[i + 1], sizeof(struct songline) * (songlen - i - 1));
 		if(i < 4){
-			song[0].track[i] = 0x000;
-			song[0].transp[i] = 0x000;
+			song[0].track[i] = 0x00;
+			song[0].transp[i] = 0x00;
 		}
 	}
 	songlen = 1;
@@ -117,8 +117,8 @@ void initsonglines(void){
 void inittracks(void){
 	for(int i=0; i < 256; i++){
 		for(int j=0; j < TRACKLEN; j++){
-			track[i].line[j].note = 0x0000;
-			track[i].line[j].instr = 0x0000;
+			track[i].line[j].note = 0x00;
+			track[i].line[j].instr = 0x00;
 			for(int k=0; k < 2; k++){
 				track[i].line[j].cmd[k] = 0x0000;
 				track[i].line[j].param[k] = 0x0000;
