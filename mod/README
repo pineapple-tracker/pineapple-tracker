@@ -1,0 +1,12 @@
+Right now I'm just working on loading mod files, I'd rather not look at libmikmod, its pretty icky. It may be easier to 
+figure out how to load mods ourselves than figure out how to use a library and adapt it to our needs.
+
+On the other hand, a library is bound to be much more compatable. That said, I'm still going to work on loading mods 
+myself for educational purposes if nothing else. 
+
+Also, Milkytracker doesn't use libmikmod, and it loads nearly everything you throw out it, so we could check the milkytracker
+source if we get stuck, or need to know some really particular quirks about mod files.
+
+I'm getting a lot of help from these websites:
+http://deku.gbadev.org/program/sound3.html
+http://www.textfiles.com/music/fmoddoc.txt
