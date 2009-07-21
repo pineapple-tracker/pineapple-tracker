@@ -77,6 +77,30 @@ struct channel {
 	u16	slur;
 } channel[4];
 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void initchip() >                                                     .|
+///  Initialize sound engine.                                                .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
+void initchip(void){
+	trackwait = 0;
+	trackpos = 0;
+	playsong = 0;
+	playtrack = 0;
+
+	osc[0].volume = 0;
+	channel[0].instrnum = 0;
+	osc[1].volume = 0;
+	channel[1].instrnum = 0;
+	osc[2].volume = 0;
+	channel[2].instrnum = 0;
+	osc[3].volume = 0;
+	channel[3].instrnum = 0;
+}
+
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void runcmd(u8,u8,u8) >                                               .|
+///  Executes a song command.                                                .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void runcmd(u8 ch, u8 cmd, u8 param){
 	switch(cmd){
 		case 'd':
@@ -126,6 +150,10 @@ void runcmd(u8 ch, u8 cmd, u8 param){
 	}
 }
 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void silence() >                                                      .|
+///  Stops all sound.                                                        .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void silence(void){
 	for(u8 i = 0; i < 4; i++){
 		osc[i].volume = 0;
@@ -134,6 +162,10 @@ void silence(void){
 	playtrack = 0;
 }
 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void iedplonk(int,int) >                                              .|
+///  Plays a note.                                                           .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void iedplonk(int note, int instr){
 	channel[0].tracknote = note;
 	channel[0].instrnum = instr;
@@ -146,6 +178,10 @@ void iedplonk(int note, int instr){
 	channel[0].vdepth = 0;
 }
 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void startplaytrack(int) >                                            .|
+///  Plays a track.                                                          .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void startplaytrack(int t){
 	channel[0].tracknum = t;
 	channel[1].tracknum = 0;
@@ -157,28 +193,16 @@ void startplaytrack(int t){
 	playsong = 0;
 }
 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void startplaysong(int) >                                             .|
+///  Plays the song from a certain position.                                 .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void startplaysong(int p){
 	songpos = p;
 	trackpos = 0;
 	trackwait = 0;
 	playtrack = 0;
 	playsong = 1;
-}
-
-void initchip(void){
-	trackwait = 0;
-	trackpos = 0;
-	playsong = 0;
-	playtrack = 0;
-
-	osc[0].volume = 0;
-	channel[0].instrnum = 0;
-	osc[1].volume = 0;
-	channel[1].instrnum = 0;
-	osc[2].volume = 0;
-	channel[2].instrnum = 0;
-	osc[3].volume = 0;
-	channel[3].instrnum = 0;
 }
 
 void playroutine(void){
@@ -193,6 +217,10 @@ volatile u8 hello = 60;
 volatile u8 callbackwait = 0;
 u8 callbacktime = 180;
 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void interrupthandler(int,int) >                                      .|
+///  Called by sdl_callbackbuffer. Computes a frame of audio.                .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 u8 interrupthandler(void){
 	s16 hai = 0; // [-32768, 32767]
 

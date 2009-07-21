@@ -66,7 +66,10 @@ u8 sdl_init(void){
 	return 0;
 }
 
-/* called by SDL */
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void sdl_callbackbuffer(void*,Uint8*,int) >                           .|
+///  Called by SDL. Fills the dac buffer.                                    .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 //void sdl_callbackbuffer(PT_TUNE *pt, Uint8 *buf, int len){
 void sdl_callbackbuffer(void *userdata, Uint8 *buf, int len){
 	for(int i = 0; i < len; i++){

@@ -61,8 +61,11 @@ int hexdec(int x){
 	return (x >= 1 && x <= 15)? x-1 : 15;
 }
 
-/* Wait for the next keyboard char and return it.
- * This stops the screen from being updated. */
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < char nextchar() >                                                     .|
+///  Wait for the next keyboard char and return it. This stops the screen    .\
+\\\  from being updated.                                                     .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 char nextchar(){
 	char ch;
 	ch = getch();
@@ -76,6 +79,10 @@ char nextchar(){
 	return ch;
 }
 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < int _char2int(char) >                                                   .|
+///  Draws the instrument editor.                                            .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 int _char2int(char ch){
 	if(isdigit(ch)){
 		return (int)ch - '0';
@@ -83,6 +90,10 @@ int _char2int(char ch){
 	return -1;
 }
 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < int freqkey(int) >                                                      .|
+///   Calculates the frequency of key c.                                     .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 int freqkey(int c){
 	char *s;
 	int f = -1;
@@ -103,6 +114,10 @@ int freqkey(int c){
 	return f;
 }
 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void initsonglines() >                                                .|
+///   Calculates the frequency of key c.                                     .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void initsonglines(void){
 	for(int i=0; i < songlen; i++){
 		memmove(&song[i + 0], &song[i + 1], sizeof(struct songline) * (songlen - i - 1));
@@ -114,6 +129,9 @@ void initsonglines(void){
 	songlen = 1;
 }
 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void inittracks() >                                                   .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void inittracks(void){
 	for(int i=0; i < 256; i++){
 		for(int j=0; j < TRACKLEN; j++){
@@ -127,6 +145,9 @@ void inittracks(void){
 	}
 }
 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void initinstrs() >                                                   .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void initinstrs(void){
 	for(int i=1; i < 256; i++){
 		instrument[i].length = 1;
@@ -135,11 +156,17 @@ void initinstrs(void){
 	}
 }
 
-void readsong(int pos, int ch, u8 *dest){ 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void readsong(int,int,u8) >                                           .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
+void readsong(int pos, int ch, u8 *dest){
 	dest[0] = song[pos].track[ch];
 	dest[1] = song[pos].transp[ch];
 }
 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void readtrack(int,int,trackline) >                                   .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void readtrack(int num, int pos, struct trackline *tl){
 	tl->note = track[num].line[pos].note;
 	tl->instr = track[num].line[pos].instr;
@@ -149,6 +176,9 @@ void readtrack(int num, int pos, struct trackline *tl){
 	tl->param[1] = track[num].line[pos].param[1];
 }
 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void readinstr(int,int,u8) >                                          .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void readinstr(int num, int pos, u8 *il){
 	if(pos >= instrument[num].length){
 		il[0] = 0;
@@ -159,10 +189,18 @@ void readinstr(int num, int pos, u8 *il){
 	}
 }
 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void exitgui() >                                                      .|
+///  Exits the gui.                                                          .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void exitgui(){
 	endwin();
 }
 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void initgui() >                                                      .|
+///  Initializes the gui.                                                    .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void initgui(){
 	initscr();
 
@@ -198,6 +236,204 @@ void initgui(){
 	atexit(exitgui);
 }
 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void handleinput() >                                                  .|
+///  Top-level input loop.                                                   .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
+void handleinput(){
+	int c;
+
+	/*if(currmode == PM_NORMAL){*/
+	if((c = getch()) != ERR){
+
+		/* Repeat */
+		if(isdigit(c)){
+			if(!cmdrepeat){
+				cmdrepeat = 1;
+				cmdrepeatnum = _char2int(c);
+			}else{
+				cmdrepeatnum = (cmdrepeatnum*10) + _char2int(c);
+			}
+		}else{
+			normalmode(c);
+		}
+	}
+	usleep(10000);
+}
+
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void setdisplay(char*) >                                              .|
+///  Sets a message to be popped up for a while.                             .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
+void setdisplay(char *str){
+	disptick = 350;
+	dispmesg = str;
+}
+
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void drawgui() >                                                      .|
+///  Draw all text and graphix to the screen.                                .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
+void drawgui(){
+	char buf[1024];
+	int lines = LINES;
+	int songcols[] = {0, 1, 3, 4, 6, 7, 9, 10, 12, 13, 15, 16, 18, 19, 21, 22};
+	int trackcols[] = {0, 2, 4, 5, 7, 8, 9, 11, 12, 13};
+	int instrcols[] = {0, 2, 3};
+	u8 tempo;
+
+	erase();
+	attrset(A_UNDERLINE);
+	mvaddstr(0, 0, "PINEAPPLEtRACKER");
+	attrset(A_NORMAL);
+
+	// display track num
+	mvaddch(0, 31, ACS_ULCORNER);
+	snprintf(buf, sizeof(buf), "%02x{}", currtrack);
+	mvaddstr(0, 32, buf);
+	drawtracked(29, 1, lines - 2);
+
+	// display instrument num
+	mvaddch(0, 51, ACS_ULCORNER);
+	snprintf(buf, sizeof(buf), "%02x[]", currinstr);
+	mvaddstr(0, 52, buf);
+	drawinstred(49, 1, lines - 2);
+
+	mvaddstr(1, 0, "Song");
+	drawsonged(0, 1, lines - 2);
+
+	// just a wild guess here..
+	tempo = callbacktime * (-1) + 300;
+	// display tempo
+	mvaddch(0, 17, ACS_DEGREE);
+	snprintf(buf, sizeof(buf), "%d()", tempo);
+	mvaddstr(0, 18, buf);
+
+	// display octave
+	mvaddch(0, 24, ACS_PI);
+	snprintf(buf, sizeof(buf), "%d<>", octave);
+	mvaddstr(0, 25, buf);
+
+	// display step amount
+	mvaddstr(0, 60, "step -=");
+	snprintf(buf, sizeof(buf), "%0x", step);
+	mvaddstr(0, 68, buf);
+
+	// display comment
+	mvaddstr(2, 60, "comment:");
+	snprintf(buf, sizeof(buf), "%s", comment);
+	mvaddstr(3, 60, buf);
+
+	if(currmode == PM_NORMAL){
+		mvaddstr(getmaxy(stdscr)-1, 0, filename);
+		if(!saved && currmode != PM_INSERT){
+			addstr(" [+]");
+			infinitemsg = NULL;
+		}
+	}
+
+	if(disptick > 0){
+		_display();
+		disptick--;
+	}
+
+	if(currmode == PM_INSERT){
+		infinitemsg = NULL;
+
+		move(getmaxy(stdscr)-1,0);
+		clrtoeol();
+		mvaddstr(getmaxy(stdscr)-1, 0, "-- INSERT --");
+	}else if(currmode == PM_VISUAL){
+		infinitemsg = NULL;
+
+		move(getmaxy(stdscr)-1,0);
+		clrtoeol();
+		mvaddstr(getmaxy(stdscr)-1, 0, "-- VISUAL --");
+	}else if(currmode == PM_VISUALLINE){
+		infinitemsg = NULL;
+
+		move(getmaxy(stdscr)-1,0);
+		clrtoeol();
+		mvaddstr(getmaxy(stdscr)-1, 0, "-- VISUAL LINE --");
+	}else if(currmode == PM_JAMMER){
+		infinitemsg = NULL;
+
+		move(getmaxy(stdscr)-1,0);
+		clrtoeol();
+		mvaddstr(getmaxy(stdscr)-1, 0, "-- JAMMER --");
+	}else if(currmode == PM_CMDLINE){
+		infinitemsg = NULL;
+
+		move(getmaxy(stdscr)-1,0);
+		clrtoeol();
+		mvaddstr(getmaxy(stdscr) - 1, 0, cmdstr);
+	}else if(infinitemsg != NULL){
+		move(getmaxy(stdscr)-1,0);
+		clrtoeol();
+		mvaddstr(getmaxy(stdscr) - 1, 0, infinitemsg);
+	}
+
+	switch(currtab){
+		case 0:
+			move(1 + songy - songoffs, 0 + 4 + songcols[songx]);
+			break;
+		case 1:
+			move(1 + tracky - trackoffs, 29 + 4 + trackcols[trackx]);
+			break;
+		case 2:
+			move(1 + instry - instroffs, 49 + 4 + instrcols[instrx]);
+			break;
+	}
+
+	refresh();
+
+	if(disptick > 0){
+		disptick--;
+	}
+}
+
+void guiloop(){
+#ifndef WINDOWS
+	// don't treat the escape key like a meta key
+	ESCDELAY = 50;
+#endif
+	for(;;){
+		drawgui();
+		handleinput();
+	}
+}
+
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  Internal functions                                                      .|
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void _display() >                                                     .|
+///  Display dispmesg in the center of the screen.                           .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
+void _display(void){
+	int cx = (getmaxx(stdscr)/2)-(strlen(dispmesg)/2)-1;
+	int cy = getmaxy(stdscr)/2;
+
+	mvaddch(cy-1, cx, ACS_ULCORNER);
+	for(int i=cx+1; i<cx+strlen(dispmesg)+1; i++)
+		mvaddch(cy-1, i, ACS_HLINE);
+	mvaddch(cy-1, cx+strlen(dispmesg)+1, ACS_URCORNER);
+
+	mvaddch(cy, cx, ACS_VLINE);
+	mvaddstr(cy, cx+1, dispmesg);
+	mvaddch(cy, cx+strlen(dispmesg)+1, ACS_VLINE);
+
+	mvaddch(cy+1, cx, ACS_LLCORNER);
+	for(int i=cx+1; i<cx+strlen(dispmesg)+1; i++)
+		mvaddch(cy+1, i, ACS_HLINE);
+	mvaddch(cy+1, cx+strlen(dispmesg)+1, ACS_LRCORNER);
+}
+
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void drawsonged(int,int,int) >                                        .|
+///  Draws the song editor.                                                  .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void drawsonged(int x, int y, int height){
 	int i, j;
 	char buf[1024];
@@ -242,6 +478,10 @@ void drawsonged(int x, int y, int height){
 	}
 }
 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void drawtracked(int,int,int) >                                       .|
+///  Draws the track editor.                                                 .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void drawtracked(int x, int y, int height){
 	u8 i, j;
 	char buf[1024];
@@ -304,6 +544,10 @@ void drawtracked(int x, int y, int height){
 	}
 }
 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void drawinstred(int,int,int) >                                       .|
+///  Draws the instrument editor.                                            .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void drawinstred(int x, int y, int height){
 	u8 i;
 	char buf[1024];
@@ -353,180 +597,3 @@ void drawinstred(int x, int y, int height){
 		}
 	}
 }
-
-/* main input loop */
-void handleinput(){
-	int c;
-
-	/*if(currmode == PM_NORMAL){*/
-	if((c = getch()) != ERR){
-
-		/* Repeat */
-		if(isdigit(c)){
-			if(!cmdrepeat){
-				cmdrepeat = 1;
-				cmdrepeatnum = _char2int(c);
-			}else{
-				cmdrepeatnum = (cmdrepeatnum*10) + _char2int(c);
-			}
-		}else{
-			normalmode(c);
-		}
-	}
-	usleep(10000);
-}
-
-void setdisplay(char *str){
-	disptick = 350;
-	dispmesg = str;
-}
-
-// display dispmesg in the center of the screen
-void _display(void){
-	int cx = (getmaxx(stdscr)/2)-(strlen(dispmesg)/2)-1;
-	int cy = getmaxy(stdscr)/2;
-
-	mvaddch(cy-1, cx, ACS_ULCORNER);
-	for(int i=cx+1; i<cx+strlen(dispmesg)+1; i++)
-		mvaddch(cy-1, i, ACS_HLINE);
-	mvaddch(cy-1, cx+strlen(dispmesg)+1, ACS_URCORNER);
-
-	mvaddch(cy, cx, ACS_VLINE);
-	mvaddstr(cy, cx+1, dispmesg);
-	mvaddch(cy, cx+strlen(dispmesg)+1, ACS_VLINE);
-
-	mvaddch(cy+1, cx, ACS_LLCORNER);
-	for(int i=cx+1; i<cx+strlen(dispmesg)+1; i++)
-		mvaddch(cy+1, i, ACS_HLINE);
-	mvaddch(cy+1, cx+strlen(dispmesg)+1, ACS_LRCORNER);
-}
-
-void drawgui(){
-	char buf[1024];
-	int lines = LINES;
-	int songcols[] = {0, 1, 3, 4, 6, 7, 9, 10, 12, 13, 15, 16, 18, 19, 21, 22};
-	int trackcols[] = {0, 2, 4, 5, 7, 8, 9, 11, 12, 13};
-	int instrcols[] = {0, 2, 3};
-	u8 tempo;
-
-	erase(); 
-	attrset(A_UNDERLINE);
-	mvaddstr(0, 0, "PINEAPPLEtRACKER");
-	attrset(A_NORMAL);
-
-	// display track num
-	mvaddch(0, 31, ACS_ULCORNER);
-	snprintf(buf, sizeof(buf), "%02x{}", currtrack);
-	mvaddstr(0, 32, buf);
-	drawtracked(29, 1, lines - 2);
-
-	// display instrument num
-	mvaddch(0, 51, ACS_ULCORNER);
-	snprintf(buf, sizeof(buf), "%02x[]", currinstr);
-	mvaddstr(0, 52, buf);
-	drawinstred(49, 1, lines - 2);
-
-	mvaddstr(1, 0, "Song");
-	drawsonged(0, 1, lines - 2);
-
-	// just a wild guess here..
-	tempo = callbacktime * (-1) + 300;
-	// display tempo
-	mvaddch(0, 17, ACS_DEGREE);
-	snprintf(buf, sizeof(buf), "%d()", tempo);
-	mvaddstr(0, 18, buf);
-
-	// display octave
-	mvaddch(0, 24, ACS_PI);
-	snprintf(buf, sizeof(buf), "%d<>", octave);
-	mvaddstr(0, 25, buf);
-
-	// display step amount
-	mvaddstr(0, 60, "step -=");
-	snprintf(buf, sizeof(buf), "%0x", step); 
-	mvaddstr(0, 68, buf);
-
-	// display comment
-	mvaddstr(2, 60, "comment:");
-	snprintf(buf, sizeof(buf), "%s", comment);
-	mvaddstr(3, 60, buf);
-
-	if(currmode == PM_NORMAL){
-		mvaddstr(getmaxy(stdscr)-1, 0, filename);
-		if(!saved && currmode != PM_INSERT){
-			addstr(" [+]");
-			infinitemsg = NULL;
-		}
-	}
-
-	if(disptick > 0){
-		_display();
-		disptick--;
-	}
-
-	if(currmode == PM_INSERT){
-		infinitemsg = NULL;
-
-		move(getmaxy(stdscr)-1,0);
-		clrtoeol();
-		mvaddstr(getmaxy(stdscr)-1, 0, "-- INSERT --");
-	}else if(currmode == PM_VISUAL){
-		infinitemsg = NULL;
-
-		move(getmaxy(stdscr)-1,0);
-		clrtoeol();
-		mvaddstr(getmaxy(stdscr)-1, 0, "-- VISUAL --");
-	}else if(currmode == PM_VISUALLINE){
-		infinitemsg = NULL;
-
-		move(getmaxy(stdscr)-1,0);
-		clrtoeol();
-		mvaddstr(getmaxy(stdscr)-1, 0, "-- VISUAL LINE --");
-	}else if(currmode == PM_JAMMER){
-		infinitemsg = NULL;
-
-		move(getmaxy(stdscr)-1,0);
-		clrtoeol();
-		mvaddstr(getmaxy(stdscr)-1, 0, "-- JAMMER --");
-	}else if(currmode == PM_CMDLINE){
-		infinitemsg = NULL;
-
-		move(getmaxy(stdscr)-1,0);
-		clrtoeol();
-		mvaddstr(getmaxy(stdscr) - 1, 0, cmdstr);
-	}else if(infinitemsg != NULL){
-		move(getmaxy(stdscr)-1,0);
-		clrtoeol();
-		mvaddstr(getmaxy(stdscr) - 1, 0, infinitemsg);
-	}
-    
-	switch(currtab){
-		case 0:
-			move(1 + songy - songoffs, 0 + 4 + songcols[songx]);
-			break;
-		case 1:
-			move(1 + tracky - trackoffs, 29 + 4 + trackcols[trackx]);
-			break;
-		case 2:
-			move(1 + instry - instroffs, 49 + 4 + instrcols[instrx]);
-			break;
-	}
-
-	refresh();
-
-	if(disptick > 0){
-		disptick--;
-	}
-}
-
-void guiloop(){
-#ifndef WINDOWS
-	// don't treat the escape key like a meta key
-	ESCDELAY = 50;
-#endif
-	for(;;){
-		drawgui();
-		handleinput();
-	}
-}
-
