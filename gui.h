@@ -1,4 +1,3 @@
-/* vi:set ts=4 sts=4 sw=4 noexpandtab: */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -42,7 +41,11 @@ void initsonglines(void);
 void inittracks(void);
 void initinstrs(void);
 
+void drawsonged(int x, int y, int height);
+void drawtracked(int x, int y, int height);
+void drawinstred(int x, int y, int height);
 void drawgui(void);
+
 int freqkey(int c);
 int hexinc(int x);
 int hexdec(int x);

@@ -5,22 +5,23 @@
 #include "pineapple.h"
 #include "gui.h"
 
-/*                  */
-// ** LOCAL VARS ** //
-/*                  */
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  local vars                                                              .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 char *dispmesg = "";
 
-static char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#", "A-", "A#", "H-"};
+static char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#",
+		"G-", "G#", "A-", "A#", "H-"};
 
-/*                       */
-// ** LOCAL FUNCTIONS ** //
-/*                       */
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  local functions                                                         .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 int _char2int(char ch);
 void _display(void);
 
-/*                              */
-// ** END LOCAL DECLARATIONS ** //
-/*                              */
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  end local declarations                                                  .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 
 char cmdstr[500] = "";
 
@@ -80,7 +81,7 @@ char nextchar(){
 }
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
-\\\  < int _char2int(char) >                                                   .|
+\\\  < int _char2int(char) >                                                 .|
 ///  Draws the instrument editor.                                            .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 int _char2int(char ch){
@@ -91,7 +92,7 @@ int _char2int(char ch){
 }
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
-\\\  < int freqkey(int) >                                                      .|
+\\\  < int freqkey(int) >                                                    .|
 ///   Calculates the frequency of key c.                                     .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 int freqkey(int c){
@@ -213,22 +214,25 @@ void initgui(){
 	// make sure behaviour for special keys like ^H isn't overridden
 	keypad(stdscr, FALSE);
 
-	// nodelay() makes getch() non-blocking. This will cause the cpu to spin
-	// whenever we use getch() in a loop. This is necessary so the screen will
-	// update when you aren't pressing keys. halfdelay()'s minimum timeout time
-	// is one tenth of a second, which is too long for our purposes.
+	// nodelay() makes getch() non-blocking. This will cause the cpu to
+	// spin whenever we use getch() in a loop. This is necessary so the
+	// screen will update when you aren't pressing keys. halfdelay()'s
+	// minimum timeout time is one tenth of a second, which is too long for
+	// our purposes.
 	//
-	// Right now we are calling usleep() whenever we use getch() in a loop so
-	// the cpu won't spin. This solution isn't the best, for three reasons:
+	// Right now we are calling usleep() whenever we use getch() in a loop
+	// so the cpu won't spin. This solution isn't the best, for three
+	// reasons:
 	//    1. We're still wasting a little bit of cpu!!!!!
 	//    2. It is possible to enter keys faster than the usleep time. It's
-	//       especially easy to do this by setting your key repeat rate really
-	//       high and moving up or down, and the screen will lag a little.
+	//       especially easy to do this by setting your key repeat rate
+	//       really high and moving up or down, and the screen will lag a
+	//       little.
 	//    3. nextchar() prevents the screen from being updated.
 	//
-	// Because of these two small problems, maybe we should eventually use
-	// keyboard interrupts to trigger gui events. I haven't done any research
-	// on that yet.
+	// Because of these three problems, (especially number 3) we should
+	// eventually use another method to get input. Does anyone know how
+	// to do keyboard interrupts?
 	nodelay(stdscr, TRUE);
 
 	initinstrs();
@@ -404,8 +408,8 @@ void guiloop(){
 }
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
-\\\  Internal functions                                                      .|
- //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  Internal functions                                                      .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
 \\\  < void _display() >                                                     .|
