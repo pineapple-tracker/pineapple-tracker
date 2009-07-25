@@ -1964,7 +1964,8 @@ void hvl_DecodeFrame( struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod 
   
   samples = ht->ht_Frequency/50/ht->ht_SpeedMultiplier;
   loops   = ht->ht_SpeedMultiplier;
-  
+ 
+  if(play){
   do
   {
     hvl_play_irq( ht );
@@ -1973,4 +1974,5 @@ void hvl_DecodeFrame( struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod 
     buf2 += samples * 4;
     loops--;
   } while( loops );
+  }
 }

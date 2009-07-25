@@ -183,6 +183,12 @@ void handleinput(){
 					break;
 			}
 			break;
+		case ENTER:
+			play = 1;
+			break;
+		case ' ':
+			play = 0;
+			break;
 		default:
 			x = freqkey(c);	
 			break;

@@ -207,3 +207,5 @@ struct hvl_tune *hvl_LoadTune( TEXT *name, uint32 freq, uint32 defstereo );
 void hvl_FreeTune( struct hvl_tune *ht );
 
 struct hvl_tune *tune;
+
+int play;

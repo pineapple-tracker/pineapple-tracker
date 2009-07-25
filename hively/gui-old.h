@@ -56,4 +56,3 @@ int hexdec(int x);
 void insertc (int c);
 char nextchar(void);
 void setdisplay(char *str);
-

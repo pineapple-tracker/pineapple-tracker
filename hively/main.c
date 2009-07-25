@@ -89,6 +89,7 @@ int main(int argc, char *argv[])
 
 			hvl_InitSubsong( tune, 0 );
 			initgui();
+			play = 0; 
 			SDL_PauseAudio(0);
 			guiloop();
 		}
