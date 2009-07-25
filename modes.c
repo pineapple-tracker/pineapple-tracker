@@ -13,39 +13,6 @@ int _hexdigit(char c);
 int _nextfreetrack(void);
 int _nextfreeinstr(void);
 
-/* Let's make a linked list! */
-/* Here's a great generic implementation:
- * http://en.literateprograms.org/Singly_linked_list_(C)
- */
-/*NODE *list_create(void *e){
-	NODE *n;
-	if(!(n=malloc(sizeof(NODE)))) return NULL;
-	n->element = e;
-	n->next = NULL;
-	return n;
-}
-
-NODE *list_insertafter(NODE *oldnode, void *newelement){
-	NODE *newnode;
-	newnode = list_create(newelement);
-	newnode->next = oldnode->next;
-	oldnode->next = newnode;
-	return newnode;
-}
-
-// have a look at this wizardry! wow. what does int(*func) do?
-NODE *list_contains(NODE *n, int (*func) (void *, void *), void *match){
-	while(n){
-		if(func(n->element, match) > 0) return n;
-		n = n->next;
-	}
-	return NULL;
-}
-
-int findu8(void *a, void *b){
-	return a==b;
-}*/
-
 int _hexdigit(char c){
 	if(c >= '0' && c <= '9') return c - '0';
 	if(c >= 'a' && c <= 'f') return c - 'a' + 10;
@@ -159,7 +126,7 @@ void _insertc(int c){
 // isnumber() determines if a string is a number
 // returns 1 if the given arg is a number, 0 otherwise.
 // for use with isdigit(), isxdigit(), etc...
-int isnumber(const int* str, int (*func) (int)){
+int isnumber(const char* str, int (*func) (int)){
 	int i = 0;
 
 	for(;;){
@@ -268,7 +235,7 @@ void _parsecmd(char cmd[]){
 	}else if(!strncmp(cmd+1,"load ",5)){
 		loadinstrument(cmd+6);
 		setdisplay("d-_-b loaded ins! d-_-b");
-	}else if( isnumber((int *)cmd+1,isxdigit) ){
+	}else if( isnumber((char *)cmd+1,isxdigit) ){
 		unsigned int goton = 1;
 		xtoi(cmd+1,&goton);
 
