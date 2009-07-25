@@ -63,24 +63,6 @@ int hexdec(int x){
 }
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
-\\\  < char nextchar() >                                                     .|
-///  Wait for the next keyboard char and return it. This stops the screen    .\
-\\\  from being updated.                                                     .\
- \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
-char nextchar(){
-	char ch;
-	ch = getch();
-	while (ch == ERR){
-		ch = getch();
-		if(ch != ERR ){
-			return ch;
-		}
-		usleep(10000);
-	}
-	return ch;
-}
-
- //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
 \\\  < int _char2int(char) >                                                 .|
 ///  Draws the instrument editor.                                            .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
@@ -214,25 +196,6 @@ void initgui(){
 	// make sure behaviour for special keys like ^H isn't overridden
 	keypad(stdscr, FALSE);
 
-	// nodelay() makes getch() non-blocking. This will cause the cpu to
-	// spin whenever we use getch() in a loop. This is necessary so the
-	// screen will update when you aren't pressing keys. halfdelay()'s
-	// minimum timeout time is one tenth of a second, which is too long for
-	// our purposes.
-	//
-	// Right now we are calling usleep() whenever we use getch() in a loop
-	// so the cpu won't spin. This solution isn't the best, for three
-	// reasons:
-	//    1. We're still wasting a little bit of cpu!!!!!
-	//    2. It is possible to enter keys faster than the usleep time. It's
-	//       especially easy to do this by setting your key repeat rate
-	//       really high and moving up or down, and the screen will lag a
-	//       little.
-	//    3. nextchar() prevents the screen from being updated.
-	//
-	// Because of these three problems, (especially number 3) we should
-	// eventually use another method to get input. Does anyone know how
-	// to do keyboard interrupts?
 	nodelay(stdscr, TRUE);
 
 	initinstrs();
@@ -244,13 +207,13 @@ void initgui(){
 \\\  < void handleinput() >                                                  .|
 ///  Top-level input loop.                                                   .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
-void handleinput(){
+void handleinput(void){
 	int c;
 
-	/*if(currmode == PM_NORMAL){*/
+	//if(currmode == PM_NORMAL){
 	if((c = getch()) != ERR){
 
-		/* Repeat */
+		// Repeat
 		if(isdigit(c)){
 			if(!cmdrepeat){
 				cmdrepeat = 1;
@@ -262,7 +225,22 @@ void handleinput(){
 			normalmode(c);
 		}
 	}
-	usleep(10000);
+}
+
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < char nextchar() >                                                     .|
+///  Wait for the next keyboard char and return it.                          .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
+char nextchar(void){
+	char ch;
+	ch = getch();
+	while (ch == ERR){
+		ch = getch();
+		if(ch != ERR )
+			return ch;
+		usleep(10000);
+	}
+	return ch;
 }
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
@@ -396,14 +374,48 @@ void drawgui(){
 	}
 }
 
-void guiloop(){
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void *spin_input(void *) >                                            .|
+/// Pass this function to a thread to get the next key without blocking the  .\
+\\\ the gui.                                                                 .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
+void *spin_input(void *tid){
+	for(;;){
+		handleinput();
+		usleep(1000);
+	}
+}
+
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void guiloop() >                                                      .|
+/// guiloop() starts a new thread for the keyboard input, while running the  .\
+\\\ gui loop in the main thread.                                             .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
+//TODO: figure out a method where we don't have to use usleep()... the
+// screen also jitters sometimes
+void guiloop(void){
+	int rc;
+	pthread_t inputthread;
+	pthread_attr_t attr;
+
+	// make it detached ... we won't need to join it
+	pthread_attr_init(&attr);
+	pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);
+
+	rc = pthread_create(&inputthread,&attr,spin_input,(void *)0);
+
+	if(rc)
+		setdisplay("Uh oh!!! thread please");
+
 #ifndef WINDOWS
 	// don't treat the escape key like a meta key
 	ESCDELAY = 50;
 #endif
+
+	//TODO: should check when the screen needs updating
 	for(;;){
 		drawgui();
-		handleinput();
+		usleep(1000);
 	}
 }
 

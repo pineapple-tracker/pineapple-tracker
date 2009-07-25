@@ -1,11 +1,11 @@
 CC = gcc
 VERSION = alpha-mega
-CFLAGS = -std=c99 -O2 -Wall -Wno-comment $(SDL_CFLAGS) $(NCURSES_CFLAGS)
+CFLAGS = -std=c99 -O2 -pthread -Wall -Wno-comment $(SDL_CFLAGS) $(NCURSES_CFLAGS)
 
 SDL_CFLAGS := $(shell pkg-config --cflags sdl)
 NCURSES_CFLAGS := $(shell ncurses5-config --cflags)
 
-LIBS := -O2 $(shell pkg-config --libs sdl) \
+LIBS := $(shell pkg-config --libs sdl) \
 		$(shell ncurses5-config --libs) \
 		$(shell pkg-config --libs caca) #\
 		#$(shell pkg-config --libs jack)

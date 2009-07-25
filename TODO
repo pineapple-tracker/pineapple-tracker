@@ -45,11 +45,11 @@ bugs:
 
 * speed of vibrato, arpeggio, slide, faster than when we were running at 16khz
 
-* ui doesn't update in cmdline mode
-
 * If you press any of the arrow keys, the current instrument decreases, and it 
 also acts like you pressed the escape key!
 
 * ui doesn't update after pressing the first key of a two-key command like yy
 
 * sound is REALLY wonky on amd64
+
+* segfaults if you press enter after too many characters in cmdline mode

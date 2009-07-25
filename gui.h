@@ -4,6 +4,7 @@
 #include <math.h>
 #include <curses.h>
 #include <unistd.h>
+#include <pthread.h>
 #include <ctype.h>
 #ifndef WINDOWS
 #include <err.h>
