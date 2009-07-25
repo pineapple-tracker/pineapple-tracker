@@ -238,9 +238,7 @@ char nextchar(void){
 		ch = getch();
 		if(ch != ERR )
 			return ch;
-		usleep(10000);
 	}
-	return ch;
 }
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
@@ -379,12 +377,19 @@ void drawgui(){
 /// Pass this function to a thread to get the next key without blocking the  .\
 \\\ the gui.                                                                 .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
-void *spin_input(void *tid){
+/*void *spin_input(void *tid){
 	for(;;){
 		handleinput();
-		usleep(1000);
+		msleep(500);
 	}
 }
+
+void *spin_gui(void *tid){
+	for(;;){
+		drawgui();
+		msleep(50000);
+	}
+}*/
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
 \\\  < void guiloop() >                                                      .|
@@ -393,9 +398,10 @@ void *spin_input(void *tid){
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 //TODO: figure out a method where we don't have to use usleep()... the
 // screen also jitters sometimes
-void guiloop(void){
+/*void guiloop(void){
 	int rc;
 	pthread_t inputthread;
+	pthread_t guithread;
 	pthread_attr_t attr;
 
 	// make it detached ... we won't need to join it
@@ -403,19 +409,25 @@ void guiloop(void){
 	pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);
 
 	rc = pthread_create(&inputthread,&attr,spin_input,(void *)0);
-
 	if(rc)
 		setdisplay("Uh oh!!! thread please");
+
+	rc = pthread_create(&guithread,&attr,spin_gui,(void *)0);
 
 #ifndef WINDOWS
 	// don't treat the escape key like a meta key
 	ESCDELAY = 50;
 #endif
 
-	//TODO: should check when the screen needs updating
+	for(;;){
+		msleep(1000);
+	}
+}*/
+void guiloop(void){
+	ESCDELAY = 50;
 	for(;;){
 		drawgui();
-		usleep(1000);
+		handleinput();
 	}
 }
 

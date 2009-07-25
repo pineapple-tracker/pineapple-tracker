@@ -261,18 +261,11 @@ void _parsecmd(char cmd[]){
 			initinstrs();
 		}
 	//yucky if statement below.....probably better way to do it
-	}else if(cmd[1]=='s' && 
-			 cmd[2]=='a' &&
-			 cmd[3]=='v' &&
-			 cmd[4]=='e' &&
-			 cmd[5]==' '){
+	// maybe this is better??
+	}else if(!strncmp(cmd+1,"save ",5)){
 		saveinstrument(cmd+6);
 		setdisplay("d-_-b saved ins! d-_-b");
-	}else if(cmd[1]=='l' && 
-			 cmd[2]=='o' &&
-			 cmd[3]=='a' &&
-			 cmd[4]=='d' &&
-			 cmd[5]==' '){
+	}else if(!strncmp(cmd+1,"load ",5)){
 		loadinstrument(cmd+6);
 		setdisplay("d-_-b loaded ins! d-_-b");
 	}else if( isnumber((int *)cmd+1,isxdigit) ){
@@ -1002,7 +995,7 @@ void cmdlinemode(void){
 	keypad(stdscr, TRUE);
 
 	currmode = PM_CMDLINE;
-	strncat(cmdstr, ":", 50);
+	strncat(cmdstr, ":", 100);
 	for(;;){
 		drawgui();
 
