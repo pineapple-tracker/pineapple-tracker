@@ -41,6 +41,18 @@ void drawposed(){
 	}
 	snprintf(buf, sizeof(buf), "PosNr: %02x", tune->ht_PosNr);
 	mvaddstr(0, 60, buf);
+	snprintf(buf, sizeof(buf), "PositionNr: %02x", tune->ht_PositionNr);
+	mvaddstr(1, 60, buf);
+	snprintf(buf, sizeof(buf), "Restart: %02x", tune->ht_Restart);
+	mvaddstr(2, 60, buf);
+	snprintf(buf, sizeof(buf), "TrackLength: %02x", tune->ht_TrackLength);
+	mvaddstr(3, 60, buf);
+	snprintf(buf, sizeof(buf), "TrackNr: %02x", tune->ht_TrackNr);
+	mvaddstr(4, 60, buf);
+	snprintf(buf, sizeof(buf), "Tempo: %02x", tune->ht_Tempo);
+	mvaddstr(5,60, buf);
+	snprintf(buf, sizeof(buf), "StepWaitFrames: %02x", tune->ht_StepWaitFrames);
+	mvaddstr(6,60, buf);
 }
 
 void drawtracked(){
