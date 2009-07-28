@@ -209,3 +209,4 @@ void hvl_FreeTune( struct hvl_tune *ht );
 struct hvl_tune *tune;
 
 int play;
+int plonked;

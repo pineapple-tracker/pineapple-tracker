@@ -1,87 +1,45 @@
-/* vi:set ts=8 sts=8 sw=8 noexpandtab: */
-
-/* welcome to gui.c, enjoy your stay 8-) */
-
-#include "pineapple.h"
-#include "gui.h"
+#include <ncurses.h>
 #include "hvl_replay.h"
+#include "gui.h"
 
-/*                  */
-// ** LOCAL VARS ** //
-/*                  */
-char *dispmesg = "";
-
-static char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#", "A-", "A#", "H-"};
-
-/*                       */
-// ** LOCAL FUNCTIONS ** //
-/*                       */
-int _char2int(char ch);
-void _display(void);
-
-/*                              */
-// ** END LOCAL DECLARATIONS ** //
-/*                              */
-
-char cmdstr[500] = "";
+int currtrack = 1;
+int currtab = 0;
+int songy = 0;
 
 int disptick = 0;
-int currmode = PM_NORMAL;
-int octave = 4;
-int songlen = 1;
-int tracklen = TRACKLEN;
-int currtrack = 1;
-int currinstr = 1;
-int currtab = 0;
-int saved = 1;
+char *dispmesg = "";
 
-int step = 1;
+void _display(void);
 
-int cmdrepeat = 0;
-int cmdrepeatnum = 1;
-int lastrepeat = 1;
+void _display(void){
+	int cx = (getmaxx(stdscr)/2)-(strlen(dispmesg)/2)-1;
+	int cy = getmaxy(stdscr)/2;
 
-// 0 is like a blank command
-char *validcmds = "0dfi@smtvw~+=*";
+	mvaddch(cy-1, cx, ACS_ULCORNER);
+	for(int i=cx+1; i<cx+strlen(dispmesg)+1; i++)
+		mvaddch(cy-1, i, ACS_HLINE);
+	mvaddch(cy-1, cx+strlen(dispmesg)+1, ACS_URCORNER);
 
-/*char *keymap[2] = {
-	";oqejkixdbhmwnvsz",
-	"'2,3.p5y6f7gc9r0l/="
-};*/
+	mvaddch(cy, cx, ACS_VLINE);
+	mvaddstr(cy, cx+1, dispmesg);
+	mvaddch(cy, cx+strlen(dispmesg)+1, ACS_VLINE);
+
+	mvaddch(cy+1, cx, ACS_LLCORNER);
+	for(int i=cx+1; i<cx+strlen(dispmesg)+1; i++)
+		mvaddch(cy+1, i, ACS_HLINE);
+	mvaddch(cy+1, cx+strlen(dispmesg)+1, ACS_LRCORNER);
+}
+
+static char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#", "A-", "A#", "H-"};
 
 char *keymap[2] = {
 	"zsxdcvgbhnjm,l.;/",
 	"q2w3er5t6y7ui9o0p"
 };
 
-/* hexinc and hexdec wrap around */
-int hexinc(int x){
-	return (x >= 0 && x <= 14)? x+1 : 0;
-}
-int hexdec(int x){
-	return (x >= 1 && x <= 15)? x-1 : 15;
-}
-
-/* Wait for the next keyboard char and return it.
- * This stops the screen from being updated. */
-char nextchar(){
-	char ch;
-	ch = getch();
-	while (ch == ERR){
-		ch = getch();
-		if(ch != ERR ){
-			return ch;
-		}
-		usleep(10000);
-	}
-	return ch;
-}
-
-int _char2int(char ch){
-	if(isdigit(ch)){
-		return (int)ch - '0';
-	}
-	return -1;
+void setdisplay(char *str){
+	disptick = 350;
+	dispmesg = str;
 }
 
 int freqkey(int c){
@@ -104,199 +62,134 @@ int freqkey(int c){
 	return f;
 }
 
-void initsonglines(void){
-	for(int i=0; i < songlen; i++){
-		memmove(&song[i + 0], &song[i + 1], sizeof(struct songline) * (songlen - i - 1));
-		if(i < 4){
-			song[0].track[i] = 0x000;
-			song[0].transp[i] = 0x000;
-		}
-	}
-	songlen = 1;
-}
+void iedplonk(int x) {
+	setdisplay("\\o/");
 
-void inittracks(void){
-	for(int i=0; i < 256; i++){
-		for(int j=0; j < TRACKLEN; j++){
-			track[i].line[j].note = 0x0000;
-			track[i].line[j].instr = 0x0000;
-			for(int k=0; k < 2; k++){
-				track[i].line[j].cmd[k] = 0x0000;
-				track[i].line[j].param[k] = 0x0000;
-			}
-		}
-	}
-}
-
-void initinstrs(void){
-	for(int i=1; i < 256; i++){
-		instrument[i].length = 1;
-		instrument[i].line[0].cmd = '0';
-		instrument[i].line[0].param = 0;
-	}
-}
-
-void readsong(int pos, int ch, u8 *dest){ 
-	dest[0] = song[pos].track[ch];
-	dest[1] = song[pos].transp[ch];
-}
-
-void readtrack(int num, int pos, struct trackline *tl){
-	tl->note = track[num].line[pos].note;
-	tl->instr = track[num].line[pos].instr;
-	tl->cmd[0] = track[num].line[pos].cmd[0];
-	tl->cmd[1] = track[num].line[pos].cmd[1];
-	tl->param[0] = track[num].line[pos].param[0];
-	tl->param[1] = track[num].line[pos].param[1];
-}
-
-void readinstr(int num, int pos, u8 *il){
-	if(pos >= instrument[num].length){
-		il[0] = 0;
-		il[1] = 0;
-	}else{
-		il[0] = instrument[num].line[pos].cmd;
-		il[1] = instrument[num].line[pos].param;
-	}
-}
-
-void exitgui(){
-	endwin();
+	hvl_process_step(tune, &tune->ht_Voices[0]);
+	hvl_process_frame(tune, &tune->ht_Voices[0]);
+	hvl_set_audio(&tune->ht_Voices[0], tune->ht_Frequency);
+	plonked = 1;
 }
 
 void initgui(){
 	initscr();
 
-	//if(setlocale(LC_CTYPE,"en_US.utf8") != NULL) setdisplay("UTF-8 enabled!");
-
-	// don't send newline on Enter key, and don't echo chars to the screen.
 	nonl();
 	noecho();
-
-	// make sure behaviour for special keys like ^H isn't overridden
 	keypad(stdscr, FALSE);
 
-	// nodelay() makes getch() non-blocking. This will cause the cpu to spin
-	// whenever we use getch() in a loop. This is necessary so the screen will
-	// update when you aren't pressing keys. halfdelay()'s minimum timeout time
-	// is one tenth of a second, which is too long for our purposes.
-	//
-	// Right now we are calling usleep() whenever we use getch() in a loop so
-	// the cpu won't spin. This solution isn't the best, for three reasons:
-	//    1. We're still wasting a little bit of cpu!!!!!
-	//    2. It is possible to enter keys faster than the usleep time. It's
-	//       especially easy to do this by setting your key repeat rate really
-	//       high and moving up or down, and the screen will lag a little.
-	//    3. nextchar() prevents the screen from being updated.
-	//
-	// Because of these two small problems, maybe we should eventually use
-	// keyboard interrupts to trigger gui events. I haven't done any research
-	// on that yet.
 	nodelay(stdscr, TRUE);
-
-	initinstrs();
-
-	atexit(exitgui);
+	
+	//atexit(endwin());
 }
 
-void drawsonged(int x, int y, int height){
+void drawposed(){
 	int i, j;
 	char buf[1024];
-	//NODE *match;
 	unsigned char trans;
-
-	if(songy < songoffs) songoffs = songy;
-	if(songy >= songoffs + height) songoffs = songy - height + 1;
-
-	for(i = 0; i < tune->ht_PositionNr; i++){
-		if(i >= songoffs && i - songoffs < height){
-			move(y + i - songoffs, x + 0);
-			if(i == songy) attrset(A_BOLD);
-
-			snprintf(buf, sizeof(buf), "%02x", i);
-
-			if(i == 0){ addch(ACS_ULCORNER); }
-			else if(i == songlen-1){ addch(ACS_LLCORNER); }
-			else if(i%4 == 0){ addch(ACS_LTEE); }
-			else if(i < songlen-1){ addch(ACS_VLINE); }
-			addch(' ');
-
-			// should this line be highlighted?
-			//if( (match = list_contains(highlightlines, findu8, &i)) ){
-			if( currtab == 0 && currmode == PM_VISUALLINE &&
-				((i <= highlight_firstline && i >= highlight_lastline)
-				|| (i >= highlight_firstline && i <= highlight_lastline)) ){
-				attrset(A_REVERSE);
-			}
-
+	move(0,0);
+	for(i = 0; i<tune->ht_PositionNr; i++){
+		snprintf(buf, sizeof(buf), "%02x", i);
+		addstr(buf);
+		addch(ACS_VLINE);
+		for(j= 0; j<4; j++){
+			trans = tune->ht_Positions[i].pos_Transpose[j]; //this makes the transpose column display 'fe' instead of 'fffffffffe'..., which is weird since trans is unsigned
+			snprintf(buf, sizeof(buf), "%02x:%02x", tune->ht_Positions[i].pos_Track[j], trans);
 			addstr(buf);
-			for(j = 0; j < 4; j++){
-				//snprintf(buf, sizeof(buf), "%02x:%02x", song[i].track[j], song[i].transp[j]);
-				trans = tune->ht_Positions[i].pos_Transpose[j]; //this makes the transpose column display 'fe' instead of 'fffffffffe'... -_-
-				snprintf(buf, sizeof(buf), "%02x:%02x", tune->ht_Positions[i].pos_Track[j], trans);
-				addstr(buf);
-				if(j != 3) addch(' ');
-			}
-			if(playsong && songpos == (i + 1)){
-				attrset(A_STANDOUT);
-				addch('*');
-			}
-			attrset(A_NORMAL);
+			if(j !=3)
+				addch(' ');
 		}
+		move(i + 1, 0);
+		if(songy == i) attrset(A_BOLD);
 	}
+	int c = 0;
+	snprintf(buf, sizeof(buf), "Name: %s", tune->ht_Name);
+	mvaddstr(c++, 60, buf);
+	snprintf(buf, sizeof(buf), "PosNr: %02x", tune->ht_PosNr);
+	mvaddstr(c++, 60, buf);
+	snprintf(buf, sizeof(buf), "PositionNr: %02x", tune->ht_PositionNr);
+	mvaddstr(c++, 60, buf);
+	snprintf(buf, sizeof(buf), "Restart: %02x", tune->ht_Restart);
+	mvaddstr(c++, 60, buf);
+	snprintf(buf, sizeof(buf), "NoteNr: %02x", tune->ht_NoteNr);
+	mvaddstr(c++, 60, buf);
+	snprintf(buf, sizeof(buf), "TrackLength: %02x", tune->ht_TrackLength);
+	mvaddstr(c++, 60, buf);
+	snprintf(buf, sizeof(buf), "TrackNr: %02x", tune->ht_TrackNr);
+	mvaddstr(c++, 60, buf);
+	snprintf(buf, sizeof(buf), "Tempo: %02x", tune->ht_Tempo);
+	mvaddstr(c++,60, buf);
+	snprintf(buf, sizeof(buf), "StepWaitFrames: %02x", tune->ht_StepWaitFrames);
+	mvaddstr(c++,60, buf);
+	snprintf(buf, sizeof(buf), "SongEndReached: %02x", tune->ht_SongEndReached);
+	mvaddstr(c++,60, buf);
+	snprintf(buf, sizeof(buf), "Freq: %d", tune->ht_Frequency);
+	mvaddstr(c++,60, buf);
+	snprintf(buf, sizeof(buf), "GetNewPosition: %02x", tune->ht_GetNewPosition);
+	mvaddstr(c++,60, buf);
+	//for(int i = 0; i <tune->ht_Channels; i++) {
+	for(int i = 0; i < 2; i++) {
+		snprintf(buf, sizeof(buf), "VC %x TrackPeriod: %x", i, tune->ht_Voices[i].vc_TrackPeriod);
+		mvaddstr(c++,60, buf);
+		snprintf(buf, sizeof(buf), "VC %x SamplePos: %x", i, tune->ht_Voices[i].vc_SamplePos);
+		mvaddstr(c++,60, buf);
+		snprintf(buf, sizeof(buf), "VC %x Delta: %x", i, tune->ht_Voices[i].vc_Delta);
+		mvaddstr(c++,60, buf);
+		snprintf(buf, sizeof(buf), "VC %x WaveLength: %x", i, tune->ht_Voices[i].vc_WaveLength);
+		mvaddstr(c++,60, buf);
+		snprintf(buf, sizeof(buf), "VC %x PerfCurrent: %x", i, tune->ht_Voices[i].vc_PerfCurrent);
+		mvaddstr(c++,60, buf);
+		snprintf(buf, sizeof(buf), "VC %x PerfSpeed: %x", i, tune->ht_Voices[i].vc_PerfSpeed);
+		mvaddstr(c++,60, buf);
+		snprintf(buf, sizeof(buf), "VC %x FilterOn: %x", i, tune->ht_Voices[i].vc_FilterOn);
+		mvaddstr(c++,60, buf);
+		snprintf(buf, sizeof(buf), "VC %x FilterPos: %x", i, tune->ht_Voices[i].vc_FilterPos);
+		mvaddstr(c++,60, buf);
+		snprintf(buf, sizeof(buf), "VC %x SquarePos: %x", i, tune->ht_Voices[i].vc_SquarePos);
+		mvaddstr(c++,60, buf);
+	}
+	snprintf(buf, sizeof(buf), "SpeedMultiplier: %02x", tune->ht_SpeedMultiplier);
+	mvaddstr(c++, 60, buf);
+	snprintf(buf, sizeof(buf), "InstrumentNr: %02x", tune->ht_InstrumentNr);
+	mvaddstr(c++, 60, buf);
 }
 
-void drawtracked(int x, int y, int height){
-	u8 i;
+void drawtracked(){
+	int i;
 	char buf[1024];
-
-	if(tracky < trackoffs) trackoffs = tracky;
-	if(tracky >= trackoffs + height) trackoffs = tracky - height + 1;
-
+	snprintf(buf, sizeof(buf), "Track: %02x", currtrack);
+	mvaddstr(0, 26, buf);
+	move(0, 35);
 	for(i = 0; i < tune->ht_TrackLength; i++){
-		if(i >= trackoffs && i - trackoffs < height){
-			move(y + i - trackoffs, x + 0);
-			if(i == tracky) attrset(A_BOLD);
+		snprintf(buf, sizeof(buf), "%02x", i);
+		addstr(buf);
+		addch(ACS_VLINE);
 
-			snprintf(buf, sizeof(buf), "%02x", i);
-			addstr(buf);
+		if(tune->ht_Tracks[currtrack][i].stp_Note)
+			//snprintf(buf, sizeof(buf), "%s%d  ", notenames[(tune->ht_Tracks[currtrack][i].stp_Note - 1) % 12], (tune->ht_Tracks[currtrack][i].stp_Note - 1) / 12);
+			snprintf(buf, sizeof(buf), "%d ", tune->ht_Tracks[currtrack][i].stp_Note);
+		else
+			snprintf(buf, sizeof(buf), "--- ");
+		addstr(buf);
 
-			if(i == 0){ addch(ACS_LLCORNER); }
-			else if(i == 1){ addch(ACS_ULCORNER); }
-			else if(i == tracklen-1){ addch(ACS_LLCORNER); }
-			else if(i%4 == 0){ addch(ACS_LTEE); }
-			else if(i < tracklen-1){ addch(ACS_VLINE); }
-			addch(' ');
+		if(tune->ht_Tracks[currtrack][i].stp_Instrument)
+			snprintf(buf, sizeof(buf), "%02x  ", tune->ht_Tracks[currtrack][i].stp_Instrument);
+		else
+			snprintf(buf, sizeof(buf), "--  ");
+		addstr(buf);
 
-			// should this line be highlighted?
-			//if( (match = list_contains(highlightlines, findu8, &i)) ){
-			if(currtab == 1 && currmode == PM_VISUALLINE
-				&& ((i <= highlight_firstline && i >= highlight_lastline)
-				|| (i >= highlight_firstline && i <= highlight_lastline)) ){
-				attrset(A_REVERSE);
-			}
+		if(tune->ht_Tracks[currtrack][i].stp_FX)
+			snprintf(buf, sizeof(buf), "%02x ", tune->ht_Tracks[currtrack][i].stp_FX);
+		else
+			snprintf(buf, sizeof(buf), "-- ");
+		addstr(buf);
 
-			if (currtab == 1 && currmode == PM_VISUAL)
-				attrset(A_REVERSE);
-
-			//if(track[currtrack].line[i].note){
-			if(tune->ht_Tracks[currtrack][i].stp_Note){
-				/*snprintf(buf, sizeof(buf), "%s%d",
-					notenames[(track[currtrack].line[i].note - 1) % 12],
-					(track[currtrack].line[i].note - 1) / 12);
-				*/
-				snprintf(buf, sizeof(buf), "%02x  ", tune->ht_Tracks[currtrack][i].stp_Note);
-			}else{
-				snprintf(buf, sizeof(buf), "---");
-			}
-			addstr(buf);
-			//snprintf(buf, sizeof(buf), " %02x", track[currtrack].line[i].instr);
-			if(tune->ht_Tracks[currtrack][i].stp_Instrument)
-				snprintf(buf, sizeof(buf), "%02x  ", tune->ht_Tracks[currtrack][i].stp_Instrument);
-			else
-				snprintf(buf, sizeof(buf), "--  ");
-			addstr(buf);
-
+		if(tune->ht_Tracks[currtrack][i].stp_FXParam)
+			snprintf(buf, sizeof(buf), "%02x ", tune->ht_Tracks[currtrack][i].stp_FXParam);
+		else
+			snprintf(buf, sizeof(buf), "-- ");
+		addstr(buf);
+		
 		if(tune->ht_Tracks[currtrack][i].stp_FXb)
 			snprintf(buf, sizeof(buf), "%02x ", tune->ht_Tracks[currtrack][i].stp_FX);
 		else
@@ -308,238 +201,72 @@ void drawtracked(int x, int y, int height){
 		else
 			snprintf(buf, sizeof(buf), "-- ");
 		addstr(buf);
-			if(playtrack && ((i + 1) % tracklen) == trackpos){
-				attrset(A_STANDOUT);
-				addch('*');
-			}
-			attrset(A_NORMAL);
-		}
+
+		if((i == tune->ht_NoteNr))
+			addch('*');
+
+		move(i + 1, 35);
 	}
-}
-
-void drawinstred(int x, int y, int height){
-	u8 i;
-	char buf[1024];
-
-	if(instry >= instrument[currinstr].length) instry = instrument[currinstr].length - 1;
-
-	if(instry < instroffs) instroffs = instry;
-	if(instry >= instroffs + height) instroffs = instry - height + 1;
-
-	for(i = 0; i < instrument[currinstr].length; i++){
-		if(i >= instroffs && i - instroffs < height){
-			move(y + i - instroffs, x + 0);
-			if(i == instry) attrset(A_BOLD);
-
-			snprintf(buf, sizeof(buf), "%02x", i);
-			addstr(buf);
-
-			if(i == 0){ addch(ACS_LLCORNER); }
-			else if(i == 1){ addch(ACS_ULCORNER); }
-			else if(i == instrument[currinstr].length-1){ addch(ACS_LLCORNER); }
-			else if(i < instrument[currinstr].length-1){ addch(ACS_VLINE); }
-			addch(' ');
-
-			// should this line be highlighted?
-			//if( (match = list_contains(highlightlines, findu8, &i)) ){
-			if( currtab == 2 && currmode == PM_VISUALLINE &&
-				((i <= highlight_firstline && i >= highlight_lastline)
-				|| (i >= highlight_firstline && i <= highlight_lastline)) ){
-				attrset(A_REVERSE);
-			}
-
-			snprintf(buf, sizeof(buf), "%c ", instrument[currinstr].line[i].cmd);
-			addstr(buf);
-			if(instrument[currinstr].line[i].cmd == '+' || instrument[currinstr].line[i].cmd == '='){
-				if(instrument[currinstr].line[i].param){
-					snprintf(buf, sizeof(buf), "%s%d",
-						notenames[(instrument[currinstr].line[i].param - 1) % 12],
-						(instrument[currinstr].line[i].param - 1) / 12);
-				}else{
-					snprintf(buf, sizeof(buf), "---");
-				}
-			}else{
-				snprintf(buf, sizeof(buf), "%02x", instrument[currinstr].line[i].param);
-			}
-			addstr(buf);
-			attrset(A_NORMAL);
-		}
-	}
-}
-
-/* main input loop */
-void handleinput(){
-	int c;
-
-	/*if(currmode == PM_NORMAL){*/
-	if((c = getch()) != ERR){
-
-		/* Repeat */
-		if(isdigit(c)){
-			if(!cmdrepeat){
-				cmdrepeat = 1;
-				cmdrepeatnum = _char2int(c);
-			}else{
-				cmdrepeatnum = (cmdrepeatnum*10) + _char2int(c);
-			}
-		}else{
-			normalmode(c);
-		}
-	}
-	usleep(10000);
-}
-
-void setdisplay(char *str){
-	disptick = 350;
-	dispmesg = str;
-}
-
-// display dispmesg in the center of the screen
-void _display(void){
-	int cx = (getmaxx(stdscr)/2)-(strlen(dispmesg)/2)-1;
-	int cy = getmaxy(stdscr)/2;
-
-	mvaddch(cy-1, cx, ACS_ULCORNER);
-	for(int i=cx+1; i<cx+strlen(dispmesg)+1; i++)
-		mvaddch(cy-1, i, ACS_HLINE);
-	mvaddch(cy-1, cx+strlen(dispmesg)+1, ACS_URCORNER);
-
-	mvaddch(cy, cx, ACS_VLINE);
-	mvaddstr(cy, cx+1, dispmesg);
-	mvaddch(cy, cx+strlen(dispmesg)+1, ACS_VLINE);
-
-	mvaddch(cy+1, cx, ACS_LLCORNER);
-	for(int i=cx+1; i<cx+strlen(dispmesg)+1; i++)
-		mvaddch(cy+1, i, ACS_HLINE);
-	mvaddch(cy+1, cx+strlen(dispmesg)+1, ACS_LRCORNER);
 }
 
 void drawgui(){
-	char buf[1024];
-	int lines = LINES;
-	int songcols[] = {0, 1, 3, 4, 6, 7, 9, 10, 12, 13, 15, 16, 18, 19, 21, 22};
-	int trackcols[] = {0, 2, 4, 5, 7, 8, 9, 11, 12, 13};
-	int instrcols[] = {0, 2, 3};
-	u8 tempo;
+	erase();
+	drawposed();
+	drawtracked();
 
-	erase(); 
-	attrset(A_UNDERLINE);
-	mvaddstr(0, 0, "PINEAPPLEtRACKER");
-	attrset(A_NORMAL);
-
-	// display track num
-	mvaddch(0, 31, ACS_ULCORNER);
-	snprintf(buf, sizeof(buf), "%02x{}", currtrack);
-	mvaddstr(0, 32, buf);
-	drawtracked(29, 1, lines - 2);
-
-	// display instrument num
-	mvaddch(0, 51, ACS_ULCORNER);
-	snprintf(buf, sizeof(buf), "%02x[]", currinstr);
-	mvaddstr(0, 52, buf);
-	drawinstred(49, 1, lines - 2);
-
-	mvaddstr(1, 0, "Song");
-	drawsonged(0, 1, lines - 2);
-
-	// just a wild guess here..
-	tempo = callbacktime * (-1) + 300;
-	// display tempo
-	mvaddch(0, 17, ACS_DEGREE);
-	snprintf(buf, sizeof(buf), "%d()", tempo);
-	mvaddstr(0, 18, buf);
-
-	// display octave
-	mvaddch(0, 24, ACS_PI);
-	snprintf(buf, sizeof(buf), "%d<>", octave);
-	mvaddstr(0, 25, buf);
-
-	// display step amount
-	mvaddstr(0, 60, "step -=");
-	snprintf(buf, sizeof(buf), "%0x", step); 
-	mvaddstr(0, 68, buf);
-
-	// display comment
-	mvaddstr(2, 60, "comment:");
-	snprintf(buf, sizeof(buf), "%s", comment);
-	mvaddstr(3, 60, buf);
-
-	if(currmode == PM_NORMAL){
-		mvaddstr(getmaxy(stdscr)-1, 0, filename);
-		if(!saved && currmode != PM_INSERT){
-			addstr(" [+]");
-			infinitemsg = NULL;
-		}
-	}
+	refresh();
 
 	if(disptick > 0){
 		_display();
 		disptick--;
 	}
+}
 
-	if(currmode == PM_INSERT){
-		infinitemsg = NULL;
-
-		move(getmaxy(stdscr)-1,0);
-		clrtoeol();
-		mvaddstr(getmaxy(stdscr)-1, 0, "-- INSERT --");
-	}else if(currmode == PM_VISUAL){
-		infinitemsg = NULL;
-
-		move(getmaxy(stdscr)-1,0);
-		clrtoeol();
-		mvaddstr(getmaxy(stdscr)-1, 0, "-- VISUAL --");
-	}else if(currmode == PM_VISUALLINE){
-		infinitemsg = NULL;
-
-		move(getmaxy(stdscr)-1,0);
-		clrtoeol();
-		mvaddstr(getmaxy(stdscr)-1, 0, "-- VISUAL LINE --");
-	}else if(currmode == PM_JAMMER){
-		infinitemsg = NULL;
-
-		move(getmaxy(stdscr)-1,0);
-		clrtoeol();
-		mvaddstr(getmaxy(stdscr)-1, 0, "-- JAMMER --");
-	}else if(currmode == PM_CMDLINE){
-		infinitemsg = NULL;
-
-		move(getmaxy(stdscr)-1,0);
-		clrtoeol();
-		mvaddstr(getmaxy(stdscr) - 1, 0, cmdstr);
-	}else if(infinitemsg != NULL){
-		move(getmaxy(stdscr)-1,0);
-		clrtoeol();
-		mvaddstr(getmaxy(stdscr) - 1, 0, infinitemsg);
-	}
-    
-	switch(currtab){
-		case 0:
-			move(1 + songy - songoffs, 0 + 4 + songcols[songx]);
+void handleinput(){
+	int c, x;
+	if((c = getch()) != ERR){
+		switch(c){
+		case 'Q':
+			erase();
+			refresh();
+			endwin();
+			exit(0);
 			break;
-		case 1:
-			move(1 + tracky - trackoffs, 29 + 4 + trackcols[trackx]);
+		case 'J':
+			if(currtrack > 1)
+				currtrack--;
 			break;
-		case 2:
-			move(1 + instry - instroffs, 49 + 4 + instrcols[instrx]);
+		case 'K':
+			if(currtrack < 0xff)
+				currtrack++;
 			break;
-	}
-
-	refresh();
-
-	if(disptick > 0){
-		disptick--;
+		case 'j':
+			switch(currtab){
+				case 0:
+					songy++;
+					break;
+			}
+			break;
+		case ENTER:
+			play = 1;
+			break;
+		case ' ':
+			play = 0;
+			plonked = 0;
+			break;
+		default:
+			x = freqkey(c);	
+			if(x > 0) iedplonk(x);
+			break;
+		}
 	}
 }
 
 void guiloop(){
-#ifndef WINDOWS
-	// don't treat the escape key like a meta key
-	ESCDELAY = 50;
-#endif
+	ESCDELAY=50;
 	for(;;){
 		drawgui();
 		handleinput();
 	}
-}
 
+}

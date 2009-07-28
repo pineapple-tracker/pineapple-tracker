@@ -52,7 +52,10 @@ void mix_and_play( struct hvl_tune *ht, uint8 *stream, int length )
 	size_t streamPos = 0;
 	length = length >> 1;
 
-	if(tune) {
+	uint32 samples;
+	samples = tune->ht_Frequency/50/ht->ht_SpeedMultiplier;
+
+	if(tune && play) {
 		// Mix to 16bit interleaved stereo
 		out = (int16*) stream;
 		// Flush remains of previous frame
@@ -69,6 +72,14 @@ void mix_and_play( struct hvl_tune *ht, uint8 *stream, int length )
 			}
 		}
 		hivelyIndex = i;
+	} else if(tune && plonked) {
+		//for(i = 0; i < (HIVELY_LEN) && streamPos < length; i++) {
+		//hvl_mixchunk(tune, samples, (int8 *) hivelyLeft, (int8 *) hivelyRight, 2);	
+		//hivelyLeft += samples * 4;
+		//hivelyRight += samples * 4;
+		//out[streamPos++] = hivelyLeft[i];
+		//out[streamPos++] = hivelyRight[i];
+		//}
 	}
 }
 

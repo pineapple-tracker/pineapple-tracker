@@ -44,9 +44,9 @@ void inittracks(void);
 void initinstrs(void);
 
 void drawgui(void);
-void drawsonged(int x, int y, int height);
-void drawtracked(int x, int y, int height);
-void drawinstred(int x, int y, int height);
+void drawsonged(void);
+void drawtracked(void);
+void drawinstred(void);
 void guiloop(void);
 void handleinput(void);
 
@@ -56,4 +56,3 @@ int hexdec(int x);
 void insertc (int c);
 char nextchar(void);
 void setdisplay(char *str);
-
