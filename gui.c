@@ -424,7 +424,9 @@ void *spin_gui(void *tid){
 	}
 }*/
 void guiloop(void){
+#ifndef WINDOWS
 	ESCDELAY = 50;
+#endif
 	for(;;){
 		drawgui();
 		handleinput();
