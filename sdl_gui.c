@@ -6,16 +6,20 @@
 #include "gui.h"
 #include "pineapple.h"
 
+static int die = 0;
 SDL_Surface *screen;
 
 int main(int argc, char **args){
 	int last_tick;
-	int die = 0;
 
 	if(SDL_Init(SDL_INIT_VIDEO)!=0)
 		return 1;
 
 	atexit(SDL_Quit);
+#ifndef WINDOWS
+	signal(SIGTERM, breakhandler);
+	signal(SIGINT, breakhandler);
+#endif
 
 	screen = SDL_SetVideoMode(640,480,32,0);
 	if(screen==NULL){
@@ -27,7 +31,9 @@ int main(int argc, char **args){
 		fprintf(stdout,"initialized the surface\n");
 	}
 
-	SDL_EnableKeyRepeat(250, 25);
+	SDL_WM_SetCaption("pineappletracker","pineapple");
+
+	SDL_EnableKeyRepeat(250,25);
 
 	last_tick=SDL_GetTicks();
 	while(!die){
@@ -65,6 +71,7 @@ int main(int argc, char **args){
 
 		update_main(screen, dt);
 
+		gui_refresh();
 		SDL_Delay(10);
 	}
 
@@ -72,13 +79,13 @@ int main(int argc, char **args){
 	return 0;
 }
 
-static void ppp_songtab(void){
-	Uint32 hlc = SDL_MapRGB(screen->format, 255, 0, 255);
-	gui_box(0,0, 220,480, hlc,screen);
+void gui_refresh(void){
+	SDL_UpdateRect(screen, 0,0, 0,0);
 }
 
 static void draw_main(void){
-	ppp_songtab();
+	Uint32 hlc = SDL_MapRGB(screen->format, 255, 0, 255);
+	gui_box(0,0, 220,480, hlc,screen);
 }
 
 static void update_main(SDL_Surface *screen, int dt){
@@ -135,4 +142,8 @@ void gui_bar(int x, int y, int w, int h, Uint32 c, SDL_Surface *dst){
 	r.h = h;
 	SDL_FillRect(dst, &r, SDL_MapRGB(dst->format, 0, 0, 0));
 	gui_box(x, y, w, h, c, dst);
+}
+
+static void breakhandler(int a){
+	die = 1;
 }
