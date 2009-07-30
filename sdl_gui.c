@@ -8,32 +8,33 @@
 
 static int die = 0;
 SDL_Surface *screen;
+Uint32 fontcolor;
 
-int main(int argc, char **args){
+int main(int argc, char *args[]){
 	int last_tick;
 
 	if(SDL_Init(SDL_INIT_VIDEO)!=0)
 		return 1;
 
 	atexit(SDL_Quit);
-#ifndef WINDOWS
 	signal(SIGTERM, breakhandler);
 	signal(SIGINT, breakhandler);
-#endif
 
-	screen = SDL_SetVideoMode(640,480,32,0);
+	screen = SDL_SetVideoMode(640,480,32,SDL_SWSURFACE);
 	if(screen==NULL){
 		fprintf(stderr,"video init failed");
-		fprintf(stderr,SDL_GetError());
 		SDL_Quit();
 		return 1;
 	}else{
 		fprintf(stdout,"initialized the surface\n");
 	}
 
-	SDL_WM_SetCaption("pineappletracker","pineapple");
-
+	fontcolor = SDL_MapRGB(screen->format, 255, 0, 255);
+	SDL_WM_SetCaption("pineapple-tracker","pineapple.ico");
 	SDL_EnableKeyRepeat(250,25);
+
+	draw_main();
+	SDL_Flip(screen);
 
 	last_tick=SDL_GetTicks();
 	while(!die){
@@ -63,13 +64,14 @@ int main(int argc, char **args){
 				}
 				break;
 			case SDL_QUIT:
+				die = 1;
 				break;
 			default:
 				break;
 			}
 		}
 
-		update_main(screen, dt);
+		//update_main(screen, dt);
 
 		gui_refresh();
 		SDL_Delay(10);
@@ -80,12 +82,25 @@ int main(int argc, char **args){
 }
 
 void gui_refresh(void){
-	SDL_UpdateRect(screen, 0,0, 0,0);
+	SDL_Flip(screen);
+}
+
+static void draw_songed(void){
+	gui_box(0,20,210,460,fontcolor,screen);
+}
+
+static void draw_tracked(void){
+	gui_box(215,20,210,460,fontcolor,screen);
+}
+
+static void draw_instred(void){
+	gui_box(430,20,210,460,fontcolor,screen);
 }
 
 static void draw_main(void){
-	Uint32 hlc = SDL_MapRGB(screen->format, 255, 0, 255);
-	gui_box(0,0, 220,480, hlc,screen);
+	draw_songed();
+	draw_tracked();
+	draw_instred();
 }
 
 static void update_main(SDL_Surface *screen, int dt){

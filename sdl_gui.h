@@ -5,7 +5,10 @@
 
 
 #include <SDL/SDL.h>
+#include <signal.h>
 #include <stdio.h>
+
+static void breakhandler(int a);
 
 /*
  * Low level GUI stuff
@@ -13,6 +16,7 @@
 
 /* Load and convert image */
 SDL_Surface *gui_load_image(const char *fn);
+static void draw_main();
 
 /* Add a dirtyrect */
 void gui_dirty(SDL_Rect *r);
