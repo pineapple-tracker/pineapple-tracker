@@ -1,4 +1,17 @@
-#include "types.h"
+
+typedef char int8;
+typedef unsigned char uint8;
+typedef short int16;
+typedef unsigned short uint16;
+typedef int int32;
+typedef unsigned int uint32;
+typedef double float64;
+typedef char TEXT;
+typedef int BOOL;
+
+#define TRUE 1
+#define FALSE 0
+
 // Woohoo!
 #define MAX_CHANNELS 16
 
@@ -71,6 +84,7 @@ struct hvl_voice
   int16                  vc_NextTrack;
   int16                  vc_Transpose;
   int16                  vc_NextTranspose;
+  int16                  vc_OverrideTranspose; // 1.5
   int32                  vc_ADSRVolume;
   struct hvl_envelope    vc_ADSR;
   struct hvl_instrument *vc_Instrument;
@@ -198,6 +212,7 @@ struct hvl_tune
   int32                  ht_defpanleft;
   int32                  ht_defpanright;
   int32                  ht_mixgain;
+  uint8                  ht_Version;
 };
 
 void hvl_DecodeFrame( struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod );

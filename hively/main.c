@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <ncurses.h>
 #include <SDL/SDL.h>
-#include "types.h"
 #include "hvl_replay.h"
 
 #define FREQ 48000

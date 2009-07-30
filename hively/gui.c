@@ -8,6 +8,7 @@ int songy = 0;
 
 int disptick = 0;
 char *dispmesg = "";
+int note;
 
 void _display(void);
 
@@ -64,7 +65,7 @@ int freqkey(int c){
 
 void iedplonk(int x) {
 	setdisplay("\\o/");
-
+	note = x;
 	hvl_process_step(tune, &tune->ht_Voices[0]);
 	hvl_process_frame(tune, &tune->ht_Voices[0]);
 	hvl_set_audio(&tune->ht_Voices[0], tune->ht_Frequency);
@@ -151,6 +152,8 @@ void drawposed(){
 	snprintf(buf, sizeof(buf), "SpeedMultiplier: %02x", tune->ht_SpeedMultiplier);
 	mvaddstr(c++, 60, buf);
 	snprintf(buf, sizeof(buf), "InstrumentNr: %02x", tune->ht_InstrumentNr);
+	mvaddstr(c++, 60, buf);
+	snprintf(buf, sizeof(buf), "Note: %s%d", notenames[(note-1) % 12], (note-1) / 12);
 	mvaddstr(c++, 60, buf);
 }
 

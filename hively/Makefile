@@ -13,7 +13,7 @@ all: pineapple-hively
 pineapple-hively: main.o gui.o hvl_replay.o
 	$(CC) -o $@ $^ ${LIBS}
 
-%.o: %.c gui.h types.h hvl_replay.h Makefile
+%.o: %.c gui.h hvl_replay.h Makefile
 
 .PHONY:
 	clean
