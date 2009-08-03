@@ -2029,3 +2029,189 @@ void hvl_DecodeFrame( struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod 
     loops--;
   } while( loops );
 }
+
+//added for pineapple tracker
+
+void hvl_playNote(struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod, struct hvl_voice *voice) {
+  uint32 samples, loops;
+  
+  samples = ht->ht_Frequency/50/ht->ht_SpeedMultiplier;
+  loops   = ht->ht_SpeedMultiplier;
+  
+  do
+  {
+    //hvl_play_irq( ht );
+    //hvl_process_step( ht, &ht->ht_Voices[0] );
+	  int32  Note, Instr, donenotedel;
+	  struct hvl_step *Step;
+	  
+	  if( voice->vc_TrackOn == 0 )
+		return;
+	  
+	  voice->vc_VolumeSlideUp = voice->vc_VolumeSlideDown = 0;
+	  
+	  Step = &ht->ht_Tracks[ht->ht_Positions[ht->ht_PosNr].pos_Track[voice->vc_VoiceNum]][ht->ht_NoteNr];
+	  
+	  Note    = tune->curNote;
+	  Instr   = Step->stp_Instrument;
+	  
+	  // --------- 1.6: from here --------------
+
+	  donenotedel = 0;
+
+	  // Do notedelay here
+	  if( ((Step->stp_FX&0xf)==0xe) && ((Step->stp_FXParam&0xf0)==0xd0) )
+	  {
+		if( voice->vc_NoteDelayOn )
+		{
+		  voice->vc_NoteDelayOn = 0;
+		  donenotedel = 1;
+		} else {
+		  if( (Step->stp_FXParam&0x0f) < ht->ht_Tempo )
+		  {
+			voice->vc_NoteDelayWait = Step->stp_FXParam & 0x0f;
+			if( voice->vc_NoteDelayWait )
+			{
+			  voice->vc_NoteDelayOn = 1;
+			  return;
+			}
+		  }
+		}
+	  }
+
+	  if( (donenotedel==0) && ((Step->stp_FXb&0xf)==0xe) && ((Step->stp_FXbParam&0xf0)==0xd0) )
+	  {
+		if( voice->vc_NoteDelayOn )
+		{
+		  voice->vc_NoteDelayOn = 0;
+		} else {
+		  if( (Step->stp_FXbParam&0x0f) < ht->ht_Tempo )
+		  {
+			voice->vc_NoteDelayWait = Step->stp_FXbParam & 0x0f;
+			if( voice->vc_NoteDelayWait )
+			{
+			  voice->vc_NoteDelayOn = 1;
+			  return;
+			}
+		  }
+		}
+	  }
+
+	  // --------- 1.6: to here --------------
+
+	  if( Note ) voice->vc_OverrideTranspose = 1000; // 1.5
+
+	  hvl_process_stepfx_1( ht, voice, Step->stp_FX&0xf,  Step->stp_FXParam );  
+	  hvl_process_stepfx_1( ht, voice, Step->stp_FXb&0xf, Step->stp_FXbParam );
+	  
+	  if( ( Instr ) && ( Instr <= ht->ht_InstrumentNr ) )
+	  {
+		struct hvl_instrument *Ins;
+		int16  SquareLower, SquareUpper, d6, d3, d4;
+		
+		/* 1.4: Reset panning to last set position */
+		voice->vc_Pan          = voice->vc_SetPan;
+		voice->vc_PanMultLeft  = panning_left[voice->vc_Pan];
+		voice->vc_PanMultRight = panning_right[voice->vc_Pan];
+
+		voice->vc_PeriodSlideSpeed = voice->vc_PeriodSlidePeriod = voice->vc_PeriodSlideLimit = 0;
+
+		voice->vc_PerfSubVolume    = 0x40;
+		voice->vc_ADSRVolume       = 0;
+		voice->vc_Instrument       = Ins = &ht->ht_Instruments[Instr];
+		voice->vc_SamplePos        = 0;
+		
+		voice->vc_ADSR.aFrames     = Ins->ins_Envelope.aFrames;
+		voice->vc_ADSR.aVolume     = Ins->ins_Envelope.aVolume*256/voice->vc_ADSR.aFrames;
+		voice->vc_ADSR.dFrames     = Ins->ins_Envelope.dFrames;
+		voice->vc_ADSR.dVolume     = (Ins->ins_Envelope.dVolume-Ins->ins_Envelope.aVolume)*256/voice->vc_ADSR.dFrames;
+		voice->vc_ADSR.sFrames     = Ins->ins_Envelope.sFrames;
+		voice->vc_ADSR.rFrames     = Ins->ins_Envelope.rFrames;
+		voice->vc_ADSR.rVolume     = (Ins->ins_Envelope.rVolume-Ins->ins_Envelope.dVolume)*256/voice->vc_ADSR.rFrames;
+		
+		voice->vc_WaveLength       = Ins->ins_WaveLength;
+		voice->vc_NoteMaxVolume    = Ins->ins_Volume;
+		
+		voice->vc_VibratoCurrent   = 0;
+		voice->vc_VibratoDelay     = Ins->ins_VibratoDelay;
+		voice->vc_VibratoDepth     = Ins->ins_VibratoDepth;
+		voice->vc_VibratoSpeed     = Ins->ins_VibratoSpeed;
+		voice->vc_VibratoPeriod    = 0;
+		
+		voice->vc_HardCutRelease   = Ins->ins_HardCutRelease;
+		voice->vc_HardCut          = Ins->ins_HardCutReleaseFrames;
+		
+		voice->vc_IgnoreSquare = voice->vc_SquareSlidingIn = 0;
+		voice->vc_SquareWait   = voice->vc_SquareOn        = 0;
+		
+		SquareLower = Ins->ins_SquareLowerLimit >> (5 - voice->vc_WaveLength);
+		SquareUpper = Ins->ins_SquareUpperLimit >> (5 - voice->vc_WaveLength);
+		
+		if( SquareUpper < SquareLower )
+		{
+		  int16 t = SquareUpper;
+		  SquareUpper = SquareLower;
+		  SquareLower = t;
+		}
+		
+		voice->vc_SquareUpperLimit = SquareUpper;
+		voice->vc_SquareLowerLimit = SquareLower;
+		
+		voice->vc_IgnoreFilter    = voice->vc_FilterWait = voice->vc_FilterOn = 0;
+		voice->vc_FilterSlidingIn = 0;
+
+		d6 = Ins->ins_FilterSpeed;
+		d3 = Ins->ins_FilterLowerLimit;
+		d4 = Ins->ins_FilterUpperLimit;
+		
+		if( d3 & 0x80 ) d6 |= 0x20;
+		if( d4 & 0x80 ) d6 |= 0x40;
+		
+		voice->vc_FilterSpeed = d6;
+		d3 &= ~0x80;
+		d4 &= ~0x80;
+		
+		if( d3 > d4 )
+		{
+		  int16 t = d3;
+		  d3 = d4;
+		  d4 = t;
+		}
+		
+		voice->vc_FilterUpperLimit = d4;
+		voice->vc_FilterLowerLimit = d3;
+		voice->vc_FilterPos        = 32;
+		
+		voice->vc_PerfWait  = voice->vc_PerfCurrent = 0;
+		voice->vc_PerfSpeed = Ins->ins_PList.pls_Speed;
+		voice->vc_PerfList  = &voice->vc_Instrument->ins_PList;
+		
+		voice->vc_RingMixSource   = NULL;   // No ring modulation
+		voice->vc_RingSamplePos   = 0;
+		voice->vc_RingPlantPeriod = 0;
+		voice->vc_RingNewWaveform = 0;
+	  }
+	  
+	  voice->vc_PeriodSlideOn = 0;
+	  
+	  hvl_process_stepfx_2( ht, voice, Step->stp_FX&0xf,  Step->stp_FXParam,  &Note );  
+	  hvl_process_stepfx_2( ht, voice, Step->stp_FXb&0xf, Step->stp_FXbParam, &Note );
+
+	  if( Note )
+	  {
+		voice->vc_TrackPeriod = Note;
+		voice->vc_PlantPeriod = 1;
+	  }
+	  
+	  hvl_process_stepfx_3( ht, voice, Step->stp_FX&0xf,  Step->stp_FXParam );  
+	  hvl_process_stepfx_3( ht, voice, Step->stp_FXb&0xf, Step->stp_FXbParam );  
+	
+	hvl_process_frame( ht, &ht->ht_Voices[0] );
+    ht->ht_NoteNr = -1;
+	hvl_set_audio( &ht->ht_Voices[0], ht->ht_Frequency );
+    hvl_mixchunk( ht, samples, buf1, buf2, bufmod );
+    buf1 += samples * 4;
+    buf2 += samples * 4;
+    loops--;
+  } while( loops );
+}

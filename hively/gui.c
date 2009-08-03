@@ -66,9 +66,10 @@ int freqkey(int c){
 void iedplonk(int x) {
 	setdisplay("\\o/");
 	note = x;
-	hvl_process_step(tune, &tune->ht_Voices[0]);
-	hvl_process_frame(tune, &tune->ht_Voices[0]);
-	hvl_set_audio(&tune->ht_Voices[0], tune->ht_Frequency);
+	tune->curNote = x;
+	//hvl_process_step(tune, &tune->ht_Voices[0]);
+	//hvl_process_frame(tune, &tune->ht_Voices[0]);
+	//hvl_set_audio(&tune->ht_Voices[0], tune->ht_Frequency);
 	plonked = 1;
 }
 

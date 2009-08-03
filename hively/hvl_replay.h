@@ -213,6 +213,9 @@ struct hvl_tune
   int32                  ht_defpanright;
   int32                  ht_mixgain;
   uint8                  ht_Version;
+  //added for pineappletracker
+  uint8					 curNote;
+  uint8					 curInstr;
 };
 
 void hvl_DecodeFrame( struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod );
@@ -220,6 +223,11 @@ void hvl_InitReplayer( void );
 BOOL hvl_InitSubsong( struct hvl_tune *ht, uint32 nr );
 struct hvl_tune *hvl_LoadTune( TEXT *name, uint32 freq, uint32 defstereo );
 void hvl_FreeTune( struct hvl_tune *ht );
+
+void hvl_process_step( struct hvl_tune *ht, struct hvl_voice *voice );
+void hvl_process_frame( struct hvl_tune *ht, struct hvl_voice *voice );
+void hvl_set_audio( struct hvl_voice *voice, float64 freqf );
+void hvl_playNote(struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod, struct hvl_voice *voice);
 
 struct hvl_tune *tune;
 
