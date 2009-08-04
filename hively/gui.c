@@ -220,6 +220,12 @@ void drawgui(){
 	drawposed();
 	drawtracked();
 
+	switch(currtab) {
+		case 0:
+			move(songy, songx);
+			break;
+	}
+
 	refresh();
 
 	if(disptick > 0){
