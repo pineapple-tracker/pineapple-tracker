@@ -19,4 +19,4 @@ pineapple-hively: main.o gui.o hvl_replay.o
 	clean
 clean:	
 	@echo "clean ..."
-	@rm -f *.o
+	@rm -f *.o pineapple-hively

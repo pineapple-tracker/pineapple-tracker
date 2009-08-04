@@ -2194,8 +2194,8 @@ void hvl_playNote(struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod, str
 	  
 	  voice->vc_PeriodSlideOn = 0;
 	  
-	  hvl_process_stepfx_2( ht, voice, Step->stp_FX&0xf,  Step->stp_FXParam,  &Note );  
-	  hvl_process_stepfx_2( ht, voice, Step->stp_FXb&0xf, Step->stp_FXbParam, &Note );
+	  //hvl_process_stepfx_2( ht, voice, Step->stp_FX&0xf,  Step->stp_FXParam,  &Note );  
+	  //hvl_process_stepfx_2( ht, voice, Step->stp_FXb&0xf, Step->stp_FXbParam, &Note );
 
 	  if( Note )
 	  {
@@ -2203,13 +2203,109 @@ void hvl_playNote(struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod, str
 		voice->vc_PlantPeriod = 1;
 	  }
 	  
-	  hvl_process_stepfx_3( ht, voice, Step->stp_FX&0xf,  Step->stp_FXParam );  
-	  hvl_process_stepfx_3( ht, voice, Step->stp_FXb&0xf, Step->stp_FXbParam );  
+	  //hvl_process_stepfx_3( ht, voice, Step->stp_FX&0xf,  Step->stp_FXParam );  
+	  //hvl_process_stepfx_3( ht, voice, Step->stp_FXb&0xf, Step->stp_FXbParam );  
 	
 	hvl_process_frame( ht, &ht->ht_Voices[0] );
     ht->ht_NoteNr = -1;
 	hvl_set_audio( &ht->ht_Voices[0], ht->ht_Frequency );
-    hvl_mixchunk( ht, samples, buf1, buf2, bufmod );
+    //hvl_mixchunk( ht, samples, buf1, buf2, bufmod );
+  int8   *src[MAX_CHANNELS];
+  int8   *rsrc[MAX_CHANNELS];
+  uint32  delta[MAX_CHANNELS];
+  uint32  rdelta[MAX_CHANNELS];
+  int32   vol[MAX_CHANNELS];
+  uint32  pos[MAX_CHANNELS];
+  uint32  rpos[MAX_CHANNELS];
+  uint32  cnt;
+  int32   panl[MAX_CHANNELS];
+  int32   panr[MAX_CHANNELS];
+//  uint32  vu[MAX_CHANNELS];
+  int32   a=0, b=0, j;
+  //uint32  i, chans, loops;
+  uint32 loops2;
+  
+  //chans = ht->ht_Channels;
+  //for( i=0; i<0; i++ )
+  //{
+    delta[0] = ht->ht_Voices[0].vc_Delta;
+    vol[0]   = ht->ht_Voices[0].vc_VoiceVolume;
+    pos[0]   = ht->ht_Voices[0].vc_SamplePos;
+    src[0]   = ht->ht_Voices[0].vc_MixSource;
+    panl[0]  = ht->ht_Voices[0].vc_PanMultLeft;
+    panr[0]  = ht->ht_Voices[0].vc_PanMultRight;
+    
+    /* Ring Modulation */
+    rdelta[0]= ht->ht_Voices[0].vc_RingDelta;
+    rpos[0]  = ht->ht_Voices[0].vc_RingSamplePos;
+    rsrc[0]  = ht->ht_Voices[0].vc_RingMixSource;
+    
+//    vu[i] = 0;
+  //}
+  
+  do
+  {
+    loops2 = samples;
+    //for( i=0; i<chans; i++ )
+    //{
+      if( pos[0] >= (0x280 << 16)) pos[0] -= 0x280<<16;
+      cnt = ((0x280<<16) - pos[0] - 1) / delta[0] + 1;
+      if( cnt < loops2 ) loops2 = cnt;
+      
+      if( rsrc[0] )
+      {
+        if( rpos[0] >= (0x280<<16)) rpos[0] -= 0x280<<16;
+        cnt = ((0x280<<16) - rpos[0] - 1) / rdelta[0] + 1;
+        if( cnt < loops2 ) loops2 = cnt;
+      }
+      
+    //}
+    
+    samples -= loops2;
+    
+    // Inner loop
+    do
+    {
+      a=0;
+      b=0;
+      //for( i=0; i<chans; i++ )
+      //{
+        if( rsrc[0] )
+        {
+          /* Ring Modulation */
+          j = ((src[0][pos[0]>>16]*rsrc[0][rpos[0]>>16])>>7)*vol[0];
+          rpos[0] += rdelta[0];
+        } else {
+          j = src[0][pos[0]>>16]*vol[0];
+        }
+        
+//        if( abs( j ) > vu[i] ) vu[i] = abs( j );
+
+        a += (j * panl[0]) >> 7;
+        b += (j * panr[0]) >> 7;
+        pos[0] += delta[0];
+      //}
+      
+      a = (a*ht->ht_mixgain)>>8;
+      b = (b*ht->ht_mixgain)>>8;
+      
+      *(int16 *)buf1 = a;
+      *(int16 *)buf2 = b;
+      
+      loops2--;
+      
+      buf1 += bufmod;
+      buf2 += bufmod;
+    } while( loops2 > 0 );
+  } while( samples > 0 );
+
+  //for( i=0; i<chans; i++ )
+  //{
+    ht->ht_Voices[0].vc_SamplePos = pos[0];
+    ht->ht_Voices[0].vc_RingSamplePos = rpos[0];
+//    ht->ht_Voices[i].vc_VUMeter = vu[i];
+  //}
+
     buf1 += samples * 4;
     buf2 += samples * 4;
     loops--;
