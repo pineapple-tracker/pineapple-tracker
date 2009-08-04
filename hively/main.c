@@ -7,6 +7,9 @@
 #include <SDL/SDL.h>
 #include "hvl_replay.h"
 
+#include "pineapple.h"
+#include "gui.h"
+
 #define FREQ 48000
 #define HIVELY_LEN FREQ/50
 #define OUTPUT_LEN 4096
@@ -35,11 +38,11 @@ BOOL init( void )
 	wanted.callback = (void*) mix_and_play;
 	wanted.userdata = tune;
 
-	if(SDL_OpenAudio(&wanted, NULL) < 0) {
+	/*if(SDL_OpenAudio(&wanted, NULL) < 0) {
 		printf("Failed to open audio device.\n");
 		SDL_Quit();
 		return FALSE;
-	}
+	}*/
 
 	return TRUE;
 }
@@ -104,7 +107,7 @@ int main(int argc, char *argv[])
 		tune = hvl_LoadTune(argv[1], FREQ, 4);
 		if(tune){
 			//BOOL done;
-			uint32 gotsigs;
+			//uint32 gotsigs;
 
 			hvl_InitSubsong( tune, 0 );
 			initgui();

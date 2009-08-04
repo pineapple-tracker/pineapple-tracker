@@ -10,10 +10,10 @@ LIBS := -O2 $(shell pkg-config --libs sdl) \
 
 all: pineapple-hively
 
-pineapple-hively: main.o gui.o hvl_replay.o
+pineapple-hively: main.o gui.o hvl_replay.o actions.o
 	$(CC) -o $@ $^ ${LIBS}
 
-%.o: %.c gui.h hvl_replay.h Makefile
+%.o: %.c pineapple.h gui.h hvl_replay.h Makefile
 
 .PHONY:
 	clean

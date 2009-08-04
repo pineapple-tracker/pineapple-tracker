@@ -1,8 +1,10 @@
 #include <ncurses.h>
 #include "hvl_replay.h"
+#include "pineapple.h"
 #include "gui.h"
 
 int currtrack = 1;
+int currinstr = 1;
 int currtab = 0;
 int songy = 0;
 
@@ -244,12 +246,21 @@ void handleinput(){
 			if(currtrack < 0xff)
 				currtrack++;
 			break;
+		case 'h':
+		case KEY_LEFT:
+			act_mvleft();
+			break;
 		case 'j':
-			switch(currtab){
-				case 0:
-					songy++;
-					break;
-			}
+		case KEY_DOWN:
+			act_mvdown();
+			break;
+		case 'k':
+		case KEY_UP:
+			act_mvup();
+			break;
+		case 'l':
+		case KEY_RIGHT:
+			act_mvright();
 			break;
 		case ENTER:
 			play = 1;
