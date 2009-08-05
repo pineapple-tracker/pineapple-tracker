@@ -3,11 +3,6 @@
  *   modified by the pineapple team, 2009
  */
 
-
-#include <SDL/SDL.h>
-#include <signal.h>
-#include <stdio.h>
-
 static void breakhandler(int a);
 
 /*
@@ -19,7 +14,7 @@ SDL_Surface *gui_load_image(const char *fn);
 static void draw_main();
 
 /* Add a dirtyrect */
-void gui_dirty(SDL_Rect *r);
+//void gui_dirty(SDL_Rect *r);
 
 /* Update all dirty areas */
 void gui_refresh(void);
@@ -41,9 +36,10 @@ void gui_text(int x, int y, const char *txt, SDL_Surface *dst);
 /*
  * High level GUI stuff
  */
-/*int gui_open(SDL_Surface *screen);
+int gui_open(SDL_Surface *screen);
 void gui_close(void);
 
+/*
 void gui_tempo(int v);
 void gui_songpos(int v);
 void gui_songedit(int pos, int ppos, int track, int editing);
