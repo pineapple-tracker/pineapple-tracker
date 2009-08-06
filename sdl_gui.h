@@ -4,6 +4,7 @@
  */
 
 static void breakhandler(int a);
+static void handle_key_normal(SDL_Event *ev);
 
 /*
  * Low level GUI stuff

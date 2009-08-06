@@ -96,6 +96,10 @@ void guiloop(void);
 
 void display(void);
 
+int hexdigit(char c);
+int nextfreetrack(void);
+int nextfreeinstr(void);
+
 void startplaysong(int);
 void startplaytrack(int);
 

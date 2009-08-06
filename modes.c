@@ -9,17 +9,13 @@ int f;
 int tcliplen, icliplen = 0;
 int lastinsert = 0;
 
-int _hexdigit(char c);
-int _nextfreetrack(void);
-int _nextfreeinstr(void);
-
-int _hexdigit(char c){
+int hexdigit(char c){
 	if(c >= '0' && c <= '9') return c - '0';
 	if(c >= 'a' && c <= 'f') return c - 'a' + 10;
 	return -1;
 }
 
-int _nextfreetrack(){
+int nextfreetrack(){
 	int skiptherest = 0;
 
 	for(int i = 1; i <= 0xff; i++){
@@ -41,24 +37,24 @@ int _nextfreetrack(){
 		}
 	}
 
-	setdisplay("_nextfreetrack() failed somehow..");
+	setdisplay("nextfreetrack() failed somehow..");
 	return -1;
 }
 
-int _nextfreeinstr(){
+int nextfreeinstr(){
 	for(int i = 1; i <= 0xff; i++){
 		if(instrument[i].line[0].cmd == '0')
 			return i;
 	}
 
-	setdisplay("_nextfreeinstr() failed somehow..");
+	setdisplay("nextfreeinstr() failed somehow..");
 	return -1;
 }
 
 void _insertc(int c){
 	int x;
 
-	x = _hexdigit(c);
+	x = hexdigit(c);
 	if(x >= 0){
 		if(currtab == 2
 		&& instrx > 0
@@ -533,11 +529,11 @@ void normalmode(int c){
 		// copy everything in the current phrase or instrument into the next free one
 		case '^':
 			if(currtab == 1){
-				f = _nextfreetrack();
+				f = nextfreetrack();
 				memcpy(&track[f], &track[currtrack], sizeof(struct track));
 				currtrack = f;
 			}else if(currtab == 2){
-				f = _nextfreeinstr();
+				f = nextfreeinstr();
 				memcpy(&instrument[f], &instrument[currinstr], sizeof(struct instrument));
 				currinstr = f;
 			}

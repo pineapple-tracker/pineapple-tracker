@@ -19,13 +19,13 @@ static Uint32 boxcolor;
 #define FONT_CH 16
 #define WINW 800
 #define WINH 600
-#define SP 4  //spacing
+#define SP 2  //spacing
+#define BOXW 1  //box width
 
 // these aren't #define's because doing this in the preprocessor:
 //     #define COLW = (WINW/3)-3
 // made gcc complain
 static int voffs;
-static int colw;
 static int colh;
 
 
@@ -36,8 +36,7 @@ int main(int argc, char *args[]){
 		return 1;
 
 	voffs = FONT_CH+4;
-	colw = (WINW/3)-3;
-	colh= WINH-voffs-1;
+	colh= WINH-voffs-SP-BOXW;
 
 	atexit(SDL_Quit);
 	signal(SIGTERM,breakhandler);
@@ -76,7 +75,7 @@ int main(int argc, char *args[]){
 			case SDL_KEYDOWN:
 				switch(currmode){
 				case PM_NORMAL:
-					//handle_key(&ev);
+					handle_key_normal(&ev);
 					break;
 				case PM_VISUAL:
 					break;
@@ -98,7 +97,7 @@ int main(int argc, char *args[]){
 			}
 		}
 
-		//update_main(screen, dt);
+		update_main(screen, dt);
 
 		gui_refresh();
 
@@ -110,39 +109,123 @@ int main(int argc, char *args[]){
 	return 0;
 }
 
+static void breakhandler(int a){
+	die = 1;
+}
+
 static void draw_songed(int x, int y, int w, int h){
-	int i, line;
+	int i, pos;
 	char buf[1024];
 
-	//void gui_box(int x, int y, int w, int h, Uint32 c, SDL_Surface *dst){
 	for(i=0; i+y<h; i+=(FONT_CH+2)){
+		pos = i/FONT_CH;
 		snprintf(buf, sizeof(buf),
-			"%02x:00 00:00 00:00 00:00", i/FONT_CH);
+			"%02x:__ __:__ __:__ __:__", pos);
 		gui_text(x+SP,i+y+SP,buf,screen);
+
+		// draw a box if selected
+		if(songy==pos){
+			gui_box(x,i,w,FONT_CH+(SP*2),boxcolor,screen);
+		}
 	}
-	gui_box(x,y,w,i+(SP*2),boxcolor,screen);
+	gui_box(x,y,w,h,boxcolor,screen);
 }
 
-static void draw_tracked(void){
-	gui_box(colw+3,voffs,colh,colw,boxcolor,screen);
+static void draw_tracked(int x, int y, int w, int h){
+	gui_box(x,y,w,h,boxcolor,screen);
 }
 
-static void draw_instred(void){
-	gui_box(colw*2+6,voffs,colh,colw,boxcolor,screen);
+static void draw_instred(int x, int y, int w, int h){
+	gui_box(x,y,w,h,boxcolor,screen);
 }
 
 static void draw_main(void){
 	gui_text(2,2,"PINEAPPLEtRACKER",screen);
-	draw_songed(SP,voffs,230+SP,colh);
-	draw_tracked();
-	draw_instred();
+	draw_songed(SP,voffs,(23*FONT_CW)+(SP*2),colh);
+	draw_tracked((23*FONT_CW)+(SP*4)+(BOXW*2),voffs,(18*FONT_CW)+(SP*2),
+			colh);
+	draw_instred((41*FONT_CW)+(SP*7)+(BOXW*4),voffs,(9*FONT_CW)+(SP*2),
+			colh);
+}
+
+static void handle_key_normal(SDL_Event *ev){
+	switch(ev->key.keysym.sym){
+	  case SDLK_KP_PLUS:
+	  case SDLK_PLUS:
+	  case SDLK_KP_MINUS:
+	  case SDLK_MINUS:
+		break;
+	  case SDLK_h:
+	  case SDLK_LEFT:
+	  	act_mvleft();
+		break;
+	  case SDLK_l:
+	  case SDLK_RIGHT:
+	  	act_mvright();
+		break;
+	  case SDLK_k:
+	  case SDLK_UP:
+	  	act_mvup();
+		break;
+	  case SDLK_j:
+	  case SDLK_DOWN:
+	  	act_mvdown();
+		break;
+	  case SDLK_PAGEUP:
+	  	act_bigmvup();
+		break;
+	  case SDLK_PAGEDOWN:
+	  	act_bigmvdown();
+		break;
+	  case SDLK_F1:
+	  case SDLK_F2:
+	  case SDLK_F3:
+	  case SDLK_F4:
+	  case SDLK_F5:
+	  case SDLK_F6:
+	  case SDLK_F7:
+	  case SDLK_F8:
+	  case SDLK_F9:
+	  case SDLK_F10:
+	  case SDLK_F11:
+	  case SDLK_F12:
+	  case SDLK_PERIOD:
+	  case SDLK_DELETE:
+	  case SDLK_BACKSPACE:
+	  case SDLK_0:
+	  case SDLK_1:
+	  case SDLK_2:
+	  case SDLK_3:
+	  case SDLK_4:
+	  case SDLK_5:
+	  case SDLK_6:
+	  case SDLK_7:
+	  case SDLK_8:
+	  case SDLK_9:
+	  case SDLK_KP0:
+	  case SDLK_KP1:
+	  case SDLK_KP2:
+	  case SDLK_KP3:
+	  case SDLK_KP4:
+	  case SDLK_KP5:
+	  case SDLK_KP6:
+	  case SDLK_KP7:
+	  case SDLK_KP8:
+	  case SDLK_KP9:
+	  case SDLK_SPACE:
+	  case SDLK_TAB:
+	  case SDLK_ESCAPE:
+	  default:
+		break;
+	}
 }
 
 static void update_main(SDL_Surface *screen, int dt){
-}
+	//unsigned int pos;
 
-static void breakhandler(int a){
-	die = 1;
+	//draw_songed(SP,voffs,230+(SP*2),colh);
+	//draw_tracked(230+(SP*4),voffs,100,colh);
+	//draw_instred(230+100*(SP*8),voffs,100,colh);
 }
 
 
@@ -165,25 +248,25 @@ void gui_box(int x, int y, int w, int h, Uint32 c, SDL_Surface *dst){
 	r.x = x;
 	r.y = y;
 	r.w = w;
-	r.h = SP;
+	r.h = BOXW;
 	SDL_FillRect(dst, &r, c);
 
 	r.x = x;
-	r.y = y + h - SP;
+	r.y = y + h - BOXW;
 	r.w = w;
-	r.h = SP;
+	r.h = BOXW;
 	SDL_FillRect(dst, &r, c);
 
 	r.x = x;
-	r.y = y + SP;
-	r.w = SP;
-	r.h = h - (SP*2);
+	r.y = y + BOXW;
+	r.w = BOXW;
+	r.h = h - (BOXW*2);
 	SDL_FillRect(dst, &r, c);
 
-	r.x = x + w - SP;
-	r.y = y + SP;
-	r.w = SP;
-	r.h = h - (SP*2);
+	r.x = x + w - BOXW;
+	r.y = y + BOXW;
+	r.w = BOXW;
+	r.h = h - (BOXW*2);
 	SDL_FillRect(dst, &r, c);
 
 	r.x = x;

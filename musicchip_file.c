@@ -81,7 +81,6 @@ int loadfile(char *fname){
 	int cmd[3];
 	int i1, i2, trk[4], transp[4], param[3], note, instr;
 	int i;
-	char c;
 
 	snprintf(filename, sizeof(filename), "%s", fname);
 
@@ -172,7 +171,7 @@ void saveinstrument(char *fname){
 int loadinstrument(char *fname){
 	FILE *f;
 	char buf[1024];
-	int i, cmd[3], param[3], instr;
+	int i, cmd[3], param[3];
 	int fr;
 
 	f = fopen(fname, "r");
@@ -180,7 +179,7 @@ int loadinstrument(char *fname){
 		return -1;
 	}
 	
-	fr = _nextfreeinstr();
+	fr = nextfreeinstr();
 
 	while(!feof(f) && fgets(buf, sizeof(buf), f)){
 		if(3 == sscanf(buf, "instrumentline %x %x %x",
