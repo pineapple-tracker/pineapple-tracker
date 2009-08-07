@@ -38,11 +38,11 @@ BOOL init( void )
 	wanted.callback = (void*) mix_and_play;
 	wanted.userdata = tune;
 
-	/*if(SDL_OpenAudio(&wanted, NULL) < 0) {
+	if(SDL_OpenAudio(&wanted, NULL) < 0) {
 		printf("Failed to open audio device.\n");
 		SDL_Quit();
 		return FALSE;
-	}*/
+	}
 
 	return TRUE;
 }

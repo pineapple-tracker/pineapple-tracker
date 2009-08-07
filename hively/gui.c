@@ -224,6 +224,9 @@ void drawgui(){
 		case 0:
 			move(songy, songx);
 			break;
+		case 1:
+			move(tracky, trackx);
+			break;
 	}
 
 	refresh();
@@ -267,6 +270,19 @@ void handleinput(){
 		case 'l':
 		case KEY_RIGHT:
 			act_mvright();
+			break;
+		case CTRL('H'):
+			currtab--;
+			if(currtab < 0)
+				currtab = 2;
+			break;
+		case CTRL('L'):
+			currtab++;
+			currtab %= 3;
+			break;
+		case KEY_TAB:
+			currtab++;
+			currtab %= 3;
 			break;
 		case ENTER:
 			play = 1;
