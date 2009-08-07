@@ -20,7 +20,7 @@ player:	player.o oldchip.o gui.o modes.o actions.o musicchip_file.o conf_file.o
 	$(CC) -o $@ $^ ${LIBS}
 
 sdl_gui: sdl_gui.o gui.o modes.o actions.o oldchip.o musicchip_file.o
-	$(CC) -o $@ $^ -O2 ${SDL_CFLAGS} -lSDLmain -lSDL
+	$(CC) -o $@ $^ ${LIBS}
 
 .PHONY:
 	clean

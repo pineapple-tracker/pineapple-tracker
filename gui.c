@@ -5,6 +5,19 @@
 #include "pineapple.h"
 #include "gui.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <curses.h>
+#include <unistd.h>
+#include <ctype.h>
+
+#ifndef WINDOWS
+#include <err.h>
+#endif
+
+
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
 \\\  local vars                                                              .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//

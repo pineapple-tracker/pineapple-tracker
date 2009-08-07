@@ -5,6 +5,12 @@
 #include "gui.h"
 #include "musicchip_file.h"
 
+#include <curses.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
 int f;
 int tcliplen, icliplen = 0;
 int lastinsert = 0;

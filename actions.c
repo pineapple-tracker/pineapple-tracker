@@ -2,6 +2,8 @@
 #include "pineapple.h"
 #include "gui.h"
 
+#include <string.h>
+
 static u8 _oldfxparam = 0;
 
 /* move cursor left one column */
