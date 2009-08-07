@@ -88,3 +88,5 @@ struct pineapple_tune{
 	int currtab;
 	int saved;
 };
+
+Also once we get different audio drivers going we need to make that configurable so we can know which callback function to use, etc.

@@ -310,3 +310,18 @@ Mode commands
 	=<note>
 		Set the pitch to <note>. Using this command will cause all
 		notes specified in the track column to be ignored.
+
+***************
+* CONFIG FILE *
+***************
+
+set audiodriver = <sdl> <jack> <alsa>
+	Set the audio driver to either SDL, jack or alsa.	
+
+set buffersize = <num>
+	Set the size of the audiobuffer to <num>. In the SDL driver we
+	would simply set requested.samples to this number, not sure how
+	it will work with the other drivers yet.
+
+set gui = <ncurses> <sdl> <caca>
+	Set the gui to ncurses, sdl, or libcaca.
