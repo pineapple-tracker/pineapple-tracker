@@ -1,6 +1,5 @@
 /* vi:set ts=8 sts=8 sw=8 noexpandtab: */
 #include <stdio.h>
-#include <stdint.h>
 
 #include <SDL/SDL.h>
 

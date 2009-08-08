@@ -21,6 +21,9 @@ enhancements:
 
 * make :q not quit if there are unmodified changes, but :q! should quit no
 	matter what.
+	
+* regulate framerate with SDL timer to use less CPU???
+	* perhaps ncurses has some sort of timer...i know caca does...
 
 bugs:
 ----
