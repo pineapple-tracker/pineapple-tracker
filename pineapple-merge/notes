@@ -93,6 +93,8 @@ struct pineapple_tune *loadPineapple() will load the filename specified on the
 command line and look at the header to figure out if its a .song or .hvl, then
 call either musicchipfile's loadfile or hvl_replay.c's hvl_LoadTune. Then the file
 will be converted to a struct pineapple_tune and returned.
+The functions importHvl and importPt will convert hvl's and pt's to
+the struct pineapple_tune.
 
 Then all the functions in hvl_replay.c will need to be changed in order to deal
 with the struct pineapple_tune instead of struct hvl_tune. Then when you want to save
