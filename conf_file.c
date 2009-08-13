@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <string.h>
+
 #include "pineapple.h"
 #include "gui.h"
 #include "conf_file.h"
