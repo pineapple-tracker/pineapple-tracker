@@ -125,10 +125,10 @@ void _insertc(int c){
 	lastinsert = c;
 }
 
-// isnumber() determines if a string is a number
+// _isnumber() determines if a string is a number
 // returns 1 if the given arg is a number, 0 otherwise.
 // for use with isdigit(), isxdigit(), etc...
-int isnumber(const char* str, int (*func) (int)){
+int _isnumber(const char* str, int (*func) (int)){
 	int i = 0;
 
 	for(;;){
@@ -237,7 +237,7 @@ void _parsecmd(char cmd[]){
 	}else if(!strncmp(cmd+1,"load ",5)){
 		loadinstrument(cmd+6);
 		setdisplay("d-_-b loaded ins! d-_-b");
-	}else if( isnumber((char *)cmd+1,isxdigit) ){
+	}else if( _isnumber((char *)cmd+1,isxdigit) ){
 		unsigned int goton = 1;
 		xtoi(cmd+1,&goton);
 
