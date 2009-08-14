@@ -8,9 +8,9 @@ NCURSES_CFLAGS := $(shell ncurses5-config --cflags)
 LIBS := -O2 $(shell pkg-config --libs sdl) \
 		$(shell ncurses5-config --libs)
 
-all: pineapple-hively
+all: pppt-hively
 
-pineapple-hively: main.o gui.o hvl_replay.o actions.o
+pppt-hively: main.o gui.o hvl_replay.o actions.o
 	$(CC) -o $@ $^ ${LIBS}
 
 %.o: %.c pineapple.h gui.h hvl_replay.h Makefile

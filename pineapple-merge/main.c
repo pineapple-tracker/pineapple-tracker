@@ -72,13 +72,25 @@ void sdl_callbackbuffer(struct pineapple_tune *tune, Uint8 *buf, int len){
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 struct pineapple_tune *loadPineapple(char *fname) {
 	struct pineapple_tune *tune;
+	
+	//if pineapple
+		loadfile(fname);
+	//if hvl
+		hvl_LoadTune(fname, FREQ, 4)
+}
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < struct pineapple_tune *convertHvl(struct hvl_tune) >                   .|
+///  Gives you a struct pineapple tune from a struct hvl_tune.                .\
+\\\                                                                           `/
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
+struct pineapple_tune *convertHvl(struct hvl_tune) {
 }
 
 int main(int argc, char **argv){
 	if(argc != 2){
-		loadfile("untitled.song");
+		loadPineapple("untitled.song");
 	}else{
-		loadfile(argv[1]);
+		loadPineapple(argv[1]);
 	}
 
 	initchip();

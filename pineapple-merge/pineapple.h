@@ -157,12 +157,18 @@ u8 playsong;
 u8 songpos;
 int songlen;
 
+struct config {
+	char *audio_driver;
+	int buffersize;
+	char *gui;	
+}
+
 struct pineapple_tune {
 	char type[3]; //.pt, .mod, .hvl, .ahx
 
 	char *filename;
 	u8 callbacktime; //ht_SpeedMultiplier
-	int16 tempo; //ht_Tempo
+	s16 tempo; //ht_Tempo
 	char comment[1024];
 	struct oscillator osc[4];
 	struct instrument instr[256]; //struct hvl_instrument *ht_Instruments
