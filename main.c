@@ -16,10 +16,12 @@
 
 #define FREQ 48000
 
-//void sdl_callbackbuffer(PT_TUNE *tune, Uint8 *buf, int len);
-void sdl_callbackbuffer(void *userdata, Uint8 *buf, int len);
+struct pineapple_tune *tune;
 
-//PT_TUNE *tune;
+void sdl_callbackbuffer(void *userdata, Uint8 *buf, int len);
+u8 (*audioInit)(void); //function that changes depending on which audiodriver is specified
+void (*sdlCallback)(void); //function that changes depending on which type of file is loaded
+
 
 #ifdef JACK
 jack_nframes_t sr; // The current sample rate
@@ -33,7 +35,7 @@ void j_shutdown(void *arg);
 #endif
 
 
-/* initialize SDL audio */
+/* SDL audioInit function */
 u8 sdl_init(void){
 	SDL_AudioSpec requested, obtained;
 
@@ -169,7 +171,19 @@ void j_shutdown(void *arg){
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 struct pineapple_tune *loadPineapple(char *fname) {
 	struct pineapple_tune *tune;
+
+
+	return tune;
 }
+
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < struct pineapple_tune *convertHvl(struct *hvl_tune)  >                .|
+///  Gives you a struct pineapple_tune from a struct *hvl_tune.              .\
+\\\                                                                          .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
+//struct pineapple_tune *convertHvl(struct *hvl_tune) {
+//}
+
 
 int main(int argc, char **argv){
 	char * f;
