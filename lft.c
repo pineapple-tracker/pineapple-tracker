@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------\\
-// song.c
-// lft's song format
+// lft.c
+// lft's musicchip song format
 //--------------------------------------------------------------------------//
 
 #include <stdio.h>
@@ -8,7 +8,7 @@
 
 #include "pineapple.h"
 #include "gui.h"
-#include "song.h"
+#include "lft.h"
 
 volatile u8 callbackwait;
 u8 callbacktime = 180;
@@ -407,7 +407,7 @@ u8 interrupthandler()        // called at 9000 Hz
 // File operations
 //--------------------------------------------------------------------------//
 
-void savefile(char *fname){
+void lft_savefile(char *fname){
 	FILE *f;
 	int i, j;
 
@@ -471,7 +471,7 @@ void savefile(char *fname){
 	fclose(f);
 }
 
-int loadfile(char *fname){
+int lft_loadfile(char *fname){
 	FILE *f;
 	char buf[1024];
 	int cmd[3];
@@ -539,7 +539,7 @@ int loadfile(char *fname){
 	return 0;
 }
 
-void saveinstrument(char *fname){
+void lft_saveinstrument(char *fname){
 	FILE *f;
 	int i;
 
@@ -564,7 +564,7 @@ void saveinstrument(char *fname){
 	return;
 }
 
-int loadinstrument(char *fname){
+int lft_loadinstrument(char *fname){
 	FILE *f;
 	char buf[1024];
 	int i, cmd[3], param[3];

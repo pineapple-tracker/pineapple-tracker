@@ -12,13 +12,13 @@ LIBS = $(shell pkg-config --libs sdl) \
 
 all: pppt
 
-pppt: main.o song.o gui.o modes.o actions.o conf_file.o
+pppt: main.o lft.o gui.o modes.o actions.o conf_file.o
 	$(CC) -o $@ $^ ${LIBS}
 
-player:	player.o song.o gui.o modes.o actions.o conf_file.o
+player:	player.o lft.o gui.o modes.o actions.o conf_file.o
 	$(CC) -o $@ $^ ${LIBS}
 
-sdl_gui: sdl_gui.o gui.o modes.o actions.o song.o
+sdl_gui: sdl_gui.o gui.o modes.o actions.o lft.o
 	$(CC) -o $@ $^ ${LIBS}
 
 .PHONY:
