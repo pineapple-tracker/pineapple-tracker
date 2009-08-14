@@ -218,7 +218,7 @@ void initgui(){
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
 \\\  < void handleinput() >                                                  .|
-///  Top-level input loop.                                                   .\
+///  Main input loop.                                                        .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void handleinput(void){
 	int c;
@@ -406,13 +406,26 @@ void *spin_gui(void *tid){
 }*/
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
-\\\  < void guiloop() >                                                      .|
-/// guiloop() starts a new thread for the keyboard input, while running the  .\
-\\\ gui loop in the main thread.                                             .\
+\\\  < void eventloop() >                                                    .|
+/// Main event loop                                                          .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
+void eventloop(void){
+#ifndef WINDOWS
+	ESCDELAY = 50;
+#endif
+	for(;;){
+		drawgui();
+		handleinput();
+	}
+}
+
+//--------------------------------------------------------------------------\\
+//  this is when i tried to make separate threads for the screen and the
+//  input
+//--------------------------------------------------------------------------//
 //TODO: figure out a method where we don't have to use usleep()... the
 // screen also jitters sometimes
-/*void guiloop(void){
+/*void eventloop(void){
 	int rc;
 	pthread_t inputthread;
 	pthread_t guithread;
@@ -437,15 +450,6 @@ void *spin_gui(void *tid){
 		msleep(1000);
 	}
 }*/
-void guiloop(void){
-#ifndef WINDOWS
-	ESCDELAY = 50;
-#endif
-	for(;;){
-		drawgui();
-		handleinput();
-	}
-}
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
 \\\  Internal functions                                                      .\

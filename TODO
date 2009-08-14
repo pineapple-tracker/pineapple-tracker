@@ -52,5 +52,6 @@ bugs:
 also acts like you pressed the escape key!
 
 * ui doesn't update after pressing the first key of a two-key command like yy
+	* tried a threading solution. didn't work like expected. -nik
 
 * sound is REALLY wonky on amd64

@@ -7,7 +7,7 @@
 #endif
 
 #include "pineapple.h"
-#include "musicchip_file.h"
+#include "song.h"
 
 void audiocb(void *userdata, Uint8 *buf, int len) {
 	int i;

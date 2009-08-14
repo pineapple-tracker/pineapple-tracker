@@ -12,7 +12,7 @@
 #endif
 
 #include "pineapple.h"
-#include "musicchip_file.h"
+#include "song.h"
 
 #define FREQ 48000
 
@@ -174,7 +174,7 @@ int main(int argc, char **argv){
 		}else{
 			loadfile(argv[1]);
 		}
-		guiloop();
+		eventloop();
 
 		//free (ports);
 		//jack_client_close (client);
@@ -192,11 +192,10 @@ int main(int argc, char **argv){
 		}
 		
 		SDL_PauseAudio(0);
-		guiloop();
+		eventloop();
 
 		SDL_Quit();
 	}
-	
-	return 0;
 
+	return 0;
 }

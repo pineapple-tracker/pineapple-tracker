@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -std=c99 -O2 -Wall -Wno-comment $(SDL_CFLAGS) \
+CFLAGS = -std=c99 -O2 -Wall -Wno-comment $(SDL_CFLAGS) \
 		$(NCURSES_CFLAGS)
 
 SDL_CFLAGS = $(shell pkg-config --cflags sdl)
@@ -7,23 +7,22 @@ NCURSES_CFLAGS = $(shell ncurses5-config --cflags)
 
 LIBS = $(shell pkg-config --libs sdl) \
 	$(shell ncurses5-config --libs) \
-	$(shell pkg-config --libs caca) \
+	#$(shell pkg-config --libs caca) \
 	#$(shell pkg-config --libs jack)
 
-all: pineapple-tracker player
+all: pppt player
 
-pineapple-tracker: main.o oldchip.o gui.o modes.o actions.o musicchip_file.o \
-		conf_file.o
+pppt: main.o song.o gui.o modes.o actions.o conf_file.o
 	$(CC) -o $@ $^ ${LIBS}
 
-player:	player.o oldchip.o gui.o modes.o actions.o musicchip_file.o conf_file.o
+player:	player.o song.o gui.o modes.o actions.o conf_file.o
 	$(CC) -o $@ $^ ${LIBS}
 
-sdl_gui: sdl_gui.o gui.o modes.o actions.o oldchip.o musicchip_file.o
+sdl_gui: sdl_gui.o gui.o modes.o actions.o song.o
 	$(CC) -o $@ $^ ${LIBS}
 
 .PHONY:
 	clean
 clean:	
 	@echo "clean ..."
-	@rm -f *.o pineapple-tracker player sdl_gui
+	@rm -f *.o pppt player sdl_gui

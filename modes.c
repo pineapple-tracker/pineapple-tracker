@@ -3,7 +3,7 @@
 
 #include "pineapple.h"
 #include "gui.h"
-#include "musicchip_file.h"
+#include "song.h"
 
 #include <curses.h>
 #include <ctype.h>
@@ -210,7 +210,7 @@ void _parsecmd(char cmd[]){
 	}else if(strcmp(cmd, ":write") == 0){
 		savefile(filename);
 		saved = 1;
-	}else if(strcmp(cmd, ":wq") == 0){
+	}else if(strcmp(cmd, ":wq") == 0 || strcmp(cmd, ":x") == 0){
 		savefile(filename);
 		saved = 1;
 		erase();
@@ -1005,7 +1005,7 @@ void insertmode(void){
 		if((c = getch()) != ERR) switch(c){
 			case KEY_ESCAPE:
 				currmode = PM_NORMAL;
-				guiloop();
+				return;
 			case 'h':
 			case KEY_LEFT:
 				act_mvleft();
@@ -1080,8 +1080,7 @@ void insertmode(void){
 			case ' ':
 				silence();
 				currmode = PM_NORMAL;
-				guiloop();
-				break;
+				return;
 			case ENTER:
 				if(currtab != 2){
 					if(currtab == 1){
