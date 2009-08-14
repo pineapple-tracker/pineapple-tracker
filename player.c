@@ -7,7 +7,7 @@
 #endif
 
 #include "pineapple.h"
-#include "song.h"
+#include "lft.h"
 
 void audiocb(void *userdata, Uint8 *buf, int len) {
 	int i;
@@ -68,7 +68,7 @@ int main(int argc, char **argv){
 
 	initchip();
 
-	loadfile(argv[1]);
+	lft_loadfile(argv[1]);
 
 	SDL_PauseAudio(0);
 	silence();

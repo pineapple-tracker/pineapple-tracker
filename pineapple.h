@@ -92,7 +92,7 @@ void silence(void);
 void iedplonk(int, int);
 
 void initgui(void);
-void guiloop(void);
+void eventloop(void);
 
 void display(void);
 
@@ -110,18 +110,6 @@ int cmdrepeat;
 int cmdrepeatnum;
 int lastaction;
 int lastrepeatnum;
-
-/* a linked list */
-/*typedef struct list_node{
-	void *element;
-	struct list_node *next;
-} NODE;
-
-NODE *list_create(void *e);
-NODE *list_contains(NODE *n, int(*func)(void *, void *), void *match);
-int findu8(void *a, void *b);
-
-NODE *highlightlines;*/
 
 /* lines to be highlighted in visual line mode */
 int highlight_firstline, highlight_lastline, highlight_lineamount;
@@ -168,5 +156,28 @@ u8 playtrack;
 u8 playsong;
 u8 songpos;
 int songlen;
+
+// generic song struct
+struct pineapple_tune {
+	char type[3]; //.pt, .mod, .hvl, .ahx
+
+	char *filename;
+	u8 callbacktime; //ht_SpeedMultiplier
+	u16 tempo; //ht_Tempo
+	char comment[1024];
+	struct oscillator osc[4];
+	struct instrument instr[256]; //struct hvl_instrument *ht_Instruments
+	struct track trk[256]; //struct hvl_step ht_Tracks[256][64]
+	struct songline sng[256]; //struct hvl_position *ht_Positions
+	u8 trackpos;
+	u8 songpos; //ht_PosNr
+	int songlen; //ht_PositionNr
+	int instrx, instry, instroffs;
+	int songx, songy, songoffs;
+	int trackx, tracky, trackoffs;
+	int currtrack, currinstr; 
+	int currtab;
+	int saved;
+};
 
 #endif /* PINEAPPLE_H */

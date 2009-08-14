@@ -12,7 +12,7 @@
 #endif
 
 #include "pineapple.h"
-#include "song.h"
+#include "lft.h"
 
 #define FREQ 48000
 
@@ -162,36 +162,49 @@ void j_shutdown(void *arg){
 }
 #endif // JACK
 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < struct pineapple_tune *loadPineapple(char *fname) >                   .|
+///  Loads the file specified on the command line, figures out what type of  .\
+\\\  file it is and returns a pointer to a struct pineapple_tune.            .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
+struct pineapple_tune *loadPineapple(char *fname) {
+	struct pineapple_tune *tune;
+}
+
 int main(int argc, char **argv){
-#ifdef JACK
-	if(!j_init()){
+	char * f;
+	f = "";
 
+
+	if(sdl_init() == 0){
+		//----------------------------------\\
+		// parse those args :^)
+		//----------------------------------//
+		if(argc > 1){
+			f = argv[1];
+		}
+
+		if(lft_loadfile(f) == 0){
+			fprintf(stderr, "loaded %s\n", f);
+			loadPineapple(f);
+		//}else if(hvl_loadfile(filename, FREQ, 4) != NULL){
+		//	// start up that hively tune!
+		//}else if(etc..
+		}else{
+			fprintf(stderr, "couldn't load %s\n", f);
+		}
+
+		//----------------------------------\\
+		// begin image&sound
+		//----------------------------------//
 		initchip();
 		initgui();
-
-		if(argc != 2){
-			loadfile("untitled.song");
-		}else{
-			loadfile(argv[1]);
-		}
-		eventloop();
-
-		//free (ports);
-		//jack_client_close (client);
-	}else if(!sdl_init()){
-#else
-	if(!sdl_init()){
-#endif
-		initchip();
-		initgui();
-
-		if(argc != 2){
-			loadfile("untitled.song");
-		}else{
-			loadfile(argv[1]);
-		}
 		
 		SDL_PauseAudio(0);
+
+		//----------------------------------\\
+		// actually start the program
+		//----------------------------------//
 		eventloop();
 
 		SDL_Quit();

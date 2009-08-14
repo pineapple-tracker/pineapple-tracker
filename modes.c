@@ -3,7 +3,7 @@
 
 #include "pineapple.h"
 #include "gui.h"
-#include "song.h"
+#include "lft.h"
 
 #include <curses.h>
 #include <ctype.h>
@@ -191,7 +191,7 @@ void _parsecmd(char cmd[]){
 	//if(cmd[1] == 'w'){
 	//switch(strcmp(cmd,
 	if(strcmp(cmd, ":w") == 0){
-		savefile(filename);
+		lft_savefile(filename);
 		saved = 1;
 	}else if(strcmp(cmd, ":q") == 0){
 		if(!saved){
@@ -208,10 +208,10 @@ void _parsecmd(char cmd[]){
 		endwin();
 		exit(0);
 	}else if(strcmp(cmd, ":write") == 0){
-		savefile(filename);
+		lft_savefile(filename);
 		saved = 1;
 	}else if(strcmp(cmd, ":wq") == 0 || strcmp(cmd, ":x") == 0){
-		savefile(filename);
+		lft_savefile(filename);
 		saved = 1;
 		erase();
 		refresh();
@@ -224,7 +224,7 @@ void _parsecmd(char cmd[]){
 		exit(0);
 	}else if(cmd[1]=='e' && cmd[2]==' '){
 		// if the file doesn't exist, clear the song
-		if(loadfile(cmd+3)){
+		if(lft_loadfile(cmd+3)){
 			initsonglines();
 			inittracks();
 			initinstrs();
@@ -232,10 +232,10 @@ void _parsecmd(char cmd[]){
 	//yucky if statement below.....probably better way to do it
 	// maybe this is better??
 	}else if(!strncmp(cmd+1,"save ",5)){
-		saveinstrument(cmd+6);
+		lft_saveinstrument(cmd+6);
 		setdisplay("d-_-b saved ins! d-_-b");
 	}else if(!strncmp(cmd+1,"load ",5)){
-		loadinstrument(cmd+6);
+		lft_loadinstrument(cmd+6);
 		setdisplay("d-_-b loaded ins! d-_-b");
 	}else if( _isnumber((char *)cmd+1,isxdigit) ){
 		unsigned int goton = 1;
@@ -660,7 +660,7 @@ void normalmode(int c){
 			c = nextchar();
 			switch(c){
 				case 'Z':
-					savefile(filename);
+					lft_savefile(filename);
 					erase();
 					refresh();
 					endwin();
@@ -1063,7 +1063,7 @@ void insertmode(void){
 				c = nextchar();
 				switch(c){
 					case 'Z':
-						savefile(filename);
+						lft_savefile(filename);
 						erase();
 						refresh();
 						endwin();

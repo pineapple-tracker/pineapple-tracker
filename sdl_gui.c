@@ -100,14 +100,11 @@ int main(int argc, char *args[]){
 			}
 		}
 
-		update_main(screen);
-		if((SDL_GetTicks() - tick) < 1000/FRAMES_PER_SECOND) 
+		//update_main(screen);
+		if((SDL_GetTicks() - tick) < 1000/FRAMES_PER_SECOND){
 			SDL_Delay( (1000/FRAMES_PER_SECOND) - (SDL_GetTicks() - tick));
-
+		}
 		gui_refresh();
-
-		// try to take up less cpu
-		//SDL_Delay(20);
 	}
 
 	SDL_Quit();
@@ -162,18 +159,26 @@ static void handle_key_normal(SDL_Event *ev){
 		break;
 	  case SDLK_h:
 	  case SDLK_LEFT:
+		fprintf(stderr,"H\n");
+		fprintf(stderr,"pos: %d, %d\n", songx, songy);
 	  	act_mvleft();
 		break;
 	  case SDLK_l:
 	  case SDLK_RIGHT:
+		fprintf(stderr,"J\n");
+		fprintf(stderr,"pos: %d, %d\n", songx, songy);
 	  	act_mvright();
 		break;
 	  case SDLK_k:
 	  case SDLK_UP:
+		fprintf(stderr,"K\n");
+		fprintf(stderr,"pos: %d, %d\n", songx, songy);
 	  	act_mvup();
 		break;
 	  case SDLK_j:
 	  case SDLK_DOWN:
+		fprintf(stderr,"L\n");
+		fprintf(stderr,"pos: %d, %d\n", songx, songy);
 	  	act_mvdown();
 		break;
 	  case SDLK_PAGEUP:

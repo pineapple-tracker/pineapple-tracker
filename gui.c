@@ -200,7 +200,9 @@ void exitgui(){
 void initgui(){
 	initscr();
 
-	//if(setlocale(LC_CTYPE,"en_US.utf8") != NULL) setdisplay("UTF-8 enabled!");
+	//if(setlocale(LC_CTYPE,"en_US.utf8") != NULL){
+	//	setdisplay("UTF-8 enabled!");
+	//}
 
 	// don't send newline on Enter key, and don't echo chars to the screen.
 	nonl();
