@@ -22,6 +22,8 @@ static Uint32 boxcolor;
 #define SP 2  //spacing
 #define BOXW 1  //box width
 
+#define FRAMES_PER_SECOND 30
+
 // these aren't #define's because doing this in the preprocessor:
 //     #define COLW = (WINW/3)-3
 // made gcc complain
@@ -30,7 +32,8 @@ static int colh;
 
 
 int main(int argc, char *args[]){
-	int last_tick;
+	//int last_tick;
+	int tick;
 
 	if(SDL_Init(SDL_INIT_VIDEO)!=0)
 		return 1;
@@ -62,12 +65,12 @@ int main(int argc, char *args[]){
 	draw_main();
 	SDL_Flip(screen);
 
-	last_tick=SDL_GetTicks();
+	//last_tick=SDL_GetTicks();
 	while(!die){
 		SDL_Event ev;
-		int tick = SDL_GetTicks();
-		int dt = tick - last_tick;
-		last_tick = tick;
+		tick = SDL_GetTicks();
+		//int dt = tick - last_tick;
+		//last_tick = tick;
 
 		/* Handle GUI events */
 		while(SDL_PollEvent(&ev)){
@@ -97,12 +100,14 @@ int main(int argc, char *args[]){
 			}
 		}
 
-		update_main(screen, dt);
+		update_main(screen);
+		if((SDL_GetTicks() - tick) < 1000/FRAMES_PER_SECOND) 
+			SDL_Delay( (1000/FRAMES_PER_SECOND) - (SDL_GetTicks() - tick));
 
 		gui_refresh();
 
 		// try to take up less cpu
-		SDL_Delay(20);
+		//SDL_Delay(20);
 	}
 
 	SDL_Quit();
@@ -220,7 +225,7 @@ static void handle_key_normal(SDL_Event *ev){
 	}
 }
 
-static void update_main(SDL_Surface *screen, int dt){
+static void update_main(SDL_Surface *screen){
 	//unsigned int pos;
 
 	//draw_songed(SP,voffs,230+(SP*2),colh);

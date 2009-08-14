@@ -10,7 +10,7 @@ LIBS = $(shell pkg-config --libs sdl) \
 	#$(shell pkg-config --libs caca) \
 	#$(shell pkg-config --libs jack)
 
-all: pppt player
+all: pppt
 
 pppt: main.o song.o gui.o modes.o actions.o conf_file.o
 	$(CC) -o $@ $^ ${LIBS}
