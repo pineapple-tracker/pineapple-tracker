@@ -181,7 +181,7 @@ struct pineapple_tune {
 	int currtrack, currinstr;
 	int currtab;
 	int saved;
-} tune;
+};
 
 struct config_params {
 	int buffersize;
@@ -190,6 +190,7 @@ struct config_params {
 	int samplefreq;
 };
 
+
 /*audio functions*/
 
 void lftSdlCallback(void *userdata, u8 *buf, int len);
@@ -197,5 +198,7 @@ u8 (*audioInit)(void); //function that changes depending on which audiodriver is
 u8 sdl_init(void);
 void (*sdlCallback)(void); //function that changes depending on which type of file is loaded
 //void hvlSdlCallBack(struct hvl_tune *ht, uint8 *stream, int length);
+//
+struct pineapple_tune *tune;
 
 #endif /* PINEAPPLE_H */

@@ -214,7 +214,7 @@ void playroutine(){			// called at 50 Hz
 
 			if(!trackpos){
 				if(playsong){
-					if(songpos >= tune.songlen){
+					if(songpos >= tune->songlen){
 						playsong = 0;
 					}else{
 						for(ch = 0; ch < 4; ch++){
@@ -507,6 +507,11 @@ int lft_loadfile(char *fname, struct pineapple_tune *pt){
 	rewind(f);
 
 	// TODO: put teh data in the pineapple_tune struct instead
+	pt = malloc(sizeof(struct pineapple_tune));
+	if(!pt) {
+		fprintf(stderr, "couldn't malloc pineapple_tune *tune!\n");
+		return -1;
+	}
 
 	pt->songlen = 1;
 	while(!feof(f) && fgets(buf, sizeof(buf), f)){

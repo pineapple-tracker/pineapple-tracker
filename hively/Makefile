@@ -11,7 +11,7 @@ LIBS := -O2 $(shell pkg-config --libs sdl) \
 all: pppt-hively
 
 pppt-hively: main.o gui.o hvl_replay.o actions.o
-	$(CC) -o $@ $^ ${LIBS}
+	$(CC) -g -o $@ $^ ${LIBS}
 
 %.o: %.c pineapple.h gui.h hvl_replay.h Makefile
 

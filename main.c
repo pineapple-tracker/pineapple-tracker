@@ -12,22 +12,32 @@
 #endif
 
 #include "pineapple.h"
+#include "gui.h"
 #include "lft.h"
 #include "hvl_replay.h"
 
 
 
-//struct pineapple_tune *tune;
-
-
+struct pineapple_tune *importHvl(struct hvl_tune *ht);
 
 // TODO: make hvl.c
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
-\\\  < struct pineapple_tune *hvl_loadtune(struct *)  >                      .|
+\\\  < struct pineapple_tune *importHvl(struct hvl_tune *ht)  >                      .|
 ///  Gives you a struct pineapple_tune from a struct *hvl_tune.              .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
-//struct pineapple_tune *hvl_loadtune(struct *hvl_tune) {
-//}
+struct pineapple_tune *importHvl(struct hvl_tune *ht) {
+	struct pineapple_tune *tune;
+	tune = malloc(sizeof(tune));
+	if(!tune) {
+		fprintf(stderr, "couldn't malloc pineapple_tune *tune!\n");
+		return NULL;
+	}
+	tune->songlen = ht->ht_PositionNr;
+	printf("songlen: %i\n", tune->songlen);
+		
+
+	return tune;
+}
 
 
 int main(int argc, char **argv){
@@ -45,16 +55,17 @@ int main(int argc, char **argv){
 		
 		initinstrs();
 		
-		if(lft_loadfile(f,&tune) == 0){
+		if(lft_loadfile(f,tune) == 0){
 			fprintf(stderr, "loaded %s\n", f);
 		//TODO make 48000 configurable as 'samplefreq'
-		}else if(hvl_LoadTune(f, 48000, 4) != NULL){
+		}else if((htTune = hvl_LoadTune(f, 48000, 4)) != NULL){
 			fprintf(stderr, "loading ahx/hvl...\n");
 			fprintf(stderr, "loaded %s\n", f);
 			// ????
 		}else{
 			fprintf(stderr, "couldn't load %s\n", f);
 		}
+		tune = importHvl(htTune);
 		//----------------------------------\\
 		// begin image&sound
 		//----------------------------------//

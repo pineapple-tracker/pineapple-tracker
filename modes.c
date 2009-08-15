@@ -224,7 +224,7 @@ void _parsecmd(char cmd[]){
 		exit(0);
 	}else if(cmd[1]=='e' && cmd[2]==' '){
 		// if the file doesn't exist, clear the song
-		if(lft_loadfile(cmd+3,&tune)){
+		if(lft_loadfile(cmd+3,tune)){
 			initsonglines();
 			inittracks();
 			initinstrs();
@@ -243,7 +243,7 @@ void _parsecmd(char cmd[]){
 
 		switch(currtab){
 			case 0:
-				songy = (goton>tune.songlen)? tune.songlen-1 : goton;
+				songy = (goton>tune->songlen)? tune->songlen-1 : goton;
 				break;
 			case 1:
 				currtrack = (goton>0xff)? 0xff : goton;
@@ -330,7 +330,7 @@ void normalmode(int c){
 		case CTRL('E'):
 			switch(currtab){
 				case 0:
-					if(songy<=tune.songlen-2){
+					if(songy<=tune->songlen-2){
 						if(songy==songoffs)
 							songy++;
 						songoffs++;
@@ -372,8 +372,8 @@ void normalmode(int c){
 		case 'M':
 			switch(currtab){
 				case 0:
-					songy = (tune.songlen <= getmaxy(stdscr)-2)?
-							tune.songlen/2
+					songy = (tune->songlen <= getmaxy(stdscr)-2)?
+							tune->songlen/2
 							: ((getmaxy(stdscr)-6)/2) + songoffs;
 					break;
 				case 1:
@@ -391,8 +391,8 @@ void normalmode(int c){
 		case 'L':
 			switch(currtab){
 				case 0:
-					songy = (tune.songlen <= getmaxy(stdscr)-2)?
-							tune.songlen-1
+					songy = (tune->songlen <= getmaxy(stdscr)-2)?
+							tune->songlen-1
 							: getmaxy(stdscr)-3+songoffs;
 					break;
 				case 1:
@@ -477,12 +477,12 @@ void normalmode(int c){
 		//paste
 		case 'p':
 			if(currtab == 0){
-				if(tune.songlen < 256){
+				if(tune->songlen < 256){
 					for(int i = 0; i < tcliplen; i++){
 						// insert new line
-						memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (tune.songlen - songy - 1));
+						memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (tune->songlen - songy - 1));
 						songy++;
-						tune.songlen++;
+						tune->songlen++;
 						memset(&song[songy], 0, sizeof(struct songline));
 
 						// paste to new line
@@ -571,10 +571,10 @@ void normalmode(int c){
 						songy--;
 						int i;
 						for(i=0; i<2; i++){
-							if(tune.songlen > 1){
-								memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (tune.songlen - songy - 1));
-								tune.songlen--;
-								if(songy >= tune.songlen) songy = tune.songlen - 1;
+							if(tune->songlen > 1){
+								memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (tune->songlen - songy - 1));
+								tune->songlen--;
+								if(songy >= tune->songlen) songy = tune->songlen - 1;
 							}
 						}
 					}
@@ -594,10 +594,10 @@ void normalmode(int c){
 					}else if(currtab == 0){
 						int i;
 						for(i=0; i<2; i++){
-							if(tune.songlen > 1){
-								memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (tune.songlen - songy - 1));
-								tune.songlen--;
-								if(songy >= tune.songlen) songy = tune.songlen - 1;
+							if(tune->songlen > 1){
+								memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (tune->songlen - songy - 1));
+								tune->songlen--;
+								if(songy >= tune->songlen) songy = tune->songlen - 1;
 							}
 						}
 					}

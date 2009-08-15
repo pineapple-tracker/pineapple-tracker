@@ -67,10 +67,10 @@ void act_mvup(void){
 void act_mvdown(void){
 	switch(currtab){
 		case 0:
-			if(songy < tune.songlen - 1){
+			if(songy < tune->songlen - 1){
 				songy++;
 			}else{
-				songy = tune.songlen - 1;
+				songy = tune->songlen - 1;
 			}
 			break;
 		case 1:
@@ -117,10 +117,10 @@ void act_bigmvup(void){
 void act_bigmvdown(void){
 	switch(currtab){
 		case 0:
-			if(songy < tune.songlen - 8){
+			if(songy < tune->songlen - 8){
 				songy += 8;
 			}else{
-				songy = tune.songlen - 1;
+				songy = tune->songlen - 1;
 			}
 			break;
 		case 1:
@@ -139,7 +139,7 @@ void act_bigmvdown(void){
 void act_mvbottom(void){
 	switch(currtab){
 		case 0:
-			songy = tune.songlen - 1;
+			songy = tune->songlen - 1;
 			break;
 		case 1:
 			tracky = tracklen - 1;
@@ -532,10 +532,10 @@ void act_addline(void){
 			in->line[instry].param = 0;
 		}
 	}else if(currtab == 0){
-		if(tune.songlen < 256){
-			memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (tune.songlen - songy - 1));
+		if(tune->songlen < 256){
+			memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (tune->songlen - songy - 1));
 			songy++;
-			tune.songlen++;
+			tune->songlen++;
 			memset(&song[songy], 0, sizeof(struct songline));
 		}
 	}
@@ -552,10 +552,10 @@ void act_delline(void){
 			if(instry >= in->length) instry = in->length - 1;
 		}
 	}else if(currtab == 0){
-		if(tune.songlen > 1){
-			memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (tune.songlen - songy - 1));
-			tune.songlen--;
-			if(songy >= tune.songlen) songy = tune.songlen - 1;
+		if(tune->songlen > 1){
+			memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (tune->songlen - songy - 1));
+			tune->songlen--;
+			if(songy >= tune->songlen) songy = tune->songlen - 1;
 		}
 	}
 	saved = 0;
