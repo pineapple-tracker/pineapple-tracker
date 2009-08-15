@@ -1,0 +1,4 @@
+set gui = ncurses
+set audiodriver = sdl
+set buffersize = 256
+set samplefreq = 48000
