@@ -41,7 +41,12 @@ int main(int argc, char **argv){
 		}
 		//what happens if we load with no filename?
 		
-		initinstrs();
+		//----------------------------------\\
+		// begin image&sound before you load the file
+		//----------------------------------//
+		initchip();
+		initgui();
+		
 		if(lft_loadfile(f,&tune) == 0){
 			fprintf(stderr, "loaded %s\n", f);
 		//}else if(hvl_LoadTune(filename, FREQ, 4) != NULL){
@@ -50,11 +55,6 @@ int main(int argc, char **argv){
 			fprintf(stderr, "couldn't load %s\n", f);
 		}
 
-		//----------------------------------\\
-		// begin image&sound
-		//----------------------------------//
-		initchip();
-		initgui();
 		
 		SDL_PauseAudio(0);
 
