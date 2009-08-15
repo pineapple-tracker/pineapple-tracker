@@ -12,7 +12,7 @@ LIBS = $(shell pkg-config --libs sdl) \
 
 all: pppt
 
-pppt: main.o lft.o gui.o modes.o actions.o
+pppt: main.o lft.o gui.o modes.o actions.o drivers/sdl/sdl_audio.c
 	$(CC) -o $@ $^ ${LIBS}
 
 player:	player.o lft.o gui.o modes.o actions.o

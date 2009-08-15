@@ -180,4 +180,18 @@ struct pineapple_tune {
 	int saved;
 };
 
+struct config_params {
+	int buffersize;
+	char *gui;
+	char *audio_driver;
+};
+
+/*audio functions*/
+
+void lftSdlCallback(void *userdata, u8 *buf, int len);
+u8 (*audioInit)(void); //function that changes depending on which audiodriver is specified
+u8 sdl_init(void);
+void (*sdlCallback)(void); //function that changes depending on which type of file is loaded
+//void hvlSdlCallBack(struct hvl_tune *ht, uint8 *stream, int length);
+
 #endif /* PINEAPPLE_H */

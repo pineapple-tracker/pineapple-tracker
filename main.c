@@ -14,13 +14,9 @@
 #include "pineapple.h"
 #include "lft.h"
 
-#define FREQ 48000
 
 struct pineapple_tune *tune;
 
-void sdl_callbackbuffer(void *userdata, Uint8 *buf, int len);
-u8 (*audioInit)(void); //function that changes depending on which audiodriver is specified
-void (*sdlCallback)(void); //function that changes depending on which type of file is loaded
 
 
 #ifdef JACK
@@ -36,7 +32,7 @@ void j_shutdown(void *arg);
 
 
 /* SDL audioInit function */
-u8 sdl_init(void){
+/*u8 sdl_init(void){
 	SDL_AudioSpec requested, obtained;
 
 	fprintf(stderr, "Trying SDL....\n");
@@ -49,13 +45,11 @@ u8 sdl_init(void){
 	atexit(SDL_Quit);
 
 	requested.freq = FREQ;
-	//requested.freq = 16000;
-	//requested.format = AUDIO_S16SYS;
 	requested.format = AUDIO_U8;
 	requested.samples = 256;
+	//requested.samples = config_param.buffersize;
 	requested.channels = 1;
 	requested.callback = sdl_callbackbuffer;
-	//requested.userdata = tune;
 
 	SDL_OpenAudio(&requested, &obtained);
 
@@ -76,6 +70,7 @@ void sdl_callbackbuffer(void *userdata, Uint8 *buf, int len){
 		buf[i] = interrupthandler();
 	}
 }
+*/
 
 #ifdef JACK
 /* initialize JACK audio */
