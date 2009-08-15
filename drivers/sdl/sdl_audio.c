@@ -34,7 +34,7 @@ u8 sdl_init(void){
 }
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
-\\\  < void lftSdlCallback(void*,Uint8*,int) >                           .|
+\\\  < void lftSdlCallback(void* userdata,Uint8 *buf,int len) >              .|
 ///  SDLCallback function for LFT format.                                    .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void lftSdlCallback(void *userdata, Uint8 *buf, int len){

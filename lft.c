@@ -214,7 +214,7 @@ void playroutine(){			// called at 50 Hz
 
 			if(!trackpos){
 				if(playsong){
-					if(songpos >= songlen){
+					if(songpos >= tune.songlen){
 						playsong = 0;
 					}else{
 						for(ch = 0; ch < 4; ch++){
@@ -495,8 +495,8 @@ int lft_loadfile(char *fname, struct pineapple_tune *pt){
 	}
 
 	//check if its a musicchip file so we can return from this function and try to load the next type of file
-	fseek(f, 0, SEEK_SET);
-	fread(&header, 1, 15, f);
+/*	fseek(f, 0, SEEK_SET);
+	fread(&header, 1, 14, f);
 	if(strcmp(header, "musicchip tune")){
 		fprintf(stderr, "not a .song file!");
 		return 1;
@@ -504,7 +504,7 @@ int lft_loadfile(char *fname, struct pineapple_tune *pt){
 		fprintf(stderr, "loading .song file");
 	}
 	rewind(f);
-
+*/
 	// TODO: put teh data in the pineapple_tune struct instead
 
 	pt->songlen = 1;

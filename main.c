@@ -43,7 +43,7 @@ int main(int argc, char **argv){
 
 		if(lft_loadfile(f,&tune) == 0){
 			fprintf(stderr, "loaded %s\n", f);
-		}else if(hvl_LoadTune(filename, FREQ, 4) != NULL){
+		//}else if(hvl_LoadTune(filename, FREQ, 4) != NULL){
 			// ????
 		}else{
 			fprintf(stderr, "couldn't load %s\n", f);

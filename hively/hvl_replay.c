@@ -2101,8 +2101,8 @@ void hvl_playNote(struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod, str
 
 	  if( Note ) voice->vc_OverrideTranspose = 1000; // 1.5
 
-	  hvl_process_stepfx_1( ht, voice, Step->stp_FX&0xf,  Step->stp_FXParam );  
-	  hvl_process_stepfx_1( ht, voice, Step->stp_FXb&0xf, Step->stp_FXbParam );
+	  //hvl_process_stepfx_1( ht, voice, Step->stp_FX&0xf,  Step->stp_FXParam );  
+	  //hvl_process_stepfx_1( ht, voice, Step->stp_FXb&0xf, Step->stp_FXbParam );
 	  
 	  if( ( Instr ) && ( Instr <= ht->ht_InstrumentNr ) )
 	  {
