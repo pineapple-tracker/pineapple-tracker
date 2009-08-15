@@ -30,6 +30,7 @@ static Uint32 boxcolor;
 static int voffs;
 static int colh;
 
+struct pineapple_tune tune;
 
 int main(int argc, char *args[]){
 	//int last_tick;
@@ -119,7 +120,10 @@ static void draw_songed(int x, int y, int w, int h){
 	int i, pos;
 	char buf[1024];
 
-	for(i=0; i+y<h; i+=(FONT_CH+2)){
+	for(i=0; (i+y < h)
+		&&(i < h/FONT_CH)
+		&&(i < tune->songlen); i+=(FONT_CH+2))
+	{
 		pos = i/FONT_CH;
 		snprintf(buf, sizeof(buf),
 			"%02x:__ __:__ __:__ __:__", pos);

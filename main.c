@@ -159,31 +159,19 @@ void j_shutdown(void *arg){
 }
 #endif // JACK
 
+
+// TODO: make hvl.c
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
-\\\  < struct pineapple_tune *loadPineapple(char *fname) >                   .|
-///  Loads the file specified on the command line, figures out what type of  .\
-\\\  file it is and returns a pointer to a struct pineapple_tune.            .\
- \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
-struct pineapple_tune *loadPineapple(char *fname) {
-	struct pineapple_tune *tune;
-
-
-	return tune;
-}
-
- //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
-\\\  < struct pineapple_tune *convertHvl(struct *hvl_tune)  >                .|
+\\\  < struct pineapple_tune *hvl_loadtune(struct *)  >                      .|
 ///  Gives you a struct pineapple_tune from a struct *hvl_tune.              .\
-\\\                                                                          .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
-//struct pineapple_tune *convertHvl(struct *hvl_tune) {
+//struct pineapple_tune *hvl_loadtune(struct *hvl_tune) {
 //}
 
 
 int main(int argc, char **argv){
 	char * f;
 	f = "";
-
 
 	if(sdl_init() == 0){
 		//----------------------------------\\
@@ -193,12 +181,10 @@ int main(int argc, char **argv){
 			f = argv[1];
 		}
 
-		if(lft_loadfile(f) == 0){
+		if(lft_loadfile(f,&tune) == 0){
 			fprintf(stderr, "loaded %s\n", f);
-			loadPineapple(f);
 		//}else if(hvl_loadfile(filename, FREQ, 4) != NULL){
-		//	// start up that hively tune!
-		//}else if(etc..
+			// ????
 		}else{
 			fprintf(stderr, "couldn't load %s\n", f);
 		}

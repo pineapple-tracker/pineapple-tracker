@@ -224,7 +224,7 @@ void _parsecmd(char cmd[]){
 		exit(0);
 	}else if(cmd[1]=='e' && cmd[2]==' '){
 		// if the file doesn't exist, clear the song
-		if(lft_loadfile(cmd+3)){
+		if(lft_loadfile(cmd+3,&tune)){
 			initsonglines();
 			inittracks();
 			initinstrs();

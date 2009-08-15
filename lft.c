@@ -1,7 +1,7 @@
-//--------------------------------------------------------------------------\\
+//---------------------------------------------------------------------------\\
 // lft.c
 // lft's musicchip song format
-//--------------------------------------------------------------------------//
+//---------------------------------------------------------------------------//
 
 #include <stdio.h>
 #include <string.h>
@@ -471,7 +471,11 @@ void lft_savefile(char *fname){
 	fclose(f);
 }
 
-int lft_loadfile(char *fname){
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < int lft_loadfile(char *, struct pineapple_tune *) >                   .|
+///  Takes a pointer to an empty tune. Fills it up and returns 0 on success. .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
+int lft_loadfile(char *fname, struct pineapple_tune *t){
 	FILE *f;
 	char buf[1024];
 	int cmd[3];
@@ -484,6 +488,8 @@ int lft_loadfile(char *fname){
 	if(!f){
 		return -1;
 	}
+
+	// TODO: put teh data in the pineapple_tune struct instead
 
 	songlen = 1;
 	while(!feof(f) && fgets(buf, sizeof(buf), f)){
