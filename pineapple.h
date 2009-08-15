@@ -169,8 +169,8 @@ struct pineapple_tune {
 	struct instrument instr[256]; //struct hvl_instrument *ht_Instruments
 	struct track trk[256]; //struct hvl_step ht_Tracks[256][64]
 	struct songline sng[256]; //struct hvl_position *ht_Positions
-	u8 trackpos;
-	u8 songpos; //ht_PosNr
+	int trackpos;
+	int songpos; //ht_PosNr
 	int songlen; //ht_PositionNr
 	int instrx, instry, instroffs;
 	int songx, songy, songoffs;
@@ -178,6 +178,6 @@ struct pineapple_tune {
 	int currtrack, currinstr; 
 	int currtab;
 	int saved;
-};
+} tune;
 
 #endif /* PINEAPPLE_H */
