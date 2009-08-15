@@ -13,6 +13,8 @@
 
 #include "pineapple.h"
 #include "lft.h"
+#include "hvl_replay.h"
+
 
 
 //struct pineapple_tune *tune;
@@ -49,7 +51,9 @@ int main(int argc, char **argv){
 		
 		if(lft_loadfile(f,&tune) == 0){
 			fprintf(stderr, "loaded %s\n", f);
-		//}else if(hvl_LoadTune(filename, FREQ, 4) != NULL){
+		//TODO make 48000 configurable as 'samplefreq'
+		}else if(hvl_LoadTune(f, 48000, 4) != NULL){
+			fprintf(stderr, "loaded %s\n", f);
 			// ????
 		}else{
 			fprintf(stderr, "couldn't load %s\n", f);
