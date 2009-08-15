@@ -481,7 +481,7 @@ void lft_savefile(char *fname){
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 int lft_loadfile(char *fname, struct pineapple_tune *pt){
 	FILE *f;
-	char header[9];
+	char header[4];
 	char buf[1024];
 	int cmd[3];
 	int i1, i2, trk[4], transp[4], param[3], note, instr;
@@ -496,13 +496,13 @@ int lft_loadfile(char *fname, struct pineapple_tune *pt){
 
 	//check if its a musicchip file so we can return from this function and try to load the next type of file
 	fseek(f, 0, SEEK_SET);
-	fread(&header, 1, 9, f);
-	if(!strcmp(header, "musicchip")){
+	fread(&header, 1, 4, f);
+	if(strncmp(header, "musi", sizeof(header)) == 0){
+		fprintf(stderr, "loading .song file\n");
+	}else {
 		fprintf(stderr, "not a .song file!\n");
 		fprintf(stderr, "%s\n", header);
 		return 1;
-	}else {
-		fprintf(stderr, "loading .song file");
 	}
 	rewind(f);
 

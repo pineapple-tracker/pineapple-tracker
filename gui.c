@@ -213,7 +213,7 @@ void initgui(){
 
 	nodelay(stdscr, TRUE);
 
-	initinstrs();
+	//initinstrs();
 
 	atexit(exitgui);
 }
