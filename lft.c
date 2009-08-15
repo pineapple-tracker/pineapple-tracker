@@ -499,7 +499,7 @@ int lft_loadfile(char *fname, struct pineapple_tune *pt){
 	fread(&header, 1, 9, f);
 	if(!strcmp(header, "musicchip")){
 		fprintf(stderr, "not a .song file!\n");
-		fprintf("%s\n", header);
+		fprintf(stderr, "%s\n", header);
 		return 1;
 	}else {
 		fprintf(stderr, "loading .song file");

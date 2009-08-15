@@ -79,7 +79,8 @@ struct instrument instrument[256], iclip[256];
 struct track track[256], tclip[256];
 struct songline song[256];
 
-int songlen, tracklen;
+int songlen;
+int tracklen;
 
 void initchip(void);
 u8 interrupthandler(void);

@@ -13,7 +13,7 @@
 
 #include "pineapple.h"
 #include "lft.h"
-#include "hvl_replay.h"
+//#include "hvl_replay.h"
 
 
 
@@ -52,13 +52,12 @@ int main(int argc, char **argv){
 		if(lft_loadfile(f,&tune) == 0){
 			fprintf(stderr, "loaded %s\n", f);
 		//TODO make 48000 configurable as 'samplefreq'
-		}else if(hvl_LoadTune(f, 48000, 4) != NULL){
-			fprintf(stderr, "loaded %s\n", f);
+		//}else if(hvl_LoadTune(f, 48000, 4) != NULL){
+		//	fprintf(stderr, "loaded %s\n", f);
 			// ????
 		}else{
 			fprintf(stderr, "couldn't load %s\n", f);
 		}
-
 		
 		SDL_PauseAudio(0);
 

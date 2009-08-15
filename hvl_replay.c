@@ -1,3 +1,5 @@
+/* AHX originally by Pink/Abyss and bigup Xeron for Hivelytracker! */
+
 /*
 ** Changes for the 1.4 release are commented. You can do
 ** a search for "1.4" and merge them into your own replay

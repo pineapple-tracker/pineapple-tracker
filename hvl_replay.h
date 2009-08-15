@@ -1,3 +1,4 @@
+/* AHX originally by Pink/Abyss and bigup Xeron for Hivelytracker! */
 
 typedef char int8;
 typedef unsigned char uint8;
