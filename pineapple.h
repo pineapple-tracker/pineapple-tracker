@@ -173,9 +173,9 @@ struct pineapple_tune {
 	int songpos; //ht_PosNr
 	int songlen; //ht_PositionNr
 	int instrx, instry, instroffs;
-	int songx, songy, songoffs;
-	int trackx, tracky, trackoffs;
-	int currtrack, currinstr; 
+	int songx, songy, songoffs; //can these just be global vars?
+	int trackx, tracky, trackoffs; //and these?
+	int currtrack, currinstr;
 	int currtab;
 	int saved;
 } tune;
@@ -184,6 +184,7 @@ struct config_params {
 	int buffersize;
 	char *gui;
 	char *audio_driver;
+	int samplefreq;
 };
 
 /*audio functions*/

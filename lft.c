@@ -407,6 +407,10 @@ u8 interrupthandler()        // called at 9000 Hz
 // File operations
 //--------------------------------------------------------------------------//
 
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void lft_savefile(char *fname) >                                      .|
+///  Save the currently loaded lft tune.                                     .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void lft_savefile(char *fname){
 	FILE *f;
 	int i, j;
@@ -475,7 +479,7 @@ void lft_savefile(char *fname){
 \\\  < int lft_loadfile(char *, struct pineapple_tune *) >                   .|
 ///  Takes a pointer to an empty tune. Fills it up and returns 0 on success. .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
-int lft_loadfile(char *fname, struct pineapple_tune *t){
+int lft_loadfile(char *fname, struct pineapple_tune *pt){
 	FILE *f;
 	char buf[1024];
 	int cmd[3];
@@ -491,7 +495,7 @@ int lft_loadfile(char *fname, struct pineapple_tune *t){
 
 	// TODO: put teh data in the pineapple_tune struct instead
 
-	songlen = 1;
+	pt->songlen = 1;
 	while(!feof(f) && fgets(buf, sizeof(buf), f)){
 		if(1 == sscanf(buf, "#%1024c", &comment)){
 		}
@@ -512,7 +516,7 @@ int lft_loadfile(char *fname, struct pineapple_tune *t){
 				song[i1].track[i] = trk[i];
 				song[i1].transp[i] = transp[i];
 			}
-			if(songlen <= i1) songlen = i1 + 1;
+			if(pt->songlen <= i1) pt->songlen = i1 + 1;
 		}else if(8 == sscanf(buf, "trackline %x %x %x %x %x %x %x %x",
 			&i1,
 			&i2,
