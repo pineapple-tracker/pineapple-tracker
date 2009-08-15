@@ -40,7 +40,8 @@ int main(int argc, char **argv){
 			f = argv[1];
 		}
 		//what happens if we load with no filename?
-
+		
+		initinstrs();
 		if(lft_loadfile(f,&tune) == 0){
 			fprintf(stderr, "loaded %s\n", f);
 		//}else if(hvl_LoadTune(filename, FREQ, 4) != NULL){

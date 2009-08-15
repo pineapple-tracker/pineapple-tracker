@@ -82,15 +82,15 @@ int main(int argc, char **argv){
 
 	/* ~is it a mod?~ */
 	// probably unnecessary
-	/*fseek(modfile, 1080, SEEK_SET);
+	fseek(modfile, 1080, SEEK_SET);
 	fread(&sig, 1, 4, modfile);
-	if(strcmp(sig,"M.K.")){
+	if(!strcmp(sig,"M.K.")){
 		printf("not a MOD\n");
 		printf(sig);
 		exit(1);
 	}else{
 		printf("YES");
-	}*/
+	}
 
 	/* ~what's its name?~ */
 	rewind(modfile);
