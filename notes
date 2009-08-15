@@ -1,0 +1,105 @@
+These functions will be polymorphic,overloaded,whatever....in other words they
+will change depending on whether you load a .mod,.song,or .ahx.
+
+
+actions.c
+----------
+act_trackinc
+act_trackdec
+act_transpinc
+act_transpdec
+act_noteinc
+act_notedec
+act_octaveinc
+act_octavedec
+act_instrinc
+act_instrdec
+act_fxinc
+act_fxdec
+act_paraminc
+act_paramdec
+act_addline
+act_delline
+act_clronething
+act_clritall
+act_clrinsongtab
+act_clrintracktab
+act_clrininstrtab
+
+gui.c
+------
+initsonglines
+inittracks
+initinstrs
+readsong?
+readtrack?
+readinstr
+drawsonged
+drawtracked
+drawinstred
+drawgui?
+
+modes.c
+-------
+_nextfreetrack
+_nextfreeinstr
+_insertc
+_parsecmd
+normalmode
+cmdlinemode
+insertmode
+visualmode
+visuallinemode
+
+(musicchip)file.c
+------------------
+savefile
+loadfile
+
+chip.c
+------
+silence
+iedplonk
+startplaytrack
+startplaysong
+playroutine?
+initchip?
+interrupthandler?
+
+
+also we need a struct that can hold any of the module types....
+struct pineapple_tune{
+	char *type; //pineapple, mod, hively
+
+	char *filename; //ht_Name[128] ??
+	u8 callbacktime; //ht_speedmultiplier,bpm, etc ht_Tempo
+	char comment[1024];
+	struct oscillator osc[4]; //ht_Channels || ht_Voices[MAX_CHANNELS]
+	struct instrument instr[256]; //*ht_Instruments
+	struct track trk[256]; //ht_Tracks[256][64]
+	struct song song[256]; //*ht_Positions
+	u8 trackpos;
+	u8 songpos; //ht_PosNr
+	int songlen;
+	int instrx, instry, instroffs;
+	int songx, songy, songoffs;
+	int trackx, tracky, trackoffs;
+	int currtrack, currinstr; //ht_TrackNr, ht_InstrumentNr, 
+	int currtab;
+	int saved;
+};
+
+struct pineapple_tune *loadPineapple() will load the filename specified on the
+command line and look at the header to figure out if its a .song or .hvl, then
+call either musicchipfile's loadfile or hvl_replay.c's hvl_LoadTune. Then the file
+will be converted to a struct pineapple_tune and returned.
+The functions importHvl and importPt will convert hvl's and pt's to
+the struct pineapple_tune.
+
+Then all the functions in hvl_replay.c will need to be changed in order to deal
+with the struct pineapple_tune instead of struct hvl_tune. Then when you want to save
+the file will stll be saved as .hvl, .ahx, or .song.
+
+Also once we get different audio drivers going we need to make that configurable so we 
+can know which callback function to use, etc.
+

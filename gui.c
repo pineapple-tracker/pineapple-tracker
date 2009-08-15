@@ -112,7 +112,7 @@ int freqkey(int c){
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
 \\\  < void initsonglines() >                                                .|
-///   Calculates the frequency of key c.                                     .\
+///   .                                     .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void initsonglines(void){
 	for(int i=0; i < songlen; i++){
@@ -492,7 +492,7 @@ void drawsonged(int x, int y, int height){
 	if(songy < songoffs) songoffs = songy;
 	if(songy >= songoffs + height) songoffs = songy - height + 1;
 
-	for(i = 0; i < songlen; i++){
+	for(i = 0; i < tune.songlen; i++){
 		if(i >= songoffs && i - songoffs < height){
 			move(y + i - songoffs, x + 0);
 			if(i == songy) attrset(A_BOLD);
@@ -500,9 +500,9 @@ void drawsonged(int x, int y, int height){
 			snprintf(buf, sizeof(buf), "%02x", i);
 
 			if(i == 0){ addch(ACS_ULCORNER); }
-			else if(i == songlen-1){ addch(ACS_LLCORNER); }
+			else if(i == tune.songlen-1){ addch(ACS_LLCORNER); }
 			else if(i%4 == 0){ addch(ACS_LTEE); }
-			else if(i < songlen-1){ addch(ACS_VLINE); }
+			else if(i < tune.songlen-1){ addch(ACS_VLINE); }
 			addch(' ');
 
 			// should this line be highlighted?

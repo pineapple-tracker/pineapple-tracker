@@ -39,6 +39,7 @@ int main(int argc, char **argv){
 		if(argc > 1){
 			f = argv[1];
 		}
+		//what happens if we load with no filename?
 
 		if(lft_loadfile(f,&tune) == 0){
 			fprintf(stderr, "loaded %s\n", f);

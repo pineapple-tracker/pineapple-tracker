@@ -243,7 +243,7 @@ void _parsecmd(char cmd[]){
 
 		switch(currtab){
 			case 0:
-				songy = (goton>songlen)? songlen-1 : goton;
+				songy = (goton>tune.songlen)? tune.songlen-1 : goton;
 				break;
 			case 1:
 				currtrack = (goton>0xff)? 0xff : goton;
@@ -287,24 +287,7 @@ void normalmode(int c){
 		switch(c){
 		/* add line */
 		case 'a':
-			if(currtab == 2){
-				struct instrument *in = &instrument[currinstr];
-
-				if(in->length < 256){
-					memmove(&in->line[instry + 2], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
-					instry++;
-					in->length++;
-					in->line[instry].cmd = '0';
-					in->line[instry].param = 0;
-				}
-			}else if(currtab == 0){
-				if(songlen < 256){
-					memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
-					songy++;
-					songlen++;
-					memset(&song[songy], 0, sizeof(struct songline));
-				}
-			}
+			act_addline();
 			break;
 		case '.':
 			// if the last command was a replace, just insert the last thing
@@ -347,7 +330,7 @@ void normalmode(int c){
 		case CTRL('E'):
 			switch(currtab){
 				case 0:
-					if(songy<=songlen-2){
+					if(songy<=tune.songlen-2){
 						if(songy==songoffs)
 							songy++;
 						songoffs++;
@@ -389,8 +372,8 @@ void normalmode(int c){
 		case 'M':
 			switch(currtab){
 				case 0:
-					songy = (songlen <= getmaxy(stdscr)-2)?
-							songlen/2
+					songy = (tune.songlen <= getmaxy(stdscr)-2)?
+							tune.songlen/2
 							: ((getmaxy(stdscr)-6)/2) + songoffs;
 					break;
 				case 1:
@@ -408,8 +391,8 @@ void normalmode(int c){
 		case 'L':
 			switch(currtab){
 				case 0:
-					songy = (songlen <= getmaxy(stdscr)-2)?
-							songlen-1
+					songy = (tune.songlen <= getmaxy(stdscr)-2)?
+							tune.songlen-1
 							: getmaxy(stdscr)-3+songoffs;
 					break;
 				case 1:
@@ -494,12 +477,12 @@ void normalmode(int c){
 		//paste
 		case 'p':
 			if(currtab == 0){
-				if(songlen < 256){
+				if(tune.songlen < 256){
 					for(int i = 0; i < tcliplen; i++){
 						// insert new line
-						memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
+						memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (tune.songlen - songy - 1));
 						songy++;
-						songlen++;
+						tune.songlen++;
 						memset(&song[songy], 0, sizeof(struct songline));
 
 						// paste to new line
@@ -570,21 +553,7 @@ void normalmode(int c){
 			c = nextchar();
 			switch(c){
 				case 'd':
-					if(currtab == 2){
-						struct instrument *in = &instrument[currinstr];
-
-						if(in->length > 1){
-							memmove(&in->line[instry + 0], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
-							in->length--;
-							if(instry >= in->length) instry = in->length - 1;
-						}
-					}else if(currtab == 0){
-						if(songlen > 1){
-							memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
-							songlen--;
-							if(songy >= songlen) songy = songlen - 1;
-						}
-					}
+					act_delline();
 					break;
 				case 'k':
 					if(currtab == 2){
@@ -602,10 +571,10 @@ void normalmode(int c){
 						songy--;
 						int i;
 						for(i=0; i<2; i++){
-							if(songlen > 1){
-								memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
-								songlen--;
-								if(songy >= songlen) songy = songlen - 1;
+							if(tune.songlen > 1){
+								memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (tune.songlen - songy - 1));
+								tune.songlen--;
+								if(songy >= tune.songlen) songy = tune.songlen - 1;
 							}
 						}
 					}
@@ -625,10 +594,10 @@ void normalmode(int c){
 					}else if(currtab == 0){
 						int i;
 						for(i=0; i<2; i++){
-							if(songlen > 1){
-								memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
-								songlen--;
-								if(songy >= songlen) songy = songlen - 1;
+							if(tune.songlen > 1){
+								memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (tune.songlen - songy - 1));
+								tune.songlen--;
+								if(songy >= tune.songlen) songy = tune.songlen - 1;
 							}
 						}
 					}
@@ -718,24 +687,7 @@ void normalmode(int c){
 			break;
 		/* Add new line and enter insert mode */
 		case 'o':
-			if(currtab == 2){
-				struct instrument *in = &instrument[currinstr];
-
-				if(in->length < 256){
-					memmove(&in->line[instry + 2], &in->line[instry + 1], sizeof(struct instrline) * (in->length - instry - 1));
-					instry++;
-					in->length++;
-					in->line[instry].cmd = '0';
-					in->line[instry].param = 0;
-				}
-			}else if(currtab == 0){
-				if(songlen < 256){
-					memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (songlen - songy - 1));
-					songy++;
-					songlen++;
-					memset(&song[songy], 0, sizeof(struct songline));
-				}
-			}
+			act_addline();
 			insertmode();
 			break;
 		case 'h':

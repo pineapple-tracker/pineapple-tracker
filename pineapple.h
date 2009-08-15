@@ -150,6 +150,8 @@ void act_viewinstrdec(void);
 void act_viewinstrinc(void);
 void act_viewtrackdec(void);
 void act_viewtrackinc(void);
+void act_addline(void);
+void act_delline(void);
 
 u8 trackpos;
 u8 playtrack;
