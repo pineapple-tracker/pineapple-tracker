@@ -3,6 +3,7 @@
 /* welcome to gui.c, enjoy your stay 8-) */
 
 #include "pineapple.h"
+#include "filetypes.h"
 #include "gui.h"
 
 #include <stdio.h>
@@ -492,7 +493,7 @@ void drawsonged(int x, int y, int height){
 	if(songy < songoffs) songoffs = songy;
 	if(songy >= songoffs + height) songoffs = songy - height + 1;
 
-	for(i = 0; i < tune.songlen; i++){
+	for(i = 0; i < tune->songlen; i++){
 		if(i >= songoffs && i - songoffs < height){
 			move(y + i - songoffs, x + 0);
 			if(i == songy) attrset(A_BOLD);
@@ -500,9 +501,9 @@ void drawsonged(int x, int y, int height){
 			snprintf(buf, sizeof(buf), "%02x", i);
 
 			if(i == 0){ addch(ACS_ULCORNER); }
-			else if(i == tune.songlen-1){ addch(ACS_LLCORNER); }
+			else if(i == tune->songlen-1){ addch(ACS_LLCORNER); }
 			else if(i%4 == 0){ addch(ACS_LTEE); }
-			else if(i < tune.songlen-1){ addch(ACS_VLINE); }
+			else if(i < tune->songlen-1){ addch(ACS_VLINE); }
 			addch(' ');
 
 			// should this line be highlighted?
@@ -519,7 +520,7 @@ void drawsonged(int x, int y, int height){
 				addstr(buf);
 				if(j != 3) addch(' ');
 			}
-			if(playsong && songpos == (i + 1)){
+			if(playsong && tune->songpos == (i + 1)){
 				attrset(A_STANDOUT);
 				addch('*');
 			}
@@ -585,7 +586,7 @@ void drawtracked(int x, int y, int height){
 				}
 				addstr(buf);
 			}
-			if(playtrack && ((i + 1) % tracklen) == trackpos){
+			if(playtrack && ((i + 1) % tracklen) == tune->trackpos){
 				attrset(A_STANDOUT);
 				addch('*');
 			}

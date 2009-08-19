@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=c99 -O2 -Wall -Wno-comment $(SDL_CFLAGS) \
+CFLAGS = -g -std=c99 -O2 -Wall -Wno-comment $(SDL_CFLAGS) \
 		$(NCURSES_CFLAGS)
 
 SDL_CFLAGS = $(shell pkg-config --cflags sdl)
@@ -12,7 +12,7 @@ LIBS = $(shell pkg-config --libs sdl) \
 
 all: pppt
 
-pppt: main.o lft.o gui.o modes.o actions.o drivers/sdl/sdl_audio.o hvl_replay.c
+pppt: main.o pt.o lft.o gui.o modes.o actions.o drivers/sdl/sdl_audio.o hvl_replay.o
 	$(CC) -o $@ $^ ${LIBS}
 
 player:	player.o lft.o gui.o modes.o actions.o

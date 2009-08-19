@@ -9,6 +9,7 @@
 #include "sdl_gui.h"
 #include "gui.h"
 #include "pineapple.h"
+#include "pt.h"
 
 static int die = 0;
 static SDL_Surface *screen;
@@ -22,7 +23,7 @@ static Uint32 boxcolor;
 #define SP 2  //spacing
 #define BOXW 1  //box width
 
-#define FRAMES_PER_SECOND 30
+#define FPS 30
 
 // these aren't #define's because doing this in the preprocessor:
 //     #define COLW = (WINW/3)-3
@@ -30,17 +31,24 @@ static Uint32 boxcolor;
 static int voffs;
 static int colh;
 
-struct pineapple_tune tune;
+pineapple_tune tune;
 
 int main(int argc, char *args[]){
-	//int last_tick;
 	int tick;
+
+	//------------------------------------------------------------------\\
+	// args
+	//------------------------------------------------------------------//
+	if(argc==1){
+		tune = pt_empty_tune();
+	}else{
+	}
 
 	if(SDL_Init(SDL_INIT_VIDEO)!=0)
 		return 1;
 
 	voffs = FONT_CH+4;
-	colh= WINH-voffs-SP-BOXW;
+	colh = WINH-voffs-SP-BOXW;
 
 	atexit(SDL_Quit);
 	signal(SIGTERM,breakhandler);
@@ -102,8 +110,8 @@ int main(int argc, char *args[]){
 		}
 
 		//update_main(screen);
-		if((SDL_GetTicks() - tick) < 1000/FRAMES_PER_SECOND){
-			SDL_Delay( (1000/FRAMES_PER_SECOND) - (SDL_GetTicks() - tick));
+		if((SDL_GetTicks() - tick) < 1000/FPS){
+			SDL_Delay( (1000/FPS) - (SDL_GetTicks() - tick));
 		}
 		gui_refresh();
 	}
@@ -116,7 +124,7 @@ static void breakhandler(int a){
 	die = 1;
 }
 
-static void draw_songed(int x, int y, int w, int h){
+static void draw_songed(const int x, const int y, const int w, const int h){
 	int i, pos;
 	char buf[1024];
 
@@ -137,11 +145,11 @@ static void draw_songed(int x, int y, int w, int h){
 	gui_box(x,y,w,h,boxcolor,screen);
 }
 
-static void draw_tracked(int x, int y, int w, int h){
+static void draw_tracked(const int x, const int y, const int w, const int h){
 	gui_box(x,y,w,h,boxcolor,screen);
 }
 
-static void draw_instred(int x, int y, int w, int h){
+static void draw_instred(const int x, const int y, const int w, const int h){
 	gui_box(x,y,w,h,boxcolor,screen);
 }
 
@@ -156,80 +164,80 @@ static void draw_main(void){
 
 static void handle_key_normal(SDL_Event *ev){
 	switch(ev->key.keysym.sym){
-	  case SDLK_KP_PLUS:
-	  case SDLK_PLUS:
-	  case SDLK_KP_MINUS:
-	  case SDLK_MINUS:
-		break;
-	  case SDLK_h:
-	  case SDLK_LEFT:
+	case SDLK_KP_PLUS:
+	case SDLK_PLUS:
+	case SDLK_KP_MINUS:
+	case SDLK_MINUS:
+	break;
+	case SDLK_h:
+	case SDLK_LEFT:
 		fprintf(stderr,"H\n");
 		fprintf(stderr,"pos: %d, %d\n", songx, songy);
-	  	act_mvleft();
+		act_mvleft();
 		break;
-	  case SDLK_l:
-	  case SDLK_RIGHT:
+	case SDLK_l:
+	case SDLK_RIGHT:
 		fprintf(stderr,"J\n");
 		fprintf(stderr,"pos: %d, %d\n", songx, songy);
-	  	act_mvright();
+		act_mvright();
 		break;
-	  case SDLK_k:
-	  case SDLK_UP:
+	case SDLK_k:
+	case SDLK_UP:
 		fprintf(stderr,"K\n");
 		fprintf(stderr,"pos: %d, %d\n", songx, songy);
-	  	act_mvup();
+		act_mvup();
 		break;
-	  case SDLK_j:
-	  case SDLK_DOWN:
+	case SDLK_j:
+	case SDLK_DOWN:
 		fprintf(stderr,"L\n");
 		fprintf(stderr,"pos: %d, %d\n", songx, songy);
-	  	act_mvdown();
+		act_mvdown();
 		break;
-	  case SDLK_PAGEUP:
-	  	act_bigmvup();
+	case SDLK_PAGEUP:
+		act_bigmvup();
 		break;
-	  case SDLK_PAGEDOWN:
-	  	act_bigmvdown();
+	case SDLK_PAGEDOWN:
+		act_bigmvdown();
 		break;
-	  case SDLK_F1:
-	  case SDLK_F2:
-	  case SDLK_F3:
-	  case SDLK_F4:
-	  case SDLK_F5:
-	  case SDLK_F6:
-	  case SDLK_F7:
-	  case SDLK_F8:
-	  case SDLK_F9:
-	  case SDLK_F10:
-	  case SDLK_F11:
-	  case SDLK_F12:
-	  case SDLK_PERIOD:
-	  case SDLK_DELETE:
-	  case SDLK_BACKSPACE:
-	  case SDLK_0:
-	  case SDLK_1:
-	  case SDLK_2:
-	  case SDLK_3:
-	  case SDLK_4:
-	  case SDLK_5:
-	  case SDLK_6:
-	  case SDLK_7:
-	  case SDLK_8:
-	  case SDLK_9:
-	  case SDLK_KP0:
-	  case SDLK_KP1:
-	  case SDLK_KP2:
-	  case SDLK_KP3:
-	  case SDLK_KP4:
-	  case SDLK_KP5:
-	  case SDLK_KP6:
-	  case SDLK_KP7:
-	  case SDLK_KP8:
-	  case SDLK_KP9:
-	  case SDLK_SPACE:
-	  case SDLK_TAB:
-	  case SDLK_ESCAPE:
-	  default:
+	case SDLK_F1:
+	case SDLK_F2:
+	case SDLK_F3:
+	case SDLK_F4:
+	case SDLK_F5:
+	case SDLK_F6:
+	case SDLK_F7:
+	case SDLK_F8:
+	case SDLK_F9:
+	case SDLK_F10:
+	case SDLK_F11:
+	case SDLK_F12:
+	case SDLK_PERIOD:
+	case SDLK_DELETE:
+	case SDLK_BACKSPACE:
+	case SDLK_0:
+	case SDLK_1:
+	case SDLK_2:
+	case SDLK_3:
+	case SDLK_4:
+	case SDLK_5:
+	case SDLK_6:
+	case SDLK_7:
+	case SDLK_8:
+	case SDLK_9:
+	case SDLK_KP0:
+	case SDLK_KP1:
+	case SDLK_KP2:
+	case SDLK_KP3:
+	case SDLK_KP4:
+	case SDLK_KP5:
+	case SDLK_KP6:
+	case SDLK_KP7:
+	case SDLK_KP8:
+	case SDLK_KP9:
+	case SDLK_SPACE:
+	case SDLK_TAB:
+	case SDLK_ESCAPE:
+	default:
 		break;
 	}
 }

@@ -8,18 +8,13 @@
 
 #include "pineapple.h"
 #include "gui.h"
-#include "lft.h"
+#include "filetypes.h"
 
 volatile u8 callbackwait;
 u8 callbacktime = 180;
 
 u8 trackwait;
 u8 trackpos;
-u8 songpos;
-
-u8 playsong;
-u8 playtrack;
-
 u8 interruptwait = 0;
 
 /*const u16 freqtable[] = {
@@ -195,7 +190,7 @@ void startplaytrack(int t){
 ///  Plays the song from a certain position.                                 .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void startplaysong(int p){
-	songpos = p;
+	tune->songpos = p;
 	trackpos = 0;
 	trackwait = 0;
 	playtrack = 0;
@@ -214,17 +209,17 @@ void playroutine(){			// called at 50 Hz
 
 			if(!trackpos){
 				if(playsong){
-					if(songpos >= tune.songlen){
+					if(tune->songpos >= tune->songlen){
 						playsong = 0;
 					}else{
 						for(ch = 0; ch < 4; ch++){
 							u8 tmp[2];
 
-							readsong(songpos, ch, tmp);
+							readsong(tune->songpos, ch, tmp);
 							channel[ch].tnum = tmp[0];
 							channel[ch].transp = tmp[1];
 						}
-						songpos++;
+						tune->songpos++;
 					}
 				}
 			}
@@ -476,10 +471,11 @@ void lft_savefile(char *fname){
 }
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
-\\\  < int lft_loadfile(char *, struct pineapple_tune *) >                   .|
-///  Takes a pointer to an empty tune. Fills it up and returns 0 on success. .\
+\\\  < pineapple_tune *lft_loadfile(char *) >                                .|
+///  Takes a filename. Returns a pineapple_tune struct. NULL on failure      .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
-int lft_loadfile(char *fname, struct pineapple_tune *pt){
+pineapple_tune *lft_loadfile(char *fname){
+	pineapple_tune *t;
 	FILE *f;
 	char header[4];
 	char buf[1024];
@@ -487,33 +483,32 @@ int lft_loadfile(char *fname, struct pineapple_tune *pt){
 	int i1, i2, trk[4], transp[4], param[3], note, instr;
 	int i;
 
-	snprintf(filename, sizeof(filename), "%s", fname);
+	//snprintf(filename, sizeof(filename), "%s", fname);
+	sprintf(t->filename, "%s", fname);
 
 	f = fopen(fname, "r");
 	if(!f){
-		return -1;
+		return NULL;
 	}
 
 	//check if its a musicchip file so we can return from this function and try to load the next type of file
 	fseek(f, 0, SEEK_SET);
 	fread(&header, 1, 4, f);
 	if(strncmp(header, "musi", sizeof(header)) == 0){
-		fprintf(stderr, "loading .song file\n");
+		fprintf(stderr, "loading .lft file\n");
 	}else {
-		fprintf(stderr, "not a .song file!\n");
+		fprintf(stderr, "not a .lft file!\n");
 		fprintf(stderr, "%s\n", header);
-		return 1;
+		return NULL;
 	}
 	rewind(f);
 
-	// TODO: put teh data in the pineapple_tune struct instead
-
-	pt->songlen = 1;
+	t->songlen = 1;
 	while(!feof(f) && fgets(buf, sizeof(buf), f)){
 		if(1 == sscanf(buf, "#%1024c", &comment)){
 		}
 		else if(1 == sscanf(buf, "tempo: %hhd", &callbacktime)){
-			callbacktime = (u8)callbacktime;
+			t->callbacktime = (u8)callbacktime;
 		}else if(9 == sscanf(buf, "songline %x %x %x %x %x %x %x %x %x",
 			&i1,
 			&trk[0],
@@ -526,10 +521,10 @@ int lft_loadfile(char *fname, struct pineapple_tune *pt){
 			&transp[3])){
 
 			for(i = 0; i < 4; i++){
-				song[i1].track[i] = trk[i];
-				song[i1].transp[i] = transp[i];
+				t->sng[i1].track[i] = trk[i];
+				t->sng[i1].transp[i] = transp[i];
 			}
-			if(pt->songlen <= i1) pt->songlen = i1 + 1;
+			if(t->songlen <= i1) t->songlen = i1 + 1;
 		}else if(8 == sscanf(buf, "trackline %x %x %x %x %x %x %x %x",
 			&i1,
 			&i2,
@@ -559,7 +554,7 @@ int lft_loadfile(char *fname, struct pineapple_tune *pt){
 	}
 
 	fclose(f);
-	return 0;
+	return t;
 }
 
 void lft_saveinstrument(char *fname){

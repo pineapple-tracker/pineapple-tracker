@@ -7,7 +7,7 @@
 #endif
 
 #include "pineapple.h"
-#include "lft.h"
+#include "filetypes.h"
 
 void audiocb(void *userdata, Uint8 *buf, int len) {
 	int i;

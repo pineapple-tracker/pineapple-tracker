@@ -154,34 +154,11 @@ void act_viewtrackinc(void);
 void act_addline(void);
 void act_delline(void);
 
-u8 trackpos;
-u8 playtrack;
-u8 playsong;
+/*u8 trackpos;
 u8 songpos;
-int songlen;
-
-// generic song struct
-struct pineapple_tune {
-	char type[3]; //.pt, .mod, .hvl, .ahx
-
-	char *filename;
-	u8 callbacktime; //ht_SpeedMultiplier
-	u16 tempo; //ht_Tempo
-	char comment[1024];
-	struct oscillator osc[4];
-	struct instrument instr[256]; //struct hvl_instrument *ht_Instruments
-	struct track trk[256]; //struct hvl_step ht_Tracks[256][64]
-	struct songline sng[256]; //struct hvl_position *ht_Positions
-	int trackpos;
-	int songpos; //ht_PosNr
-	int songlen; //ht_PositionNr
-	int instrx, instry, instroffs;
-	int songx, songy, songoffs; //can these just be global vars?
-	int trackx, tracky, trackoffs; //and these?
-	int currtrack, currinstr;
-	int currtab;
-	int saved;
-} tune;
+int songlen;*/
+int playtrack;
+int playsong;
 
 struct config_params {
 	int buffersize;
@@ -197,5 +174,37 @@ u8 (*audioInit)(void); //function that changes depending on which audiodriver is
 u8 sdl_init(void);
 void (*sdlCallback)(void); //function that changes depending on which type of file is loaded
 //void hvlSdlCallBack(struct hvl_tune *ht, uint8 *stream, int length);
+
+typedef struct _pineapple_tune {
+	char *type; //.pt, .mod, .hvl, .ahx
+
+	char *filename;
+	u8 callbacktime; //ht_SpeedMultiplier
+	u16 tempo; //ht_Tempo
+	char *comment;
+	struct oscillator osc[4];
+	struct instrument instr[256]; //struct hvl_instrument *ht_Instruments
+	struct track trk[256]; //struct hvl_step ht_Tracks[256][64]
+	struct songline sng[256]; //struct hvl_position *ht_Positions
+	int songlen; //ht_PositionNr
+	int trackpos;
+	int songpos; //ht_PosNr
+	int instrx, instry, instroffs;
+	int songx, songy, songoffs; //can these just be global vars?
+					// unless you have a specific reason,
+					// i think we should keep em in the
+					// struct. i mean, the 'tune' instance
+					// is accessible to anything that
+					// includes pt.h so we won't need to
+					// pass it around to each function
+	int trackx, tracky, trackoffs; //and these?
+	int currtrack, currinstr;
+	int currtab;
+	int saved;
+} pineapple_tune;
+
+pineapple_tune *tune;
+
+
 
 #endif /* PINEAPPLE_H */
