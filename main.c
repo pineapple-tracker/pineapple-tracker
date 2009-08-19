@@ -15,16 +15,16 @@
 #include "filetypes.h"
 #include "hvl_replay.h"
 
-struct pineapple_tune *importHvl(struct hvl_tune *ht);
+pineapple_tune *importHvl(struct hvl_tune *ht);
 
 // TODO: make hvl.c
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
 \\\  < struct pineapple_tune *importHvl(struct hvl_tune *ht)  >                      .|
 ///  Gives you a struct pineapple_tune from a struct *hvl_tune.              .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
-struct pineapple_tune *importHvl(struct hvl_tune *ht) {
-	struct pineapple_tune *tune;
-	tune = (struct pineapple_tune*) malloc(sizeof(struct pineapple_tune));
+pineapple_tune *importHvl(struct hvl_tune *ht) {
+	pineapple_tune *tune;
+	tune = (pineapple_tune*) malloc(sizeof(pineapple_tune));
 	if(!tune) {
 		fprintf(stderr, "couldn't malloc pineapple_tune *tune!\n");
 		return 1;
@@ -41,7 +41,7 @@ int main(int argc, char **argv){
 	//----------------------------------\\
 	// parse those args :^)
 	//----------------------------------//
-	tune = (struct pineapple_tune*) malloc(sizeof(struct pineapple_tune));
+	tune = (pineapple_tune*) malloc(sizeof(pineapple_tune));
 	if(!tune) {
 		fprintf(stderr, "couldn't malloc pineapple_tune *tune!\n");
 		return 1;

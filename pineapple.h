@@ -209,6 +209,6 @@ pineapple_tune *tune;
 /*audio functions*/
 
 
-struct pineapple_tune *tune;
+pineapple_tune *tune;
 
 #endif /* PINEAPPLE_H */
