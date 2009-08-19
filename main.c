@@ -53,7 +53,7 @@ int main(int argc, char **argv){
 		if((tune = lft_loadfile(argv[1]))){
 			fprintf(stderr, "loaded %s\n", argv[1]);
 		//TODO make 48000 configurable as 'samplefreq'
-		}else if(htTune = hvl_LoadTune(argv[1], 48000, 4)){
+		}else if((htTune = hvl_LoadTune(argv[1], 48000, 4))){
 			fprintf(stderr, "loading ahx/hvl...\n");
 			fprintf(stderr, "loaded %s\n", argv[1]);
 			tune = importHvl(htTune);
