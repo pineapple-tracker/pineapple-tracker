@@ -482,9 +482,14 @@ pineapple_tune *lft_loadfile(char *fname){
 	int cmd[3];
 	int i1, i2, trk[4], transp[4], param[3], note, instr;
 	int i;
+	t = (pineapple_tune*) malloc(sizeof(pineapple_tune));
+	if(!t) {
+		fprintf(stderr, "couldn't malloc pineapple_tune *tune!\n");
+		return NULL;
+	}
 
-	//snprintf(filename, sizeof(filename), "%s", fname);
-	sprintf(t->filename, "%s", fname);
+	snprintf(filename, sizeof(filename), "%s", fname);
+	//snprintf(t->filename, sizeof(filename), "%s", fname);
 
 	f = fopen(fname, "r");
 	if(!f){

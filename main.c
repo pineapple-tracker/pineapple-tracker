@@ -27,7 +27,7 @@ pineapple_tune *importHvl(struct hvl_tune *ht) {
 	tune = (pineapple_tune*) malloc(sizeof(pineapple_tune));
 	if(!tune) {
 		fprintf(stderr, "couldn't malloc pineapple_tune *tune!\n");
-		return 1;
+		return NULL;
 	}
 
 	tune->songlen = ht->ht_PositionNr;
@@ -50,10 +50,10 @@ int main(int argc, char **argv){
 	initinstrs();
 
 	if(argc > 1){
-		if(tune = lft_loadfile(argv[1])){
+		if((tune = lft_loadfile(argv[1]))){
 			fprintf(stderr, "loaded %s\n", argv[1]);
 		//TODO make 48000 configurable as 'samplefreq'
-		}else if(tune = hvl_LoadTune(argv[1], 48000, 4)){
+		}else if(htTune = hvl_LoadTune(argv[1], 48000, 4)){
 			fprintf(stderr, "loading ahx/hvl...\n");
 			fprintf(stderr, "loaded %s\n", argv[1]);
 			tune = importHvl(htTune);

@@ -190,14 +190,8 @@ typedef struct _pineapple_tune {
 	int trackpos;
 	int songpos; //ht_PosNr
 	int instrx, instry, instroffs;
-	int songx, songy, songoffs; //can these just be global vars?
-					// unless you have a specific reason,
-					// i think we should keep em in the
-					// struct. i mean, the 'tune' instance
-					// is accessible to anything that
-					// includes pt.h so we won't need to
-					// pass it around to each function
-	int trackx, tracky, trackoffs; //and these?
+	int songx, songy, songoffs;
+	int trackx, tracky, trackoffs;
 	int currtrack, currinstr;
 	int currtab;
 	int saved;
@@ -205,10 +199,5 @@ typedef struct _pineapple_tune {
 
 pineapple_tune *tune;
 
-
-/*audio functions*/
-
-
-pineapple_tune *tune;
 
 #endif /* PINEAPPLE_H */
