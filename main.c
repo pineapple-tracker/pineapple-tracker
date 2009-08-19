@@ -17,7 +17,6 @@
 #include "hvl_replay.h"
 
 
-
 struct pineapple_tune *importHvl(struct hvl_tune *ht);
 
 // TODO: make hvl.c
@@ -27,11 +26,12 @@ struct pineapple_tune *importHvl(struct hvl_tune *ht);
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 struct pineapple_tune *importHvl(struct hvl_tune *ht) {
 	struct pineapple_tune *tune;
-	tune = malloc(sizeof(tune));
+	tune = (struct pineapple_tune*) malloc(sizeof(struct pineapple_tune));
 	if(!tune) {
 		fprintf(stderr, "couldn't malloc pineapple_tune *tune!\n");
-		return NULL;
+		return 1;
 	}
+
 	tune->songlen = ht->ht_PositionNr;
 	printf("songlen: %i\n", tune->songlen);
 		
@@ -49,9 +49,17 @@ int main(int argc, char **argv){
 		// parse those args :^)
 		//----------------------------------//
 		if(argc > 1){
+			//what happens if we load with no filename?
 			f = argv[1];
 		}
-		//what happens if we load with no filename?
+
+		tune = (struct pineapple_tune*) malloc(sizeof(struct pineapple_tune));
+		if(!tune) {
+			fprintf(stderr, "couldn't malloc pineapple_tune *tune!\n");
+			return 1;
+		}
+
+		//tune->songlen = 0;
 		
 		initinstrs();
 		
@@ -61,11 +69,11 @@ int main(int argc, char **argv){
 		}else if((htTune = hvl_LoadTune(f, 48000, 4)) != NULL){
 			fprintf(stderr, "loading ahx/hvl...\n");
 			fprintf(stderr, "loaded %s\n", f);
+			tune = importHvl(htTune);
 			// ????
 		}else{
 			fprintf(stderr, "couldn't load %s\n", f);
 		}
-		tune = importHvl(htTune);
 		//----------------------------------\\
 		// begin image&sound
 		//----------------------------------//

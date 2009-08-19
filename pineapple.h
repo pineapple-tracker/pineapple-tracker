@@ -198,7 +198,7 @@ u8 (*audioInit)(void); //function that changes depending on which audiodriver is
 u8 sdl_init(void);
 void (*sdlCallback)(void); //function that changes depending on which type of file is loaded
 //void hvlSdlCallBack(struct hvl_tune *ht, uint8 *stream, int length);
-//
+
 struct pineapple_tune *tune;
 
 #endif /* PINEAPPLE_H */
