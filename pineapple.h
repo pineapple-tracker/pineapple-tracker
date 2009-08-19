@@ -206,5 +206,9 @@ typedef struct _pineapple_tune {
 pineapple_tune *tune;
 
 
+/*audio functions*/
+
+
+struct pineapple_tune *tune;
 
 #endif /* PINEAPPLE_H */

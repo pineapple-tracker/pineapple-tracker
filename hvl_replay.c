@@ -17,6 +17,7 @@
 #include <math.h>
 
 #include "hvl_replay.h"
+#include "pineapple.h"
 
 int32 stereopan_left[]  = { 128,  96,  64,  32,   0 };
 int32 stereopan_right[] = { 128, 160, 193, 225, 255 };
@@ -2313,3 +2314,4 @@ void hvl_playNote(struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod, str
     loops--;
   } while( loops );
 }
+
