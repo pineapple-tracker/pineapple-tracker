@@ -34,6 +34,13 @@ pineapple_tune *importHvl(struct hvl_tune *ht) {
 	printf("songlen: %i\n", tune->songlen);
 	
 	tune->tracklen = ht->ht_TrackLength;
+	//channels is not a real variable yet...and tune->songlen may need to be tune->songlen + 1 or something	
+	for(int i = 0; i < tune->songlen; i++) {
+		for(int j = 0; j < ht->ht_Channels; j++){
+			tune->sng[i].track[j] = ht->ht_Positions[i].pos_Track[j];
+			tune->sng[i].transp[j] = ht->ht_Positions[i].pos_Transpose[j];
+		}
+	}
 
 	return tune;
 }

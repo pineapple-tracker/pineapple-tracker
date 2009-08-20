@@ -516,7 +516,7 @@ void drawsonged(int x, int y, int height){
 
 			addstr(buf);
 			for(j = 0; j < 4; j++){
-				snprintf(buf, sizeof(buf), "%02x:%02x", song[i].track[j], song[i].transp[j]);
+				snprintf(buf, sizeof(buf), "%02x:%02x", tune->sng[i].track[j], tune->sng[i].transp[j]);
 				addstr(buf);
 				if(j != 3) addch(' ');
 			}
