@@ -540,7 +540,7 @@ void drawtracked(int x, int y, int height){
 	if(tracky < trackoffs) trackoffs = tracky;
 	if(tracky >= trackoffs + height) trackoffs = tracky - height + 1;
 
-	for(i = 0; i < tracklen; i++){
+	for(i = 0; i < tune->tracklen; i++){
 		if(i >= trackoffs && i - trackoffs < height){
 			move(y + i - trackoffs, x + 0);
 			if(i == tracky) attrset(A_BOLD);
@@ -550,9 +550,9 @@ void drawtracked(int x, int y, int height){
 
 			if(i == 0){ addch(ACS_LLCORNER); }
 			else if(i == 1){ addch(ACS_ULCORNER); }
-			else if(i == tracklen-1){ addch(ACS_LLCORNER); }
+			else if(i == tune->tracklen-1){ addch(ACS_LLCORNER); }
 			else if(i%4 == 0){ addch(ACS_LTEE); }
-			else if(i < tracklen-1){ addch(ACS_VLINE); }
+			else if(i < tune->tracklen-1){ addch(ACS_VLINE); }
 			addch(' ');
 
 			// should this line be highlighted?
@@ -586,7 +586,7 @@ void drawtracked(int x, int y, int height){
 				}
 				addstr(buf);
 			}
-			if(playtrack && ((i + 1) % tracklen) == tune->trackpos){
+			if(playtrack && ((i + 1) % tune->tracklen) == tune->trackpos){
 				attrset(A_STANDOUT);
 				addch('*');
 			}

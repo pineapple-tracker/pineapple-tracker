@@ -79,7 +79,7 @@ struct instrument instrument[256], iclip[256];
 struct track track[256], tclip[256];
 struct songline song[256];
 
-int songlen;
+//int songlen;
 int tracklen;
 
 void initchip(void);
@@ -187,8 +187,9 @@ typedef struct _pineapple_tune {
 	struct track trk[256]; //struct hvl_step ht_Tracks[256][64]
 	struct songline sng[256]; //struct hvl_position *ht_Positions
 	int songlen; //ht_PositionNr
-	int trackpos;
 	int songpos; //ht_PosNr
+	int trackpos;
+	int tracklen; //ht_TrackLength
 	int instrx, instry, instroffs;
 	int songx, songy, songoffs;
 	int trackx, tracky, trackoffs;

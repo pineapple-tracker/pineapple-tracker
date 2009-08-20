@@ -32,7 +32,8 @@ pineapple_tune *importHvl(struct hvl_tune *ht) {
 
 	tune->songlen = ht->ht_PositionNr;
 	printf("songlen: %i\n", tune->songlen);
-		
+	
+	tune->tracklen = ht->ht_TrackLength;
 
 	return tune;
 }
@@ -85,6 +86,6 @@ int main(int argc, char **argv){
 
 		SDL_Quit();
 	}
-
+	free(tune);
 	return 0;
 }

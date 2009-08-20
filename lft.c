@@ -424,7 +424,7 @@ void lft_savefile(char *fname){
 	fprintf(f, "#%s\n", comment);
 	fprintf(f, "\n");
 	fprintf(f, "tempo: %d\n", callbacktime);
-	for(i = 0; i < songlen; i++){
+	for(i = 0; i < tune->songlen; i++){
 		fprintf(f, "songline %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
 			i,
 			song[i].track[0],
@@ -438,7 +438,7 @@ void lft_savefile(char *fname){
 	}
 	fprintf(f, "\n");
 	for(i = 1; i < 256; i++){
-		for(j = 0; j < tracklen; j++){
+		for(j = 0; j < tune->tracklen; j++){
 			struct trackline *tl = &track[i].line[j];
 
 			if(tl->note || tl->instr || tl->cmd[0] || tl->cmd[1]){
@@ -509,6 +509,7 @@ pineapple_tune *lft_loadfile(char *fname){
 	rewind(f);
 
 	t->songlen = 1;
+	t->tracklen = TRACKLEN;
 	while(!feof(f) && fgets(buf, sizeof(buf), f)){
 		if(1 == sscanf(buf, "#%1024c", &comment)){
 		}

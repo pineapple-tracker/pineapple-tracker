@@ -25,7 +25,7 @@ int nextfreetrack(){
 	int skiptherest = 0;
 
 	for(int i = 1; i <= 0xff; i++){
-		for(int j = 0; j < tracklen; j++){
+		for(int j = 0; j < tune->tracklen; j++){
 			if(track[i].line[j].note) skiptherest = 1;
 			for(int k = 0; k < 2; k++){
 				if(track[i].line[j].cmd[k]) skiptherest = 1;
@@ -39,7 +39,7 @@ int nextfreetrack(){
 			}
 
 			// this track is free, so return the index
-			if(j == tracklen-1) return i;
+			if(j == (tune->tracklen)-1) return i;
 		}
 	}
 
@@ -337,7 +337,7 @@ void normalmode(int c){
 					}
 					break;
 				case 1:
-					if(tracky<=tracklen-2){
+					if(tracky<=(tune->tracklen)-2){
 						if(tracky==trackoffs)
 							tracky++;
 						trackoffs++;
@@ -377,8 +377,8 @@ void normalmode(int c){
 							: ((getmaxy(stdscr)-6)/2) + songoffs;
 					break;
 				case 1:
-					tracky = (tracklen <= getmaxy(stdscr)-2)?
-							tracklen/2
+					tracky = (tune->tracklen <= getmaxy(stdscr)-2)?
+							tune->tracklen/2
 							: ((getmaxy(stdscr)-6)/2) + trackoffs;
 					break;
 				case 2:
@@ -396,8 +396,8 @@ void normalmode(int c){
 							: getmaxy(stdscr)-3+songoffs;
 					break;
 				case 1:
-					tracky = (tracklen <= getmaxy(stdscr)-2)?
-							tracklen-1
+					tracky = (tune->tracklen <= getmaxy(stdscr)-2)?
+							tune->tracklen-1
 							: getmaxy(stdscr)-3+trackoffs;
 					break;
 				case 2:
@@ -492,8 +492,8 @@ void normalmode(int c){
 			}else if(currtab == 1){
 					for(int i = 0; i < tcliplen; i++){
 						memcpy(&track[currtrack].line[tracky], &tclip[i], sizeof(struct trackline));
-						if(tracky < tracklen-step) tracky += step;
-						else tracky = tracklen-1;
+						if(tracky < (tune->tracklen)-step) tracky += step;
+						else tracky = (tune->tracklen)-1;
 					}
 			}else if(currtab == 2){
 				if(instrument[currinstr].length < 256){
@@ -1057,7 +1057,7 @@ void insertmode(void){
 				_insertc(c);
 				if(currtab == 1){
 					tracky+=step;
-					tracky %= tracklen;
+					tracky %= (tune->tracklen);
 				}else if(currtab == 2){
 					//if(instry < instrument[currinstr].length-1) instry++;
 					if(instrx < 2) instrx++;

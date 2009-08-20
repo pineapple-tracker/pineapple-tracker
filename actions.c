@@ -75,10 +75,10 @@ void act_mvdown(void){
 			}
 			break;
 		case 1:
-			if(tracky < tracklen - 1){
+			if(tracky < tune->tracklen - 1){
 				tracky++;
 			}else{
-				tracky = tracklen - 1;
+				tracky = tune->tracklen - 1;
 			}
 			break;
 		case 2:
@@ -125,10 +125,10 @@ void act_bigmvdown(void){
 			}
 			break;
 		case 1:
-			if(tracky < tracklen - 8){
+			if(tracky < tune->tracklen - 8){
 				tracky += 8;
 			}else{
-				tracky = tracklen - 1;
+				tracky = tune->tracklen - 1;
 			}
 			break;
 		case 2:
@@ -143,7 +143,7 @@ void act_mvbottom(void){
 			songy = tune->songlen - 1;
 			break;
 		case 1:
-			tracky = tracklen - 1;
+			tracky = tune->tracklen - 1;
 			break;
 		case 2:
 			instry = instrument[currinstr].length - 1;
