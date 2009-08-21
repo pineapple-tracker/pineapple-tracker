@@ -5,25 +5,21 @@ enhancements:
 
 * make the sampling rate not affect the pitch of notes
 
-* rainbow decibel meters on each track like AHX tracker
-
-* JACK driver
+* regulate framerate with SDL timer to use less CPU???
+	* perhaps ncurses has some sort of timer...i know caca does...
 
 * .pineapplerc
 	Ability to configure:
 	* colorschemes
 	* initial/default step value?
+	
+* JACK driver
 
 * MORE MODULAR
 	* gui.c => ncurses_ui.c
 		* port gui to libcaca?
-	* drawsonged() => drawsonged_hively() or drawsonged_pineapple()
 
-* make :q not quit if there are unmodified changes, but :q! should quit no
-	matter what.
-	
-* regulate framerate with SDL timer to use less CPU???
-	* perhaps ncurses has some sort of timer...i know caca does...
+* rainbow decibel meters on each track like AHX tracker
 
 bugs:
 ----

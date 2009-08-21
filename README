@@ -9,8 +9,9 @@
 Most of this tracker was written by lft to run on an AVR. Here is his page for
 the project: http://www.linusakesson.net/hardware/chiptune.php
 
-I hope he doesn't mind us using the code.. right now we are just trying to make
-it usable to the average vi-user :-)
+We have emailed him regarding us using the code and he replied saying he does
+not mind as long as we give him credit. For more information regarding licensing
+see the COPYING files.
 
 If you are used to vi you will be quite comfortable. Beware that we have not
 implemented some features (like undo!) that may seem second nature to you,
