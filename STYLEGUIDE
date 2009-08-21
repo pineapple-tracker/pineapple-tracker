@@ -1,15 +1,25 @@
 Pineapple Tracker Coding Style
 ------------------------------
 
-Because good looking code==easy to maintain code.
+We try to maintain a consistant style for readability. If you are coding
+for pineapple tracker, generally try to follow what you see. Below are 
+some more specific guidelines.
 
 Functions:
 ----------
 Put opening curly-bracket on the same line, and no space between the closing
 paren and the opening curly bracket.
 
-static int void freqkey(int x){
+static int void freqkey(int x, int y, int j){
 
 }
 
-No space between the closing paren and the curly bracket either.
+No space between the closing paren and the curly bracket either. If there are 
+multiple arguements to a function, put one space after the comma, but not 
+before.
+
+Document your functions! Put a coment above it that looks like this:
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void drawsonged(int,int,int) >                                        .|
+///  Draws the song editor.                                                  .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//

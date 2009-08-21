@@ -19,7 +19,7 @@ pineapple_tune *importHvl(struct hvl_tune *ht);
 
 // TODO: make hvl.c
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
-\\\  < struct pineapple_tune *importHvl(struct hvl_tune *ht)  >                      .|
+\\\  < struct pineapple_tune *importHvl(struct hvl_tune *ht)  >              .|
 ///  Gives you a struct pineapple_tune from a struct *hvl_tune.              .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 pineapple_tune *importHvl(struct hvl_tune *ht) {

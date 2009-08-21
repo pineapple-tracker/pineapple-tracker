@@ -78,7 +78,7 @@ int hexdec(int x){
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
 \\\  < int _char2int(char) >                                                 .|
-///  Draws the instrument editor.                                            .\
+///                                                                          .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 int _char2int(char ch){
 	if(isdigit(ch)){
@@ -162,7 +162,7 @@ void readsong(int pos, int ch, u8 *dest){
 }
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
-\\\  < void readtrack(int,int,trackline) >                                   .\
+\\\  < void readtrack(int,int,struct trackline) >                             .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void readtrack(int num, int pos, struct trackline *tl){
 	tl->note = track[num].line[pos].note;
