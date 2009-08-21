@@ -541,11 +541,11 @@ pineapple_tune *lft_loadfile(char *fname){
 			&cmd[1],
 			&param[1])){
 
-			track[i1].line[i2].note = note;
-			track[i1].line[i2].instr = instr;
+			t->trk[i1].line[i2].note = note;
+			t->trk[i1].line[i2].instr = instr;
 			for(i = 0; i < 2; i++){
-				track[i1].line[i2].cmd[i] = cmd[i];
-				track[i1].line[i2].param[i] = param[i];
+				t->trk[i1].line[i2].cmd[i] = cmd[i];
+				t->trk[i1].line[i2].param[i] = param[i];
 			}
 		}else if(4 == sscanf(buf, "instrumentline %x %x %x %x",
 			&i1,

@@ -31,16 +31,26 @@ pineapple_tune *importHvl(struct hvl_tune *ht) {
 	}
 
 	tune->songlen = ht->ht_PositionNr;
-	printf("songlen: %i\n", tune->songlen);
 	
 	tune->tracklen = ht->ht_TrackLength;
-	//channels is not a real variable yet...and tune->songlen may need to be tune->songlen + 1 or something	
 	for(int i = 0; i < tune->songlen; i++) {
 		for(int j = 0; j < ht->ht_Channels; j++){
 			tune->sng[i].track[j] = ht->ht_Positions[i].pos_Track[j];
 			tune->sng[i].transp[j] = ht->ht_Positions[i].pos_Transpose[j];
 		}
 	}
+
+	for(int i = 0; i < ht->ht_TrackNr; i++) {
+		for(int j = 0; j < tune->tracklen; j++) {
+			tune->trk[i].line[j].note = ht->ht_Tracks[i][j].stp_Note;
+			tune->trk[i].line[j].instr = ht->ht_Tracks[i][j].stp_Instrument;
+			tune->trk[i].line[j].cmd[0] = ht->ht_Tracks[i][j].stp_FX;
+			tune->trk[i].line[j].param[0] = ht->ht_Tracks[i][j].stp_FXParam;
+			tune->trk[i].line[j].cmd[1] = ht->ht_Tracks[i][j].stp_FXb;
+			tune->trk[i].line[j].param[1] = ht->ht_Tracks[i][j].stp_FXbParam;
+		}
+	}
+
 
 	return tune;
 }
@@ -94,5 +104,7 @@ int main(int argc, char **argv){
 		SDL_Quit();
 	}
 	free(tune);
+	if(htTune)
+		hvl_FreeTune(htTune);
 	return 0;
 }

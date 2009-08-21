@@ -566,21 +566,21 @@ void drawtracked(int x, int y, int height){
 			if (currtab == 1 && currmode == PM_VISUAL)
 				attrset(A_REVERSE);
 
-			if(track[currtrack].line[i].note){
+			if(tune->trk[currtrack].line[i].note){
 				snprintf(buf, sizeof(buf), "%s%d",
-					notenames[(track[currtrack].line[i].note - 1) % 12],
-					(track[currtrack].line[i].note - 1) / 12);
+					notenames[(tune->trk[currtrack].line[i].note - 1) % 12],
+					(tune->trk[currtrack].line[i].note - 1) / 12);
 			}else{
 				snprintf(buf, sizeof(buf), "---");
 			}
 			addstr(buf);
-			snprintf(buf, sizeof(buf), " %02x", track[currtrack].line[i].instr);
+			snprintf(buf, sizeof(buf), " %02x", tune->trk[currtrack].line[i].instr);
 			addstr(buf);
 			for(j = 0; j < 2; j++){
-				if(track[currtrack].line[i].cmd[j]){
+				if(tune->trk[currtrack].line[i].cmd[j]){
 					snprintf(buf, sizeof(buf), " %c%02x",
-						track[currtrack].line[i].cmd[j],
-						track[currtrack].line[i].param[j]);
+						tune->trk[currtrack].line[i].cmd[j],
+						tune->trk[currtrack].line[i].param[j]);
 				}else{
 					snprintf(buf, sizeof(buf), " ...");
 				}

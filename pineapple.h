@@ -185,16 +185,12 @@ typedef struct _pineapple_tune {
 	struct oscillator osc[4];
 	struct instrument instr[256]; //struct hvl_instrument *ht_Instruments
 	struct track trk[256]; //struct hvl_step ht_Tracks[256][64]
-	/*struct posline {
-		u8			track[4];
-		u8			transp[4];
-	}sng [256];
-	*/
 	struct songline sng[256]; //struct hvl_position *ht_Positions
 	int songlen; //ht_PositionNr
 	int songpos; //ht_PosNr
 	int trackpos;
 	int tracklen; //ht_TrackLength
+	int trackNum; //number of tracks that are used, ht_TrackNr
 	int instrx, instry, instroffs;
 	int songx, songy, songoffs;
 	int trackx, tracky, trackoffs;
