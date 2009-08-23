@@ -108,7 +108,7 @@ void _insertc(int c){
 			}else{
 				track[currtrack].line[tracky].instr = 0;
 			}
-			if(x) iedplonk(x, currinstr);
+			if(x) lft_iedplonk(x, currinstr);
 		}
 	}
 	if(currtab == 2 && instrx == 0){
@@ -1096,7 +1096,7 @@ void jammermode(void){
 				x = freqkey(c);
 
 				if(x > 0){
-					iedplonk(x, currinstr);
+					lft_iedplonk(x, currinstr);
 				}
 
 				break;

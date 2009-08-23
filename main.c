@@ -30,6 +30,8 @@ pineapple_tune *importHvl(struct hvl_tune *ht) {
 		return NULL;
 	}
 
+	tune->type = AHX;
+
 	tune->songlen = ht->ht_PositionNr;
 	
 	tune->tracklen = ht->ht_TrackLength;
@@ -45,11 +47,14 @@ pineapple_tune *importHvl(struct hvl_tune *ht) {
 			tune->trk[i].line[j].note = ht->ht_Tracks[i][j].stp_Note;
 			tune->trk[i].line[j].instr = ht->ht_Tracks[i][j].stp_Instrument;
 			tune->trk[i].line[j].cmd[0] = ht->ht_Tracks[i][j].stp_FX;
+			//fprintf(stderr, "fx: %i \n", ht->ht_Tracks[i][j].stp_FX);
 			tune->trk[i].line[j].param[0] = ht->ht_Tracks[i][j].stp_FXParam;
 			tune->trk[i].line[j].cmd[1] = ht->ht_Tracks[i][j].stp_FXb;
 			tune->trk[i].line[j].param[1] = ht->ht_Tracks[i][j].stp_FXbParam;
 		}
 	}
+
+	tune->iedplonk = hvl_playNote;
 
 
 	return tune;

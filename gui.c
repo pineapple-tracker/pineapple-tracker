@@ -578,7 +578,7 @@ void drawtracked(int x, int y, int height){
 			addstr(buf);
 			for(j = 0; j < 2; j++){
 				if(tune->trk[currtrack].line[i].cmd[j]){
-					snprintf(buf, sizeof(buf), " %c%02x",
+					snprintf(buf, sizeof(buf), " %02x%02x",
 						tune->trk[currtrack].line[i].cmd[j],
 						tune->trk[currtrack].line[i].param[j]);
 				}else{

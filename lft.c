@@ -9,6 +9,7 @@
 #include "pineapple.h"
 #include "gui.h"
 #include "filetypes.h"
+#include "hvl_replay.h"
 
 volatile u8 callbackwait;
 u8 callbacktime = 180;
@@ -155,10 +156,10 @@ void silence(void){
 }
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
-\\\  < void iedplonk(int,int) >                                              .|
+\\\  < void lft_iedplonk(int,int) >                                              .|
 ///  Plays a note.                                                           .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
-void iedplonk(int note, int instr){
+void lft_iedplonk(int note, int instr){
 	channel[0].tnote = note;
 	channel[0].inum = instr;
 	channel[0].iptr = 0;
@@ -558,6 +559,8 @@ pineapple_tune *lft_loadfile(char *fname){
 			if(instrument[i1].length <= i2) instrument[i1].length = i2 + 1;
 		}
 	}
+
+	//t->iedplonk = lft_iedplonk;
 
 	fclose(f);
 	return t;

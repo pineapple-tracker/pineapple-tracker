@@ -90,7 +90,7 @@ void readtrack(int num, int pos, struct trackline *tl);
 void readinstr(int num, int pos, u8 *il);
 
 void silence(void);
-void iedplonk(int, int);
+void lft_iedplonk(int, int);
 
 void initgui(void);
 void eventloop(void);
@@ -175,8 +175,13 @@ u8 sdl_init(void);
 void (*sdlCallback)(void); //function that changes depending on which type of file is loaded
 //void hvlSdlCallBack(struct hvl_tune *ht, uint8 *stream, int length);
 
+enum {
+	LFT,
+	AHX
+};
+
 typedef struct _pineapple_tune {
-	char *type; //.pt, .mod, .hvl, .ahx
+	int type; // LFT, AHX
 
 	char *filename;
 	u8 callbacktime; //ht_SpeedMultiplier
@@ -197,6 +202,8 @@ typedef struct _pineapple_tune {
 	int currtrack, currinstr;
 	int currtab;
 	int saved;
+
+	void (*iedplonk)(int note, int instr, ...);
 } pineapple_tune;
 
 pineapple_tune *tune;
