@@ -3,6 +3,10 @@ enhancements:
 * complete and implement the SPEC
 	* Visual mode
 
+* pineapple.h uses one set of typedefs for uint8_t, etc, and
+  hvl_replay.h uses a slightly different one. lets go with one 
+  or the other.
+
 * make the sampling rate not affect the pitch of notes
 
 * regulate framerate with SDL timer to use less CPU???

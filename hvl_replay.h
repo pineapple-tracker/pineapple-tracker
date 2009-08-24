@@ -238,7 +238,7 @@ void hvl_mixchunk( struct hvl_tune *ht, uint32 samples, int8 *buf1, int8 *buf2, 
 
 struct hvl_tune *htTune;
 
-void mix_and_play( struct hvl_tune *ht, uint8 *stream, int length );
+void hvlSdlCallBack( struct hvl_tune *ht, uint8 *stream, int length );
 
 
 int16 hivelyLeft[HIVELY_LEN], hivelyRight[HIVELY_LEN];

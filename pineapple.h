@@ -26,6 +26,7 @@ enum {
 	PM_INSERT,
 	PM_JAMMER
 };
+
 void normalmode(int c);
 void cmdlinemode(void);
 void insertmode(void);
@@ -171,8 +172,9 @@ struct config_params {
 /*audio functions*/
 
 void lftSdlCallback(void *userdata, u8 *buf, int len);
-u8 (*audioInit)(void); //function that changes depending on which audiodriver is specified
-u8 sdl_init(void);
+u8 lft_sdl_init(void);
+//u8 (*audioInit)(void); //function that changes depending on which audiodriver is specified
+//u8 sdl_init(void);
 void (*sdlCallback)(void); //function that changes depending on which type of file is loaded
 //void hvlSdlCallBack(struct hvl_tune *ht, uint8 *stream, int length);
 
@@ -209,5 +211,6 @@ typedef struct _pineapple_tune {
 
 pineapple_tune *tune;
 
+u8 hvl_sdl_init(void);
 
 #endif /* PINEAPPLE_H */

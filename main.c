@@ -15,6 +15,7 @@
 #include "filetypes.h"
 #include "hvl_replay.h"
 
+u8 (*sdl_init)(void);
 pineapple_tune *importHvl(struct hvl_tune *ht);
 
 // TODO: make hvl.c
@@ -56,7 +57,6 @@ pineapple_tune *importHvl(struct hvl_tune *ht) {
 
 	tune->iedplonk = hvl_playNote;
 
-
 	return tune;
 }
 
@@ -76,16 +76,19 @@ int main(int argc, char **argv){
 	if(argc > 1){
 		if((tune = lft_loadfile(argv[1]))){
 			fprintf(stderr, "loaded %s\n", argv[1]);
+			sdl_init = lft_sdl_init;
 		//TODO make 48000 configurable as 'samplefreq'
 		}else if((htTune = hvl_LoadTune(argv[1], 48000, 4))){
 			fprintf(stderr, "loading ahx/hvl...\n");
 			fprintf(stderr, "loaded %s\n", argv[1]);
 			tune = importHvl(htTune);
+			sdl_init = hvl_sdl_init;
 			hvl_InitSubsong(htTune,0);
 		}else{
 			fprintf(stderr, "couldn't load %s\n", argv[1]);
 			fprintf(stderr, "loading empty tune");
 			tune = lft_loadfile("");
+			sdl_init = lft_sdl_init;
 		}
 	}else{
 	//what happens if we load with no filename?

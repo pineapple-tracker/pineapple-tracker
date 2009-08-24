@@ -3,8 +3,38 @@
 #include <SDL/SDL.h>
 
 
-/* SDL audioInit function */
-u8 sdl_init(void){
+/* lft SDL audioInit function */
+u8 lft_sdl_init(void){
+	SDL_AudioSpec requested, obtained;
+
+	fprintf(stderr, "Trying SDL....\n");
+
+	if(SDL_Init( SDL_INIT_AUDIO ) < 0){
+		fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
+		return 1;
+	}
+
+	atexit(SDL_Quit);
+
+	requested.freq = FREQ;
+	requested.format = AUDIO_U8;
+	requested.samples = 256;
+	//requested.samples = config_param.buffersize;
+	requested.channels = 1;
+	requested.callback = lftSdlCallback;
+
+	SDL_OpenAudio(&requested, &obtained);
+
+	fprintf(stderr, "freq %d\n", obtained.freq);
+	fprintf(stderr, "req. format %d\n", obtained.format);
+	fprintf(stderr, "obtained format %d\n", obtained.format);
+	fprintf(stderr, "samples %d\n", obtained.samples);
+
+	return 0;
+}
+
+/* hvl SDL audioInit function */
+u8 hvl_sdl_init(void){
 	SDL_AudioSpec requested, obtained;
 
 	fprintf(stderr, "Trying SDL....\n");
@@ -21,7 +51,7 @@ u8 sdl_init(void){
 	requested.samples = 256;
 	//requested.samples = config_param.buffersize;
 	requested.channels = 2;
-	requested.callback = (void*) mix_and_play;
+	requested.callback = (void*) hvlSdlCallBack;
 
 	SDL_OpenAudio(&requested, &obtained);
 
@@ -48,8 +78,7 @@ void lftSdlCallback(void *userdata, Uint8 *buf, int len){
 \\\  < void hvlSdlCallBack(void*,Uint8*,int) >                               .|
 ///  SDLCallback function for HVL/AHX format.                                .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
-void mix_and_play( struct hvl_tune *ht, u8 *stream, int length )
-{
+void hvlSdlCallBack(struct hvl_tune *ht, u8 *stream, int length){
   int16 *out;
   int i;
   size_t streamPos = 0;
