@@ -200,15 +200,15 @@ void act_viewinstrdec(void){
 void act_trackinc(void){
 	if( (songx%2)==0 ){
 		if(songx >= 240 && songx < 256){
-			song[songy].track[songx/4] -= 240;
+			tune->sng[songy].track[songx/4] -= 240;
 		}else{
-			song[songy].track[songx/4] += 16;
+			tune->sng[songy].track[songx/4] += 16;
 		}
 	}else{
-		if( (song[songy].track[songx/4] % 16) == 15){
-			song[songy].track[songx/4] -= 15;
+		if( (tune->sng[songy].track[songx/4] % 16) == 15){
+			tune->sng[songy].track[songx/4] -= 15;
 		}else{
-			song[songy].track[songx/4]++;
+			tune->sng[songy].track[songx/4]++;
 		}
 	}
 	saved = 0;
@@ -217,15 +217,15 @@ void act_trackinc(void){
 void act_trackdec(void){
 	if( (songx%2)==0 ){
 		if(songx <= 15 && songx >= 0){
-			song[songy].track[songx/4] += 240;
+			tune->sng[songy].track[songx/4] += 240;
 		}else{
-			song[songy].track[songx/4] -= 16;
+			tune->sng[songy].track[songx/4] -= 16;
 		}
 	}else{
-		if( (song[songy].track[songx/4] % 16) == 0){
-			song[songy].track[songx/4] += 15;
+		if( (tune->sng[songy].track[songx/4] % 16) == 0){
+			tune->sng[songy].track[songx/4] += 15;
 		}else{
-			song[songy].track[songx/4]--;
+			tune->sng[songy].track[songx/4]--;
 		}
 	}
 	saved = 0;
@@ -234,15 +234,15 @@ void act_trackdec(void){
 void act_transpinc(void){
 	if( (songx%2)==0 ){
 		if(songx >= 240 && songx < 256){
-			song[songy].transp[songx/4] -= 240;
+			tune->sng[songy].transp[songx/4] -= 240;
 		}else{
-			song[songy].transp[songx/4] += 16;
+			tune->sng[songy].transp[songx/4] += 16;
 		}
 	}else{
-		if( (song[songy].transp[songx/4] % 16) == 15){
-			song[songy].transp[songx/4] -= 15;
+		if( (tune->sng[songy].transp[songx/4] % 16) == 15){
+			tune->sng[songy].transp[songx/4] -= 15;
 		}else{
-			song[songy].transp[songx/4]++;
+			tune->sng[songy].transp[songx/4]++;
 		}
 	}
 	saved = 0;
@@ -251,15 +251,15 @@ void act_transpinc(void){
 void act_transpdec(void){
 	if( (songx%2)==0 ){
 		if(songx <= 15 && songx >= 0){
-			song[songy].transp[songx/4] += 240;
+			tune->sng[songy].transp[songx/4] += 240;
 		}else{
-			song[songy].transp[songx/4] -= 16;
+			tune->sng[songy].transp[songx/4] -= 16;
 		}
 	}else{
-		if( (song[songy].transp[songx/4] % 16) == 0){
-			song[songy].transp[songx/4] += 15;
+		if( (tune->sng[songy].transp[songx/4] % 16) == 0){
+			tune->sng[songy].transp[songx/4] += 15;
 		}else{
-			song[songy].transp[songx/4]--;
+			tune->sng[songy].transp[songx/4]--;
 		}
 	}
 	saved = 0;
@@ -271,10 +271,10 @@ void act_undo(void){
 void act_noteinc(void){
 	if(currtab==1){
 		// if current note < H7
-		if( track[currtrack].line[tracky].note < 96 ){
-			track[currtrack].line[tracky].note++;
+		if( tune->trk[currtrack].line[tracky].note < 96 ){
+			tune->trk[currtrack].line[tracky].note++;
 		}else{
-			track[currtrack].line[tracky].note = 0;
+			tune->trk[currtrack].line[tracky].note = 0;
 		}
 	}else if(currtab==2){
 		if( instrument[currinstr].line[instry].param < 96 ){
@@ -288,10 +288,10 @@ void act_noteinc(void){
 
 void act_notedec(void){
 	if(currtab==1){
-		if( track[currtrack].line[tracky].note > 0 ){
-			track[currtrack].line[tracky].note--;
+		if( tune->trk[currtrack].line[tracky].note > 0 ){
+			tune->trk[currtrack].line[tracky].note--;
 		}else{
-			track[currtrack].line[tracky].note = 96;
+			tune->trk[currtrack].line[tracky].note = 96;
 		}
 	}else if(currtab==2){
 		if( instrument[currinstr].line[instry].param > 0 ){
@@ -305,10 +305,10 @@ void act_notedec(void){
 
 void act_octaveinc(void){
 	if(currtab==1){
-		if( track[currtrack].line[tracky].note+12 <= 96 ){
-			track[currtrack].line[tracky].note+=12;
+		if( tune->trk[currtrack].line[tracky].note+12 <= 96 ){
+			tune->trk[currtrack].line[tracky].note+=12;
 		}else{
-			track[currtrack].line[tracky].note %= 12;
+			tune->trk[currtrack].line[tracky].note %= 12;
 		}
 	}else if(currtab==2){ if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '='){
 			if( instrument[currinstr].line[instry].param+12 <= 96 ){
@@ -323,10 +323,10 @@ void act_octaveinc(void){
 
 void act_octavedec(void){
 	if(currtab==1){
-		if( track[currtrack].line[tracky].note-12 > 0 ){
-			track[currtrack].line[tracky].note-=12;
+		if( tune->trk[currtrack].line[tracky].note-12 > 0 ){
+			tune->trk[currtrack].line[tracky].note-=12;
 		}else{
-			track[currtrack].line[tracky].note = 84 + track[currtrack].line[tracky].note;
+			tune->trk[currtrack].line[tracky].note = 84 + tune->trk[currtrack].line[tracky].note;
 		}
 	}else if(currtab==2){
 		if(instrument[currinstr].line[instry].cmd == '+' || instrument[currinstr].line[instry].cmd == '='){
@@ -343,12 +343,12 @@ void act_octavedec(void){
 void act_instrinc(void){
 	switch(trackx){
 		case 2:
-			SETHI(track[currtrack].line[tracky].instr,
-					hexinc(track[currtrack].line[tracky].instr >> 4) );
+			SETHI(tune->trk[currtrack].line[tracky].instr,
+					hexinc(tune->trk[currtrack].line[tracky].instr >> 4) );
 			break;
 		case 3:
-			SETLO(track[currtrack].line[tracky].instr,
-					hexinc(track[currtrack].line[tracky].instr & 0x0f) );
+			SETLO(tune->trk[currtrack].line[tracky].instr,
+					hexinc(tune->trk[currtrack].line[tracky].instr & 0x0f) );
 			break;
 	}
 	saved = 0;
@@ -357,12 +357,12 @@ void act_instrinc(void){
 void act_instrdec(void){
 	switch(trackx){
 		case 2:
-			SETHI(track[currtrack].line[tracky].instr,
-					hexdec(track[currtrack].line[tracky].instr >> 4) );
+			SETHI(tune->trk[currtrack].line[tracky].instr,
+					hexdec(tune->trk[currtrack].line[tracky].instr >> 4) );
 			break;
 		case 3:
-			SETLO(track[currtrack].line[tracky].instr,
-					hexdec(track[currtrack].line[tracky].instr & 0x0f) );
+			SETLO(tune->trk[currtrack].line[tracky].instr,
+					hexdec(tune->trk[currtrack].line[tracky].instr & 0x0f) );
 			break;
 	}
 	saved = 0;
@@ -370,17 +370,17 @@ void act_instrdec(void){
 
 void act_fxinc(void){
 	if(currtab==1){
-		currcmd = track[currtrack].line[tracky].cmd[trackx % 2];
+		currcmd = tune->trk[currtrack].line[tracky].cmd[trackx % 2];
 		// there must be a better way to do this...
 		if((unsigned long)currcmd == (unsigned long)NULL){
-			track[currtrack].line[tracky].cmd[trackx % 2] = validcmds[0];
+			tune->trk[currtrack].line[tracky].cmd[trackx % 2] = validcmds[0];
 		}else{
 			for(int z = 0; z < strlen(validcmds); z++){
 				if(currcmd == validcmds[z]){
 					if(z == (strlen(validcmds)-1)){
-						track[currtrack].line[tracky].cmd[trackx % 2] = (unsigned long)NULL;
+						tune->trk[currtrack].line[tracky].cmd[trackx % 2] = (unsigned long)NULL;
 					}else{
-						track[currtrack].line[tracky].cmd[trackx % 2] = validcmds[z+1];
+						tune->trk[currtrack].line[tracky].cmd[trackx % 2] = validcmds[z+1];
 					}
 					continue;
 				}
@@ -420,16 +420,16 @@ void act_fxinc(void){
 
 void act_fxdec(void){
 	if(currtab==1){
-		currcmd = track[currtrack].line[tracky].cmd[trackx % 2];
+		currcmd = tune->trk[currtrack].line[tracky].cmd[trackx % 2];
 		if((unsigned long)currcmd == (unsigned long)NULL){
-			track[currtrack].line[tracky].cmd[trackx % 2] = validcmds[strlen(validcmds)-1];
+			tune->trk[currtrack].line[tracky].cmd[trackx % 2] = validcmds[strlen(validcmds)-1];
 		}else{
 			for(int z = 0; z < strlen(validcmds); z++){
 				if(currcmd == validcmds[z]){
 					if(z==0){
-						track[currtrack].line[tracky].cmd[trackx % 2] = (unsigned long)NULL;
+						tune->trk[currtrack].line[tracky].cmd[trackx % 2] = (unsigned long)NULL;
 					}else{
-						track[currtrack].line[tracky].cmd[trackx % 2] = validcmds[z-1];
+						tune->trk[currtrack].line[tracky].cmd[trackx % 2] = validcmds[z-1];
 					}
 					continue;
 				}
@@ -469,15 +469,15 @@ void act_fxdec(void){
 
 void act_paraminc(void){
 	if(currtab==1){
-		if((trackx==5 && track[currtrack].line[tracky].cmd[0])
-				|| (trackx==8 && track[currtrack].line[tracky].cmd[1])){
-			SETHI(track[currtrack].line[tracky].param[(trackx - 1) % 2],
-					hexinc(track[currtrack].line[tracky].param[(trackx - 1) % 2] >> 4) );
+		if((trackx==5 && tune->trk[currtrack].line[tracky].cmd[0])
+				|| (trackx==8 && tune->trk[currtrack].line[tracky].cmd[1])){
+			SETHI(tune->trk[currtrack].line[tracky].param[(trackx - 1) % 2],
+					hexinc(tune->trk[currtrack].line[tracky].param[(trackx - 1) % 2] >> 4) );
 			return;
-		}else if((trackx==6 && track[currtrack].line[tracky].cmd[0])
-				|| (trackx==9 && track[currtrack].line[tracky].cmd[1])){
-			SETLO(track[currtrack].line[tracky].param[trackx % 2],
-					hexinc(track[currtrack].line[tracky].param[trackx % 2] & 0x0f) );
+		}else if((trackx==6 && tune->trk[currtrack].line[tracky].cmd[0])
+				|| (trackx==9 && tune->trk[currtrack].line[tracky].cmd[1])){
+			SETLO(tune->trk[currtrack].line[tracky].param[trackx % 2],
+					hexinc(tune->trk[currtrack].line[tracky].param[trackx % 2] & 0x0f) );
 			return;
 		}
 	}else if(currtab == 2){
@@ -496,15 +496,15 @@ void act_paraminc(void){
 
 void act_paramdec(void){
 	if(currtab==1){
-		if((trackx==5 && track[currtrack].line[tracky].cmd[0])
-				|| (trackx==8 && track[currtrack].line[tracky].cmd[1])){
-			SETHI(track[currtrack].line[tracky].param[(trackx-1) % 2],
-					hexdec(track[currtrack].line[tracky].param[(trackx-1) % 2] >> 4) );
+		if((trackx==5 && tune->trk[currtrack].line[tracky].cmd[0])
+				|| (trackx==8 && tune->trk[currtrack].line[tracky].cmd[1])){
+			SETHI(tune->trk[currtrack].line[tracky].param[(trackx-1) % 2],
+					hexdec(tune->trk[currtrack].line[tracky].param[(trackx-1) % 2] >> 4) );
 			return;
-		}else if((trackx==6 && track[currtrack].line[tracky].cmd[0])
-				|| (trackx==9 && track[currtrack].line[tracky].cmd[1])){
-			SETLO(track[currtrack].line[tracky].param[trackx % 2],
-					hexdec(track[currtrack].line[tracky].param[trackx % 2] & 0x0f) );
+		}else if((trackx==6 && tune->trk[currtrack].line[tracky].cmd[0])
+				|| (trackx==9 && tune->trk[currtrack].line[tracky].cmd[1])){
+			SETLO(tune->trk[currtrack].line[tracky].param[trackx % 2],
+					hexdec(tune->trk[currtrack].line[tracky].param[trackx % 2] & 0x0f) );
 			return;
 		}
 	}else if(currtab == 2){
@@ -534,10 +534,10 @@ void act_addline(void){
 		}
 	}else if(currtab == 0){
 		if(tune->songlen < 256){
-			memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (tune->songlen - songy - 1));
+			memmove(&tune->sng[songy + 2], &tune->sng[songy + 1], sizeof(struct songline) * (tune->songlen - songy - 1));
 			songy++;
 			tune->songlen++;
-			memset(&song[songy], 0, sizeof(struct songline));
+			memset(&tune->sng[songy], 0, sizeof(struct songline));
 		}
 	}
 	saved = 0;
@@ -554,7 +554,7 @@ void act_delline(void){
 		}
 	}else if(currtab == 0){
 		if(tune->songlen > 1){
-			memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (tune->songlen - songy - 1));
+			memmove(&tune->sng[songy + 0], &tune->sng[songy + 1], sizeof(struct songline) * (tune->songlen - songy - 1));
 			tune->songlen--;
 			if(songy >= tune->songlen) songy = tune->songlen - 1;
 		}
@@ -566,51 +566,51 @@ void act_clronething(void){
 	if(currtab == 0){
 		if( (songx%4) < 2){
 			if( (songx%2)==0 ){
-				song[songy].track[songx/4] = (song[songy].track[songx/4] - song[songy].track[songx/4]) + song[songy].track[songx/4]%16;
+				tune->sng[songy].track[songx/4] = (tune->sng[songy].track[songx/4] - tune->sng[songy].track[songx/4]) + tune->sng[songy].track[songx/4]%16;
 			}else{
-				song[songy].track[songx/4] -= song[songy].track[songx/4]%16;
+				tune->sng[songy].track[songx/4] -= tune->sng[songy].track[songx/4]%16;
 			}
 		}else{
 			if( (songx%2)==0 ){
-				song[songy].transp[songx/4] = (song[songy].transp[songx/4] - song[songy].transp[songx/4]) + song[songy].transp[songx/4]%16;
+				tune->sng[songy].transp[songx/4] = (tune->sng[songy].transp[songx/4] - tune->sng[songy].transp[songx/4]) + tune->sng[songy].transp[songx/4]%16;
 			}else{
-				song[songy].transp[songx/4] -= song[songy].transp[songx/4]%16;
+				tune->sng[songy].transp[songx/4] -= tune->sng[songy].transp[songx/4]%16;
 			}
 		}
-		//memcpy(&tclip, &song[songy], sizeof(struct songline));
+		//memcpy(&tclip, &tune->sng[songy], sizeof(struct songline));
 	}else if(currtab == 1){
 		switch(trackx){
 			case 0:
-				memcpy(&tclip, &track[currtrack].line[tracky], sizeof(struct trackline));
-				track[currtrack].line[tracky].note = 0;
-				track[currtrack].line[tracky].instr = 0;
+				memcpy(&tclip, &tune->trk[currtrack].line[tracky], sizeof(struct trackline));
+				tune->trk[currtrack].line[tracky].note = 0;
+				tune->trk[currtrack].line[tracky].instr = 0;
 				//memmove
 				break;
 			case 2:
-				memcpy(&tclip, &track[currtrack].line[tracky].instr, sizeof(struct trackline));
-				SETHI(track[currtrack].line[tracky].instr, 0);
+				memcpy(&tclip, &tune->trk[currtrack].line[tracky].instr, sizeof(struct trackline));
+				SETHI(tune->trk[currtrack].line[tracky].instr, 0);
 				break;
 			case 3:
-				memcpy(&tclip, &track[currtrack].line[tracky].instr, sizeof(struct trackline));
-				SETLO(track[currtrack].line[tracky].instr, 0);
+				memcpy(&tclip, &tune->trk[currtrack].line[tracky].instr, sizeof(struct trackline));
+				SETLO(tune->trk[currtrack].line[tracky].instr, 0);
 				break;
 			case 4:
-				track[currtrack].line[tracky].cmd[0] = 0;
+				tune->trk[currtrack].line[tracky].cmd[0] = 0;
 				break;
 			case 5:
-				SETHI(track[currtrack].line[tracky].param[0],0);
+				SETHI(tune->trk[currtrack].line[tracky].param[0],0);
 				break;
 			case 6:
-				SETLO(track[currtrack].line[tracky].param[0],0);
+				SETLO(tune->trk[currtrack].line[tracky].param[0],0);
 				break;
 			case 7:
-				track[currtrack].line[tracky].cmd[1] = 0;
+				tune->trk[currtrack].line[tracky].cmd[1] = 0;
 				break;
 			case 8:
-				SETHI(track[currtrack].line[tracky].param[1],0);
+				SETHI(tune->trk[currtrack].line[tracky].param[1],0);
 				break;
 			case 9:
-				SETLO(track[currtrack].line[tracky].param[1],0);
+				SETLO(tune->trk[currtrack].line[tracky].param[1],0);
 				break;
 			default:
 				setdisplay("in ACT_CLRONETHING");
@@ -639,20 +639,20 @@ void act_clronething(void){
 void act_clritall(void){
 	if(currtab == 0){
 		for(int ci = 0; ci < 4; ci++){
-			song[songy].track[ci] = 0;
-			song[songy].transp[ci] = 0;
+			tune->sng[songy].track[ci] = 0;
+			tune->sng[songy].transp[ci] = 0;
 		}
 	}else if(currtab == 1){
-		track[currtrack].line[tracky].note = 0;
-		track[currtrack].line[tracky].instr = 0;
-		SETHI(track[currtrack].line[tracky].instr, 0);
-		SETLO(track[currtrack].line[tracky].instr, 0);
-		track[currtrack].line[tracky].cmd[0] = 0;
-		SETHI(track[currtrack].line[tracky].param[0],0);
-		SETLO(track[currtrack].line[tracky].param[0],0);
-		track[currtrack].line[tracky].cmd[1] = 0;
-		SETHI(track[currtrack].line[tracky].param[1],0);
-		SETLO(track[currtrack].line[tracky].param[1],0);
+		tune->trk[currtrack].line[tracky].note = 0;
+		tune->trk[currtrack].line[tracky].instr = 0;
+		SETHI(tune->trk[currtrack].line[tracky].instr, 0);
+		SETLO(tune->trk[currtrack].line[tracky].instr, 0);
+		tune->trk[currtrack].line[tracky].cmd[0] = 0;
+		SETHI(tune->trk[currtrack].line[tracky].param[0],0);
+		SETLO(tune->trk[currtrack].line[tracky].param[0],0);
+		tune->trk[currtrack].line[tracky].cmd[1] = 0;
+		SETHI(tune->trk[currtrack].line[tracky].param[1],0);
+		SETLO(tune->trk[currtrack].line[tracky].param[1],0);
 	}else if(currtab == 2){
 		instrument[currinstr].line[instry].cmd = '0';
 		instrument[currinstr].line[instry].param = 0;
@@ -663,23 +663,23 @@ void act_clritall(void){
 // clear line y in the song tab
 void act_clrinsongtab(int y){
 	for(int ci = 0; ci < 4; ci++){
-		song[songy].track[ci] = 0;
-		song[songy].transp[ci] = 0;
+		tune->sng[songy].track[ci] = 0;
+		tune->sng[songy].transp[ci] = 0;
 	}
 	saved = 0;
 }
 
 void act_clrintracktab(int t, int y){
-	track[t].line[y].note = 0;
-	track[t].line[y].instr = 0;
-	SETHI(track[t].line[y].instr, 0);
-	SETLO(track[t].line[y].instr, 0);
-	track[t].line[y].cmd[0] = 0;
-	SETHI(track[t].line[y].param[0],0);
-	SETLO(track[t].line[y].param[0],0);
-	track[t].line[y].cmd[1] = 0;
-	SETHI(track[t].line[y].param[1],0);
-	SETLO(track[t].line[y].param[1],0);
+	tune->trk[t].line[y].note = 0;
+	tune->trk[t].line[y].instr = 0;
+	SETHI(tune->trk[t].line[y].instr, 0);
+	SETLO(tune->trk[t].line[y].instr, 0);
+	tune->trk[t].line[y].cmd[0] = 0;
+	SETHI(tune->trk[t].line[y].param[0],0);
+	SETLO(tune->trk[t].line[y].param[0],0);
+	tune->trk[t].line[y].cmd[1] = 0;
+	SETHI(tune->trk[t].line[y].param[1],0);
+	SETLO(tune->trk[t].line[y].param[1],0);
 	saved = 0;
 }
 

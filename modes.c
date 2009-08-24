@@ -26,10 +26,10 @@ int nextfreetrack(){
 
 	for(int i = 1; i <= 0xff; i++){
 		for(int j = 0; j < tune->tracklen; j++){
-			if(track[i].line[j].note) skiptherest = 1;
+			if(tune->trk[i].line[j].note) skiptherest = 1;
 			for(int k = 0; k < 2; k++){
-				if(track[i].line[j].cmd[k]) skiptherest = 1;
-				if(track[i].line[j].param[k]) skiptherest = 1;
+				if(tune->trk[i].line[j].cmd[k]) skiptherest = 1;
+				if(tune->trk[i].line[j].param[k]) skiptherest = 1;
 			}
 
 			// skip the rest of this track?
@@ -73,24 +73,24 @@ void _insertc(int c){
 		}
 		if(currtab == 1 && trackx > 1){
 			switch(trackx){
-				case 2: SETHI(track[currtrack].line[tracky].instr, x); break;
-				case 3: SETLO(track[currtrack].line[tracky].instr, x); break;
-				case 5: if(track[currtrack].line[tracky].cmd[0])
-					SETHI(track[currtrack].line[tracky].param[0], x); break;
-				case 6: if(track[currtrack].line[tracky].cmd[0])
-					SETLO(track[currtrack].line[tracky].param[0], x); break;
-				case 8: if(track[currtrack].line[tracky].cmd[1])
-					SETHI(track[currtrack].line[tracky].param[1], x); break;
-				case 9: if(track[currtrack].line[tracky].cmd[1])
-					SETLO(track[currtrack].line[tracky].param[1], x); break;
+				case 2: SETHI(tune->trk[currtrack].line[tracky].instr, x); break;
+				case 3: SETLO(tune->trk[currtrack].line[tracky].instr, x); break;
+				case 5: if(tune->trk[currtrack].line[tracky].cmd[0])
+					SETHI(tune->trk[currtrack].line[tracky].param[0], x); break;
+				case 6: if(tune->trk[currtrack].line[tracky].cmd[0])
+					SETLO(tune->trk[currtrack].line[tracky].param[0], x); break;
+				case 8: if(tune->trk[currtrack].line[tracky].cmd[1])
+					SETHI(tune->trk[currtrack].line[tracky].param[1], x); break;
+				case 9: if(tune->trk[currtrack].line[tracky].cmd[1])
+					SETLO(tune->trk[currtrack].line[tracky].param[1], x); break;
 			}
 		}
 		if(currtab == 0){
 			switch(songx & 3){
-				case 0: SETHI(song[songy].track[songx / 4], x); break;
-				case 1: SETLO(song[songy].track[songx / 4], x); break;
-				case 2: SETHI(song[songy].transp[songx / 4], x); break;
-				case 3: SETLO(song[songy].transp[songx / 4], x); break;
+				case 0: SETHI(tune->sng[songy].track[songx / 4], x); break;
+				case 1: SETLO(tune->sng[songy].track[songx / 4], x); break;
+				case 2: SETHI(tune->sng[songy].transp[songx / 4], x); break;
+				case 3: SETLO(tune->sng[songy].transp[songx / 4], x); break;
 			}
 		}
 	}
@@ -102,11 +102,11 @@ void _insertc(int c){
 			instrument[currinstr].line[instry].param = x;
 		}
 		if(currtab == 1 && !trackx){
-			track[currtrack].line[tracky].note = x;
+			tune->trk[currtrack].line[tracky].note = x;
 			if(x){
-				track[currtrack].line[tracky].instr = currinstr;
+				tune->trk[currtrack].line[tracky].instr = currinstr;
 			}else{
-				track[currtrack].line[tracky].instr = 0;
+				tune->trk[currtrack].line[tracky].instr = 0;
 			}
 			if(x) lft_iedplonk(x, currinstr);
 		}
@@ -118,7 +118,7 @@ void _insertc(int c){
 	if(currtab == 1 && (trackx == 4 || trackx == 7)){
 		if(strchr(validcmds, c)){
 			if(c == '.' || c == '0') c = 0;
-			track[currtrack].line[tracky].cmd[(trackx - 3) / 3] = c;
+			tune->trk[currtrack].line[tracky].cmd[(trackx - 3) / 3] = c;
 		}
 	}
 	// for repeat
@@ -424,10 +424,10 @@ void normalmode(int c){
 					//tclip = malloc(1);
 					if(currtab == 0){
 						tcliplen = 1;
-						memcpy(&tclip, &song[songy], sizeof(struct songline));
+						memcpy(&tclip, &tune->sng[songy], sizeof(struct songline));
 					}else if(currtab == 1){
 						tcliplen = 1;
-						memcpy(&tclip, &track[currtrack].line[tracky], sizeof(struct trackline));
+						memcpy(&tclip, &tune->trk[currtrack].line[tracky], sizeof(struct trackline));
 					}else if(currtab == 2){
 						icliplen = 1;
 						memcpy(&iclip, &instrument[currinstr].line[instry], sizeof(struct instrline));
@@ -437,14 +437,14 @@ void normalmode(int c){
 					//tclip = malloc(2);
 					if(currtab == 0){
 						tcliplen = 2;
-						memcpy(&tclip[0], &song[songy], sizeof(struct songline));
+						memcpy(&tclip[0], &tune->sng[songy], sizeof(struct songline));
 						act_mvdown();
-						memcpy(&tclip[1], &song[songy], sizeof(struct songline));
+						memcpy(&tclip[1], &tune->sng[songy], sizeof(struct songline));
 					}else if(currtab == 1){
 						tcliplen = 2;
-						memcpy(&tclip[0], &track[currtrack].line[tracky], sizeof(struct trackline));
+						memcpy(&tclip[0], &tune->trk[currtrack].line[tracky], sizeof(struct trackline));
 						act_mvdown();
-						memcpy(&tclip[1], &track[currtrack].line[tracky], sizeof(struct trackline));
+						memcpy(&tclip[1], &tune->trk[currtrack].line[tracky], sizeof(struct trackline));
 					}else if(currtab == 2){
 						icliplen = 2;
 						memcpy(&iclip[0], &instrument[currinstr].line[instry], sizeof(struct instrline));
@@ -456,14 +456,14 @@ void normalmode(int c){
 					//tclip = malloc(2);
 					if(currtab == 0){
 						tcliplen = 2;
-						memcpy(&tclip[1], &song[songy], sizeof(struct songline));
+						memcpy(&tclip[1], &tune->sng[songy], sizeof(struct songline));
 						act_mvup();
-						memcpy(&tclip[0], &song[songy], sizeof(struct songline));
+						memcpy(&tclip[0], &tune->sng[songy], sizeof(struct songline));
 					}else if(currtab == 1){
 						tcliplen = 2;
-						memcpy(&tclip[1], &track[currtrack].line[tracky], sizeof(struct trackline));
+						memcpy(&tclip[1], &tune->trk[currtrack].line[tracky], sizeof(struct trackline));
 						act_mvup();
-						memcpy(&tclip[0], &track[currtrack].line[tracky], sizeof(struct trackline));
+						memcpy(&tclip[0], &tune->trk[currtrack].line[tracky], sizeof(struct trackline));
 					}else if(currtab == 2){
 						icliplen = 2;
 						memcpy(&iclip[1], &instrument[currinstr].line[instry], sizeof(struct instrline));
@@ -480,18 +480,18 @@ void normalmode(int c){
 				if(tune->songlen < 256){
 					for(int i = 0; i < tcliplen; i++){
 						// insert new line
-						memmove(&song[songy + 2], &song[songy + 1], sizeof(struct songline) * (tune->songlen - songy - 1));
+						memmove(&tune->sng[songy + 2], &tune->sng[songy + 1], sizeof(struct songline) * (tune->songlen - songy - 1));
 						songy++;
 						tune->songlen++;
-						memset(&song[songy], 0, sizeof(struct songline));
+						memset(&tune->sng[songy], 0, sizeof(struct songline));
 
 						// paste to new line
-						memcpy(&song[songy], &tclip[i], sizeof(struct songline));
+						memcpy(&tune->sng[songy], &tclip[i], sizeof(struct songline));
 					}
 				}
 			}else if(currtab == 1){
 					for(int i = 0; i < tcliplen; i++){
-						memcpy(&track[currtrack].line[tracky], &tclip[i], sizeof(struct trackline));
+						memcpy(&tune->trk[currtrack].line[tracky], &tclip[i], sizeof(struct trackline));
 						if(tracky < (tune->tracklen)-step) tracky += step;
 						else tracky = (tune->tracklen)-1;
 					}
@@ -519,7 +519,7 @@ void normalmode(int c){
 		case '^':
 			if(currtab == 1){
 				f = nextfreetrack();
-				memcpy(&track[f], &track[currtrack], sizeof(struct track));
+				memcpy(&tune->trk[f], &tune->trk[currtrack], sizeof(struct track));
 				currtrack = f;
 			}else if(currtab == 2){
 				f = nextfreeinstr();
@@ -532,7 +532,7 @@ void normalmode(int c){
 		// copy whole phrase or instrument
 		case 'Y':
 			if(currtab == 1){
-				memcpy(&tclip, &track[currtrack], sizeof(struct track));
+				memcpy(&tclip, &tune->trk[currtrack], sizeof(struct track));
 			}else if(currtab == 2){
 				memcpy(&iclip, &instrument[currinstr], sizeof(struct instrument));
 			}
@@ -540,7 +540,7 @@ void normalmode(int c){
 		// paste whole phrase or instrument
 		case 'P':
 			if(currtab == 1){
-				memcpy(&track[currtrack], &tclip, sizeof(struct track));
+				memcpy(&tune->trk[currtrack], &tclip, sizeof(struct track));
 			}else if(currtab == 2){
 				memcpy(&instrument[currinstr], &iclip, sizeof(struct instrument));
 			}
@@ -572,7 +572,7 @@ void normalmode(int c){
 						int i;
 						for(i=0; i<2; i++){
 							if(tune->songlen > 1){
-								memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (tune->songlen - songy - 1));
+								memmove(&tune->sng[songy + 0], &tune->sng[songy + 1], sizeof(struct songline) * (tune->songlen - songy - 1));
 								tune->songlen--;
 								if(songy >= tune->songlen) songy = tune->songlen - 1;
 							}
@@ -595,7 +595,7 @@ void normalmode(int c){
 						int i;
 						for(i=0; i<2; i++){
 							if(tune->songlen > 1){
-								memmove(&song[songy + 0], &song[songy + 1], sizeof(struct songline) * (tune->songlen - songy - 1));
+								memmove(&tune->sng[songy + 0], &tune->sng[songy + 1], sizeof(struct songline) * (tune->songlen - songy - 1));
 								tune->songlen--;
 								if(songy >= tune->songlen) songy = tune->songlen - 1;
 							}
@@ -653,14 +653,14 @@ void normalmode(int c){
 		// TODO: make an act_ function for '`'
 		case '`':
 			if(currtab == 0){
-				int t = song[songy].track[songx / 4];
+				int t = tune->sng[songy].track[songx / 4];
 				if(t) currtrack = t;
 				currtab = 1;
 				if(playtrack){
 					startplaytrack(currtrack);
 				}
 			}else if((currtab == 1) && ((trackx == 2) || (trackx == 3))){
-				int i = track[currtrack].line[tracky].instr;
+				int i = tune->trk[currtrack].line[tracky].instr;
 				if(i) currinstr = i;
 				currtab = 2;
 			}	else if(currtab == 1){
@@ -1046,7 +1046,7 @@ void insertmode(void){
 				break;
 			case '`':
 				if(currtab == 0){
-					int t = song[songy].track[songx / 4];
+					int t = tune->sng[songy].track[songx / 4];
 					if(t) currtrack = t;
 					currtab = 1;
 				}else if(currtab == 1){
@@ -1281,16 +1281,16 @@ void visuallinemode(void){
 			case 'y':
 				if(currtab == 0){
 					//tcliplen = 1;
-					//memcpy(&tclip, &song[songy], sizeof(struct songline)*highlight_lineamount);
+					//memcpy(&tclip, &tune->sng[songy], sizeof(struct songline)*highlight_lineamount);
 					tcliplen = highlight_lineamount;
 					//moved up, then yanked
 					if(highlight_firstline > highlight_lastline){
 						for(int i = 0; i < highlight_lineamount; i++)
-							memcpy(&tclip[i], &song[songy+i], sizeof(struct songline));
+							memcpy(&tclip[i], &tune->sng[songy+i], sizeof(struct songline));
 					//moved down, then yanked
 					}else if(highlight_lastline > highlight_firstline){
 						for(int i = highlight_lineamount-1, j = 0; i >= 0; i--, j++){
-								memcpy(&tclip[i], &song[songy-j], sizeof(struct songline));
+								memcpy(&tclip[i], &tune->sng[songy-j], sizeof(struct songline));
 						}
 					}
 				}else if(currtab == 1){
@@ -1298,11 +1298,11 @@ void visuallinemode(void){
 					//moved up, then yanked
 					if(highlight_firstline > highlight_lastline){
 						for(int i = 0; i < highlight_lineamount; i++)
-							memcpy(&tclip[i], &track[currtrack].line[tracky+i], sizeof(struct trackline));
+							memcpy(&tclip[i], &tune->trk[currtrack].line[tracky+i], sizeof(struct trackline));
 					//moved down, then yanked
 					}else if(highlight_lastline > highlight_firstline){
 						for(int i = highlight_lineamount-1, j = 0; i >= 0; i--, j++){
-								memcpy(&tclip[i], &track[currtrack].line[tracky-j], sizeof(struct trackline));
+								memcpy(&tclip[i], &tune->trk[currtrack].line[tracky-j], sizeof(struct trackline));
 						}
 					}
 				}else if(currtab == 2){

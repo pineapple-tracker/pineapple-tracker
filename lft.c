@@ -88,6 +88,18 @@ struct channel {
 } channel[4];
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
+\\\  < void readtrack(int,int,trackline) >                                   .\
+ \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
+void readtrack(int num, int pos, struct trackline *tl){
+	tl->note = tune->trk[num].line[pos].note;
+	tl->instr = tune->trk[num].line[pos].instr;
+	tl->cmd[0] = tune->trk[num].line[pos].cmd[0];
+	tl->cmd[1] = tune->trk[num].line[pos].cmd[1];
+	tl->param[0] = tune->trk[num].line[pos].param[0];
+	tl->param[1] = tune->trk[num].line[pos].param[1];
+}
+
+ //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
 \\\  < void runcmd(u8,u8,u8) >                                               .|
 ///  Executes a song command.                                                .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
@@ -428,19 +440,19 @@ void lft_savefile(char *fname){
 	for(i = 0; i < tune->songlen; i++){
 		fprintf(f, "songline %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
 			i,
-			song[i].track[0],
-			song[i].transp[0],
-			song[i].track[1],
-			song[i].transp[1],
-			song[i].track[2],
-			song[i].transp[2],
-			song[i].track[3],
-			song[i].transp[3]);
+			tune->sng[i].track[0],
+			tune->sng[i].transp[0],
+			tune->sng[i].track[1],
+			tune->sng[i].transp[1],
+			tune->sng[i].track[2],
+			tune->sng[i].transp[2],
+			tune->sng[i].track[3],
+			tune->sng[i].transp[3]);
 	}
 	fprintf(f, "\n");
 	for(i = 1; i < 256; i++){
 		for(j = 0; j < tune->tracklen; j++){
-			struct trackline *tl = &track[i].line[j];
+			struct trackline *tl = &tune->trk[i].line[j];
 
 			if(tl->note || tl->instr || tl->cmd[0] || tl->cmd[1]){
 				fprintf(f, "trackline %02x %02x %02x %02x %02x %02x %02x %02x\n",

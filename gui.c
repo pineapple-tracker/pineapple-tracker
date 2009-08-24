@@ -117,10 +117,10 @@ int freqkey(int c){
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void initsonglines(void){
 	for(int i=0; i < songlen; i++){
-		memmove(&song[i + 0], &song[i + 1], sizeof(struct songline) * (songlen - i - 1));
+		memmove(&tune->sng[i + 0], &tune->sng[i + 1], sizeof(struct songline) * (songlen - i - 1));
 		if(i < 4){
-			song[0].track[i] = 0x00;
-			song[0].transp[i] = 0x00;
+			tune->sng[0].track[i] = 0x00;
+			tune->sng[0].transp[i] = 0x00;
 		}
 	}
 	songlen = 1;
@@ -132,11 +132,11 @@ void initsonglines(void){
 void inittracks(void){
 	for(int i=0; i < 256; i++){
 		for(int j=0; j < TRACKLEN; j++){
-			track[i].line[j].note = 0x00;
-			track[i].line[j].instr = 0x00;
+			tune->trk[i].line[j].note = 0x00;
+			tune->trk[i].line[j].instr = 0x00;
 			for(int k=0; k < 2; k++){
-				track[i].line[j].cmd[k] = 0x0000;
-				track[i].line[j].param[k] = 0x0000;
+				tune->trk[i].line[j].cmd[k] = 0x0000;
+				tune->trk[i].line[j].param[k] = 0x0000;
 			}
 		}
 	}
@@ -157,10 +157,11 @@ void initinstrs(void){
 \\\  < void readsong(int,int,u8) >                                           .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void readsong(int pos, int ch, u8 *dest){
-	dest[0] = song[pos].track[ch];
-	dest[1] = song[pos].transp[ch];
+	dest[0] = tune->sng[pos].track[ch];
+	dest[1] = tune->sng[pos].transp[ch];
 }
 
+<<<<<<< HEAD:gui.c
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
 \\\  < void readtrack(int,int,struct trackline) >                             .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
@@ -172,6 +173,8 @@ void readtrack(int num, int pos, struct trackline *tl){
 	tl->param[0] = track[num].line[pos].param[0];
 	tl->param[1] = track[num].line[pos].param[1];
 }
+=======
+>>>>>>> 9da2aaa... Removed global vars, struct songline  song, and struct track track, they have been replaced with the ones in the tune struct.:gui.c
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
 \\\  < void readinstr(int,int,u8) >                                          .\
