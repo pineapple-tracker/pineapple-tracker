@@ -2016,24 +2016,6 @@ void hvl_mixchunk( struct hvl_tune *ht, uint32 samples, int8 *buf1, int8 *buf2, 
   }
 }
 
-/*void hvl_DecodeFrame( struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod )
-{
-  uint32 samples, loops;
-  
-  samples = ht->ht_Frequency/50/ht->ht_SpeedMultiplier;
-  loops   = ht->ht_SpeedMultiplier;
-  
-  do
-  {
-    hvl_play_irq( ht );
-    hvl_mixchunk( ht, samples, buf1, buf2, bufmod );
-    buf1 += samples * 4;
-    buf2 += samples * 4;
-    loops--;
-  } while( loops );
-}
-*/
-
 void hvl_DecodeFrame( struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod )
 {
   uint32 samples, loops;
@@ -2332,3 +2314,10 @@ void hvl_playNote(struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod, str
     loops--;
   } while( loops );
 }
+
+/*int hvl_save_ahx(struct hvl_tune *ht, sturct pineapple_tune *pt){
+}
+
+int hvl_save_hvl(struct hvl_tune *ht, sturct pineapple_tune *pt){
+}
+*/

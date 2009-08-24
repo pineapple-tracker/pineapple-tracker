@@ -7,6 +7,9 @@ enhancements:
   hvl_replay.h uses a slightly different one. lets go with one 
   or the other.
 
+* the songeditor needs to scroll horizontally for tunes with more than
+  four channels!!
+
 * make the sampling rate not affect the pitch of notes
 
 * regulate framerate with SDL timer to use less CPU???
@@ -55,3 +58,6 @@ also acts like you pressed the escape key!
 	* tried a threading solution. didn't work like expected. -nik
 
 * sound is REALLY wonky on amd64
+
+* something is weird about the '@' command, sometimes it makes the program freeze, and
+  when it doesnt make the program freeze, it doesnt loop right.

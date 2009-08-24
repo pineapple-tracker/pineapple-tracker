@@ -9,7 +9,7 @@
 #include "sdl_gui.h"
 #include "gui.h"
 #include "pineapple.h"
-#include "pt.h"
+#include "filetypes.h"
 
 static int die = 0;
 static SDL_Surface *screen;

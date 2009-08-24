@@ -172,8 +172,10 @@ void silence(void){
 ///  Plays a note.                                                           .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
 void lft_iedplonk(int note, int instr){
-	channel[0].tnote = note;
-	channel[0].inum = instr;
+	//channel[0].tnote = note;
+	channel[0].tnote = 73;
+	//channel[0].inum = instr;
+	channel[0].inum = 01;
 	channel[0].iptr = 0;
 	channel[0].iwait = 0;
 	channel[0].bend = 0;
@@ -520,7 +522,8 @@ pineapple_tune *lft_loadfile(char *fname){
 		return NULL;
 	}
 	rewind(f);
-
+	
+	t->type = LFT;
 	t->songlen = 1;
 	t->tracklen = TRACKLEN;
 	while(!feof(f) && fgets(buf, sizeof(buf), f)){

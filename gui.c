@@ -567,9 +567,17 @@ void drawtracked(int x, int y, int height){
 			addstr(buf);
 			for(j = 0; j < 2; j++){
 				if(tune->trk[currtrack].line[i].cmd[j]){
-					snprintf(buf, sizeof(buf), " %02x%02x",
+					//this is pretty dumb just checking the type, we can probably
+					//do something better like make cmd more generic somehow...
+					if(tune->type == LFT) {
+						snprintf(buf, sizeof(buf), " %c%02x",
 						tune->trk[currtrack].line[i].cmd[j],
 						tune->trk[currtrack].line[i].param[j]);
+					}else if(tune->type == AHX) {
+						snprintf(buf, sizeof(buf), " %02x%02x",
+						tune->trk[currtrack].line[i].cmd[j],
+						tune->trk[currtrack].line[i].param[j]);
+					}
 				}else{
 					snprintf(buf, sizeof(buf), " ...");
 				}

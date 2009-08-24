@@ -23,3 +23,9 @@ Document your functions! Put a coment above it that looks like this:
 \\\  < void drawsonged(int,int,int) >                                        .|
 ///  Draws the song editor.                                                  .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
+
+
+
+~=~~=~=~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=
+STYLEGUIDE TODO:
+* wriite something about how to name functions.
