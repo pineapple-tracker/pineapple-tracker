@@ -17,6 +17,9 @@ typedef int BOOL;
 #define MAX_CHANNELS 16
 
 #define Period2Freq(period) ((3546897.f * 65536.f) / (period)) 
+#define FREQ 48000
+#define HIVELY_LEN FREQ/50
+#define OUTPUT_LEN 4096
 
 struct hvl_envelope
 {
@@ -230,7 +233,16 @@ void hvl_process_frame( struct hvl_tune *ht, struct hvl_voice *voice );
 void hvl_set_audio( struct hvl_voice *voice, float64 freqf );
 void hvl_playNote(struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod, struct hvl_voice *voice);
 
+void hvl_play_irq( struct hvl_tune *ht );
+void hvl_mixchunk( struct hvl_tune *ht, uint32 samples, int8 *buf1, int8 *buf2, int32 bufmod );
+
 struct hvl_tune *htTune;
+
+void mix_and_play( struct hvl_tune *ht, uint8 *stream, int length );
+
+
+int16 hivelyLeft[HIVELY_LEN], hivelyRight[HIVELY_LEN];
+int hivelyIndex;
 
 //int play;
 //int plonked;

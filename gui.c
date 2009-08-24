@@ -161,20 +161,6 @@ void readsong(int pos, int ch, u8 *dest){
 	dest[1] = tune->sng[pos].transp[ch];
 }
 
-<<<<<<< HEAD:gui.c
- //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
-\\\  < void readtrack(int,int,struct trackline) >                             .\
- \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
-void readtrack(int num, int pos, struct trackline *tl){
-	tl->note = track[num].line[pos].note;
-	tl->instr = track[num].line[pos].instr;
-	tl->cmd[0] = track[num].line[pos].cmd[0];
-	tl->cmd[1] = track[num].line[pos].cmd[1];
-	tl->param[0] = track[num].line[pos].param[0];
-	tl->param[1] = track[num].line[pos].param[1];
-}
-=======
->>>>>>> 9da2aaa... Removed global vars, struct songline  song, and struct track track, they have been replaced with the ones in the tune struct.:gui.c
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
 \\\  < void readinstr(int,int,u8) >                                          .\
@@ -589,7 +575,7 @@ void drawtracked(int x, int y, int height){
 				}
 				addstr(buf);
 			}
-			if(playtrack && ((i + 1) % tune->tracklen) == tune->trackpos){
+			if(playtrack && ((i + 1) % tune->tracklen) == trackpos){
 				attrset(A_STANDOUT);
 				addch('*');
 			}

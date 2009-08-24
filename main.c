@@ -71,6 +71,7 @@ int main(int argc, char **argv){
 	}
 
 	initinstrs();
+	hvl_InitReplayer();
 
 	if(argc > 1){
 		if((tune = lft_loadfile(argv[1]))){
@@ -80,6 +81,7 @@ int main(int argc, char **argv){
 			fprintf(stderr, "loading ahx/hvl...\n");
 			fprintf(stderr, "loaded %s\n", argv[1]);
 			tune = importHvl(htTune);
+			hvl_InitSubsong(htTune,0);
 		}else{
 			fprintf(stderr, "couldn't load %s\n", argv[1]);
 			fprintf(stderr, "loading empty tune");
@@ -89,6 +91,7 @@ int main(int argc, char **argv){
 	//what happens if we load with no filename?
 		// make an empty tune?
 		//tune = pt_empty_tune();
+		/* FIXME: the function below segfaults! */
 		tune = lft_loadfile("");
 	}
 

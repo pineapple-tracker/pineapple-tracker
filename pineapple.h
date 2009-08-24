@@ -155,8 +155,8 @@ void act_viewtrackinc(void);
 void act_addline(void);
 void act_delline(void);
 
-/*u8 trackpos;
-u8 songpos;
+u8 trackpos;
+/*u8 songpos;
 int songlen;*/
 int playtrack;
 int playsong;

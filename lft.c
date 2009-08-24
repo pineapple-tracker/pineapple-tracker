@@ -572,7 +572,7 @@ pineapple_tune *lft_loadfile(char *fname){
 		}
 	}
 
-	//t->iedplonk = lft_iedplonk;
+	t->iedplonk = lft_iedplonk;
 
 	fclose(f);
 	return t;

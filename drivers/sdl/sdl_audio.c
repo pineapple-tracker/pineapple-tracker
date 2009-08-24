@@ -1,6 +1,6 @@
 #include "../../pineapple.h"
+#include "../../hvl_replay.h"
 #include <SDL/SDL.h>
-#define FREQ 48000
 
 
 /* SDL audioInit function */
@@ -17,11 +17,11 @@ u8 sdl_init(void){
 	atexit(SDL_Quit);
 
 	requested.freq = FREQ;
-	requested.format = AUDIO_U8;
+	requested.format = AUDIO_S16SYS;
 	requested.samples = 256;
 	//requested.samples = config_param.buffersize;
-	requested.channels = 1;
-	requested.callback = lftSdlCallback;
+	requested.channels = 2;
+	requested.callback = (void*) mix_and_play;
 
 	SDL_OpenAudio(&requested, &obtained);
 
@@ -45,8 +45,33 @@ void lftSdlCallback(void *userdata, Uint8 *buf, int len){
 }
 
  //\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\/\\
-\\\  < void hvlSdlCallBack(void*,Uint8*,int) >                           .|
+\\\  < void hvlSdlCallBack(void*,Uint8*,int) >                               .|
 ///  SDLCallback function for HVL/AHX format.                                .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
-//void hvlSdlCallBack(struct hvl_tune *ht, uint8 *stream, int length){
-//}
+void mix_and_play( struct hvl_tune *ht, u8 *stream, int length )
+{
+  int16 *out;
+  int i;
+  size_t streamPos = 0;
+  length = length >> 1;
+
+  if(htTune) {
+    // Mix to 16bit interleaved stereo
+    out = (int16*) stream;
+    // Flush remains of previous frame
+    for(i = hivelyIndex; i < (HIVELY_LEN); i++) {
+      out[streamPos++] = hivelyLeft[i];
+      out[streamPos++] = hivelyRight[i];
+    }
+	
+    while(streamPos < length) {
+		hvl_DecodeFrame( htTune, (int8 *) hivelyLeft, (int8 *) hivelyRight, 2 );
+		for(i = 0; i < (HIVELY_LEN) && streamPos < length; i++) {
+			out[streamPos++] = hivelyLeft[i];
+			out[streamPos++] = hivelyRight[i];
+		}
+    }
+    hivelyIndex = i;
+  }
+}
+
