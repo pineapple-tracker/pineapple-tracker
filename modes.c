@@ -913,6 +913,7 @@ void normalmode(int c){
 /* vi cmdline mode */
 void cmdlinemode(void){
 	u16 c;
+	int len;
 	keypad(stdscr, TRUE);
 
 	currmode = PM_CMDLINE;
@@ -938,7 +939,9 @@ void cmdlinemode(void){
 			case '\t':
 				break;
 			default:
-				strncat(cmdstr, &c, 50);
+				len = strlen(cmdstr);
+				cmdstr[len++] = c;
+				cmdstr[len++] = '\0';
 				break;
 		}
 	}
