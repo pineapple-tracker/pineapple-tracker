@@ -206,7 +206,7 @@ typedef struct _pineapple_tune {
 	int currtab;
 	int saved;
 
-	void (*iedplonk)(int note, int instr, ...);
+	void (*iedplonk)(int note, int instr);
 } pineapple_tune;
 
 pineapple_tune *tune;

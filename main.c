@@ -14,6 +14,7 @@
 #include "pineapple.h"
 #include "filetypes.h"
 #include "hvl_replay.h"
+#include "gui.h"
 
 u8 (*sdl_init)(void);
 pineapple_tune *importHvl(struct hvl_tune *ht);

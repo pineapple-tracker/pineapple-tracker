@@ -912,7 +912,7 @@ void normalmode(int c){
 
 /* vi cmdline mode */
 void cmdlinemode(void){
-	u16 c;
+	char c;
 	keypad(stdscr, TRUE);
 
 	currmode = PM_CMDLINE;
