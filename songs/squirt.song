@@ -1,0 +1,102 @@
+musicchip tune
+version 1
+
+songs/squirt.song
+
+#
+
+
+tempo: 170
+songline 00 01 00 00 00 00 00 00 00
+songline 01 01 00 00 00 00 00 00 00
+songline 02 02 00 00 00 00 00 00 00
+songline 03 03 00 00 00 00 00 00 00
+songline 04 02 00 00 00 00 00 00 00
+songline 05 04 00 00 00 00 00 00 00
+songline 06 04 00 00 00 00 00 00 00
+songline 07 02 00 00 00 00 00 00 00
+songline 08 03 00 00 00 00 00 00 00
+songline 09 02 00 00 00 00 00 00 00
+songline 0a 01 00 00 00 00 00 00 00
+songline 0b 01 00 00 00 00 00 00 00
+songline 0c 02 00 00 00 00 00 00 00
+songline 0d 03 00 00 00 00 00 00 00
+songline 0e 02 00 00 00 00 00 00 00
+songline 0f 04 00 00 00 00 00 00 00
+songline 10 04 00 00 00 00 00 00 00
+songline 11 02 00 00 00 00 00 00 00
+songline 12 03 00 00 00 00 00 00 00
+songline 13 02 00 00 00 00 00 00 00
+
+trackline 01 00 3f 01 00 00 00 00
+trackline 01 02 3d 01 00 00 00 00
+trackline 01 04 3a 01 00 00 00 00
+trackline 01 06 35 01 00 00 00 00
+trackline 01 08 3f 01 00 00 00 00
+trackline 01 0a 3d 01 00 00 00 00
+trackline 01 0c 3a 01 00 00 00 00
+trackline 01 0e 35 01 00 00 00 00
+trackline 01 10 3f 01 00 00 00 00
+trackline 01 12 3d 01 00 00 00 00
+trackline 01 14 3a 01 00 00 00 00
+trackline 01 16 35 01 00 00 00 00
+trackline 01 18 3f 01 00 00 00 00
+trackline 01 1a 3d 01 00 00 00 00
+trackline 01 1c 3a 01 00 00 00 00
+trackline 01 1e 35 01 00 00 00 00
+trackline 02 00 3d 01 00 00 00 00
+trackline 02 02 3c 01 00 00 00 00
+trackline 02 04 38 01 00 00 00 00
+trackline 02 06 33 01 00 00 00 00
+trackline 02 08 3d 01 00 00 00 00
+trackline 02 0a 3c 01 00 00 00 00
+trackline 02 0c 33 01 00 00 00 00
+trackline 02 0e 38 01 00 00 00 00
+trackline 02 10 3d 01 00 00 00 00
+trackline 02 12 3c 01 00 00 00 00
+trackline 02 14 38 01 00 00 00 00
+trackline 02 16 33 01 00 00 00 00
+trackline 02 18 3d 01 00 00 00 00
+trackline 02 1a 3c 01 00 00 00 00
+trackline 02 1c 38 01 00 00 00 00
+trackline 02 1e 33 01 00 00 00 00
+trackline 03 00 3c 01 00 00 00 00
+trackline 03 02 3a 01 00 00 00 00
+trackline 03 04 36 01 00 00 00 00
+trackline 03 06 31 01 00 00 00 00
+trackline 03 08 3c 01 00 00 00 00
+trackline 03 0a 3a 01 00 00 00 00
+trackline 03 0c 36 01 00 00 00 00
+trackline 03 0e 31 01 00 00 00 00
+trackline 03 10 3c 01 00 00 00 00
+trackline 03 12 3a 01 00 00 00 00
+trackline 03 14 36 01 00 00 00 00
+trackline 03 16 31 01 00 00 00 00
+trackline 03 18 3c 01 00 00 00 00
+trackline 03 1a 3a 01 00 00 00 00
+trackline 03 1c 36 01 00 00 00 00
+trackline 03 1e 31 01 00 00 00 00
+trackline 04 00 3f 01 00 00 00 00
+trackline 04 02 3d 01 00 00 00 00
+trackline 04 04 3a 01 00 00 00 00
+trackline 04 06 35 01 00 00 00 00
+trackline 04 08 41 01 00 00 00 00
+trackline 04 0a 3d 01 00 00 00 00
+trackline 04 0c 3a 01 00 00 00 00
+trackline 04 0e 35 01 00 00 00 00
+trackline 04 10 3f 01 00 00 00 00
+trackline 04 12 3d 01 00 00 00 00
+trackline 04 14 3a 01 00 00 00 00
+trackline 04 16 35 01 00 00 00 00
+trackline 04 18 41 01 00 00 00 00
+trackline 04 1a 3d 01 00 00 00 00
+trackline 04 1c 3a 01 00 00 00 00
+trackline 04 1e 35 01 00 00 00 00
+
+instrumentline 01 00 77 02
+instrumentline 01 01 6d 04
+instrumentline 01 02 76 f0
+instrumentline 01 03 2b 25
+instrumentline 01 04 30 00
+instrumentline 01 05 30 00
+instrumentline 01 06 30 00
