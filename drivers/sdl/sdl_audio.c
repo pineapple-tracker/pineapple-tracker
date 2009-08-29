@@ -26,7 +26,7 @@ u8 lft_sdl_init(void){
 	SDL_OpenAudio(&requested, &obtained);
 
 	fprintf(stderr, "freq %d\n", obtained.freq);
-	fprintf(stderr, "req. format %d\n", obtained.format);
+	fprintf(stderr, "req. format %d\n", requested.format);
 	fprintf(stderr, "obtained format %d\n", obtained.format);
 	fprintf(stderr, "samples %d\n", obtained.samples);
 

@@ -4,7 +4,7 @@ enhancements:
 	* Visual mode
 
 * pineapple.h uses one set of typedefs for uint8_t, etc, and
-  hvl_replay.h uses a slightly different one. lets go with one 
+  hvl_replay.h uses a slightly different one. lets go with one
   or the other.
 
 * the songeditor needs to scroll horizontally for tunes with more than
@@ -19,7 +19,7 @@ enhancements:
 	Ability to configure:
 	* colorschemes
 	* initial/default step value?
-	
+
 * JACK driver
 
 * MORE MODULAR
@@ -28,10 +28,12 @@ enhancements:
 
 * rainbow decibel meters on each track like AHX tracker
 
+* stylize hvl_replay.*, needs proper indent levels, whitespace removal
+
 bugs:
 ----
-* '-' will delete notes in tracktab for some reason, but this is actually 
-	useful, so I think we should keep it. However, it should work in 
+* '-' will delete notes in tracktab for some reason, but this is actually
+	useful, so I think we should keep it. However, it should work in
 	song and instrument tabs too.
 
 * '.' doesn't work with insert/replace
@@ -51,7 +53,7 @@ bugs:
 
 * speed of vibrato, arpeggio, slide, faster than when we were running at 16khz
 
-* If you press any of the arrow keys, the current instrument decreases, and it 
+* If you press any of the arrow keys, the current instrument decreases, and it
 also acts like you pressed the escape key!
 
 * ui doesn't update after pressing the first key of a two-key command like yy
