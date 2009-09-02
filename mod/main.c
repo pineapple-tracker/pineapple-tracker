@@ -15,6 +15,8 @@ typedef int8_t s8;
 typedef int16_t s16;
 typedef int32_t s32;
 
+int smp_index = 0;
+
 static char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-",
 				"G#", "A-", "A#", "H-"};
 
@@ -53,8 +55,13 @@ struct mod_header modheader;
 
 void callback(void *data, Uint8 *buf, int len){
 	int i;
-	for(i = 0; i < len; i ++)
-		buf[i] = modheader.sample[0].smpdata[i];
+	s8 *out;
+	u32 realLength = (modheader.sample[i].length) * 2;
+	    fprintf(stderr, "reallength: %i\n", realLength);
+	
+	out = (s8*) buf;
+    	for(i = 0; i < len; i ++)
+		out[i] = modheader.sample[0].smpdata[smp_index++];
 }
 
 int sdl_init(void){
@@ -289,12 +296,14 @@ int main(int argc, char **argv){
 	for(i = 0; i < modheader.orderCount; i++)
 		printf("%i : %i\n", i, modheader.order[i]);
 
-	for(row = 0; row < 64; row++){
+/*	for(row = 0; row < 64; row++){
 		printf("%i %x %x %x\n", modheader.patterns[7].pattern_entry[row][0].period,
 			modheader.patterns[7].pattern_entry[row][0].sample + 1,
 			modheader.patterns[7].pattern_entry[row][0].effect,
 			modheader.patterns[7].pattern_entry[row][0].param);
 	}
+*/
+
 
 	if(sdl_init() == 0){
 		SDL_PauseAudio(0);
