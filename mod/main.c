@@ -17,8 +17,8 @@ typedef int32_t s32;
 
 int smp_index = 0;
 
-static char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-",
-				"G#", "A-", "A#", "H-"};
+//static char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-",
+//				"G#", "A-", "A#", "H-"};
 
 struct sample_header {
 	u8 name[22]; //22 bytes
@@ -56,12 +56,12 @@ struct mod_header modheader;
 void callback(void *data, Uint8 *buf, int len){
 	int i;
 	s8 *out;
-	u32 realLength = (modheader.sample[i].length) * 2;
-	    fprintf(stderr, "reallength: %i\n", realLength);
-	
+	u32 realLength = (modheader.sample[10].length) * 2;
 	out = (s8*) buf;
-    	for(i = 0; i < len; i ++)
-		out[i] = modheader.sample[0].smpdata[smp_index++];
+	if(smp_index < realLength){
+		for(i = 0; i < len; i ++)
+			out[i] = modheader.sample[10].smpdata[smp_index++];
+	}
 }
 
 int sdl_init(void){
@@ -73,9 +73,9 @@ int sdl_init(void){
 		return 1;
 	}
 
-	requested.freq = 44100;
+	requested.freq = 22050;
 	requested.format = AUDIO_S8;
-	requested.samples = 256;
+	requested.samples = 1024;
 	requested.channels = 2;
 	requested.callback = callback;
 
@@ -84,12 +84,14 @@ int sdl_init(void){
 	fprintf(stderr, "freq %d\n", obtained.freq);
 	fprintf(stderr, "format:%d\n", obtained.format);
 	fprintf(stderr, "samples:%d\n", obtained.samples);
+	fprintf(stderr, "channels:%d\n", obtained.channels);
 
 	return 0;
 }
 
 int main(int argc, char **argv){
 	FILE *modfile;
+	FILE *samplefile;
 	int i;
 	int trash;
 	u8 highestPattern = 0;
@@ -113,6 +115,8 @@ int main(int argc, char **argv){
 
 	/* ~opening the modfile~ */
 	modfile = fopen(argv[1], "rb");
+
+	samplefile = fopen("samp.raw", "wb");
 
 	if(!modfile){
 		printf("Couldn't open file!\n");
@@ -259,18 +263,22 @@ int main(int argc, char **argv){
 
 	/* ~~ load sample datas ~~ */
 	for(i = 0; i < 31; i++){
-			u32 realLength = (modheader.sample[i].length) * 2;
-			if(realLength != 0){
-				modheader.sample[i].smpdata = malloc(modheader.sample[i].length);
-				if(modheader.sample[i].smpdata){
-					fread(modheader.sample[i].smpdata, realLength, 1, modfile);
-				}
+		int realLength = (modheader.sample[i].length) * 2;
+		if(realLength != 0){
+			modheader.sample[i].smpdata = malloc(realLength);
+			if(modheader.sample[i].smpdata != NULL){
+				fread(modheader.sample[i].smpdata, realLength, 1, modfile);
 			}
+		}
 	}
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	//done reading modfile
 	fclose(modfile);
+
+	fwrite(modheader.sample[10].smpdata, modheader.sample[10].length, 1, samplefile);
+
+	fclose(samplefile);
 
 	printf("%s\n", modheader.name);
 
