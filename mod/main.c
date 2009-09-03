@@ -56,11 +56,15 @@ struct mod_header modheader;
 void callback(void *data, Uint8 *buf, int len){
 	int i;
 	s8 *out;
-	u32 realLength = (modheader.sample[10].length) * 2;
+	u32 realLength = (modheader.sample[9].length) * 2;
+	fprintf(stderr, "len: %i\n", len);
 	out = (s8*) buf;
+	fprintf(stderr, "reallength: %i\n", realLength);
 	if(smp_index < realLength){
-		for(i = 0; i < len; i ++)
-			out[i] = modheader.sample[10].smpdata[smp_index++];
+		for(i = 0; i < len; i ++){
+			out[i] = (modheader.sample[9].smpdata[smp_index]) + 128;
+			smp_index++;
+		}
 	}
 }
 
@@ -73,16 +77,16 @@ int sdl_init(void){
 		return 1;
 	}
 
-	requested.freq = 22050;
+	requested.freq = 44100;
 	requested.format = AUDIO_S8;
-	requested.samples = 1024;
-	requested.channels = 2;
+	requested.samples = 2048;
+	requested.channels = 1;
 	requested.callback = callback;
 
 	SDL_OpenAudio(&requested, &obtained);
 
 	fprintf(stderr, "freq %d\n", obtained.freq);
-	fprintf(stderr, "format:%d\n", obtained.format);
+	fprintf(stderr, "format:%04x\n", obtained.format);
 	fprintf(stderr, "samples:%d\n", obtained.samples);
 	fprintf(stderr, "channels:%d\n", obtained.channels);
 
@@ -276,7 +280,7 @@ int main(int argc, char **argv){
 	//done reading modfile
 	fclose(modfile);
 
-	fwrite(modheader.sample[10].smpdata, modheader.sample[10].length, 1, samplefile);
+	fwrite(modheader.sample[7].smpdata, (modheader.sample[7].length * 2), 1, samplefile);
 
 	fclose(samplefile);
 
