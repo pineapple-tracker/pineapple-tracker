@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <SDL/SDL.h>
 
 #define MOD_NO_NOTE	63
 #define MOD_NO_SAMPLE	31
@@ -14,8 +15,10 @@ typedef int8_t s8;
 typedef int16_t s16;
 typedef int32_t s32;
 
-static char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-",
-				"G#", "A-", "A#", "H-"};
+int smp_index = 0;
+
+//static char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-",
+//				"G#", "A-", "A#", "H-"};
 
 struct sample_header {
 	u8 name[22]; //22 bytes
@@ -24,7 +27,7 @@ struct sample_header {
 	u8 vol; //1 byte
 	u16 loopstart; //2 bytes
 	u16 looplength; //2 bytes
-	signed char *smpdata; //1 byte
+	char *smpdata; //1 byte
 };
 
 struct pattern_entry {
@@ -48,9 +51,51 @@ struct mod_header {
 	u8 patternCount;
 };
 
+struct mod_header modheader;
+
+void callback(void *data, Uint8 *buf, int len){
+	int i;
+	s8 *out;
+	u32 realLength = (modheader.sample[9].length) * 2;
+	fprintf(stderr, "len: %i\n", len);
+	out = (s8*) buf;
+	fprintf(stderr, "reallength: %i\n", realLength);
+	if(smp_index < realLength){
+		for(i = 0; i < len; i ++){
+			out[i] = (modheader.sample[9].smpdata[smp_index]) + 128;
+			smp_index++;
+		}
+	}
+}
+
+int sdl_init(void){
+	SDL_AudioSpec requested, obtained;
+
+	if(SDL_Init(SDL_INIT_AUDIO) < 0){
+		printf("couldn't init SDL: %s\n", SDL_GetError());
+		SDL_Quit();
+		return 1;
+	}
+
+	requested.freq = 44100;
+	requested.format = AUDIO_S8;
+	requested.samples = 2048;
+	requested.channels = 1;
+	requested.callback = callback;
+
+	SDL_OpenAudio(&requested, &obtained);
+
+	fprintf(stderr, "freq %d\n", obtained.freq);
+	fprintf(stderr, "format:%04x\n", obtained.format);
+	fprintf(stderr, "samples:%d\n", obtained.samples);
+	fprintf(stderr, "channels:%d\n", obtained.channels);
+
+	return 0;
+}
+
 int main(int argc, char **argv){
 	FILE *modfile;
-	struct mod_header modheader;
+	FILE *samplefile;
 	int i;
 	int trash;
 	u8 highestPattern = 0;
@@ -74,6 +119,8 @@ int main(int argc, char **argv){
 
 	/* ~opening the modfile~ */
 	modfile = fopen(argv[1], "rb");
+
+	samplefile = fopen("samp.raw", "wb");
 
 	if(!modfile){
 		printf("Couldn't open file!\n");
@@ -127,7 +174,7 @@ int main(int argc, char **argv){
 		if(modheader.order[i] > highestPattern)
 			highestPattern = modheader.order[i];
 	}
-	
+
 	modheader.patternCount = highestPattern + 1;
 
 	// allocate space for patterns
@@ -137,7 +184,7 @@ int main(int argc, char **argv){
 		printf("out of memory!\n");
 		exit(1);
 	}
-	
+
 
 	//initialize modheader.pattern to 0
 	/* XXX SEGFAULT */
@@ -151,7 +198,7 @@ int main(int argc, char **argv){
 		if(!modheader.patterns[curPattern]){
 			printf("out of memory!\n");
 		}
-		
+
 		//initialize to 0
 		memset(modheader.patterns[curPattern], 0, 1024);
 		*/
@@ -180,7 +227,7 @@ int main(int argc, char **argv){
 				if(period == 0){
 					period = MOD_NO_NOTE; //period 0 is no note
 				}
-				
+
 				/*else {
 					for(i = 0; i < 12*5; i++){
 						newDist = abs(period = periodTable[i]);
@@ -202,7 +249,7 @@ int main(int argc, char **argv){
 				//calculate the address of the cell to output to
 				// rowoffset = row * 4 columns per row * 4 bytes per cell
 				// columnoffset = column * 4 bytes per cell
-				
+
 				/*u8 *outCell = &modheader.pattern[curPattern][row*4*4 + column*4];
 				outCell[0] = closestNote;
 				outCell[1] = sample;
@@ -217,11 +264,26 @@ int main(int argc, char **argv){
 		}
 	}
 
-	
+
+	/* ~~ load sample datas ~~ */
+	for(i = 0; i < 31; i++){
+		int realLength = (modheader.sample[i].length) * 2;
+		if(realLength != 0){
+			modheader.sample[i].smpdata = malloc(realLength);
+			if(modheader.sample[i].smpdata != NULL){
+				fread(modheader.sample[i].smpdata, realLength, 1, modfile);
+			}
+		}
+	}
+
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	//done reading modfile
 	fclose(modfile);
-		
+
+	fwrite(modheader.sample[7].smpdata, (modheader.sample[7].length * 2), 1, samplefile);
+
+	fclose(samplefile);
+
 	printf("%s\n", modheader.name);
 
 	for(i = 0; i < 31; i++)	{
@@ -234,7 +296,7 @@ int main(int argc, char **argv){
 	printf("orderCount: %i\n",  modheader.orderCount);
 
 	printf("patternCount: %i\n", modheader.patternCount);
-	
+
 	//printf("%i\n", sizeof(u8*[modheader.patternCount])); //36
 	//printf("%i\n", sizeof(u8*)); //4
 
@@ -246,11 +308,20 @@ int main(int argc, char **argv){
 	for(i = 0; i < modheader.orderCount; i++)
 		printf("%i : %i\n", i, modheader.order[i]);
 
-	for(row = 0; row < 64; row++){
+/*	for(row = 0; row < 64; row++){
 		printf("%i %x %x %x\n", modheader.patterns[7].pattern_entry[row][0].period,
 			modheader.patterns[7].pattern_entry[row][0].sample + 1,
-			modheader.patterns[7].pattern_entry[row][0].effect,		
+			modheader.patterns[7].pattern_entry[row][0].effect,
 			modheader.patterns[7].pattern_entry[row][0].param);
+	}
+*/
+
+
+	if(sdl_init() == 0){
+		SDL_PauseAudio(0);
+		getchar();
+		SDL_PauseAudio(1);
+		SDL_Quit();
 	}
 
 	return 0;

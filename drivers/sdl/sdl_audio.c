@@ -26,7 +26,7 @@ u8 lft_sdl_init(void){
 	SDL_OpenAudio(&requested, &obtained);
 
 	fprintf(stderr, "freq %d\n", obtained.freq);
-	fprintf(stderr, "req. format %d\n", obtained.format);
+	fprintf(stderr, "req. format %d\n", requested.format);
 	fprintf(stderr, "obtained format %d\n", obtained.format);
 	fprintf(stderr, "samples %d\n", obtained.samples);
 
@@ -92,7 +92,7 @@ void hvlSdlCallBack(struct hvl_tune *ht, u8 *stream, int length){
       out[streamPos++] = htTune->hivelyLeft[i];
       out[streamPos++] = htTune->hivelyRight[i];
     }
-	
+
     while(streamPos < length) {
 		hvl_DecodeFrame( htTune, (int8 *) htTune->hivelyLeft, (int8 *) htTune->hivelyRight, 2 );
 		for(i = 0; i < (HIVELY_LEN) && streamPos < length; i++) {
