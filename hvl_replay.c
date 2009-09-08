@@ -2022,20 +2022,27 @@ void hvl_DecodeFrame( struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod 
   
   samples = ht->ht_Frequency/50/ht->ht_SpeedMultiplier;
   loops   = ht->ht_SpeedMultiplier;
-  
-  do
-  {
-    hvl_play_irq( ht );
-    hvl_mixchunk( ht, samples, buf1, buf2, bufmod );
-    buf1 += samples * 4;
-    buf2 += samples * 4;
-    loops--;
-  } while( loops );
+  if(playsong || playtrack){ 
+	  do{
+		hvl_play_irq( ht );
+		hvl_mixchunk( ht, samples, buf1, buf2, bufmod );
+		buf1 += samples * 4;
+		buf2 += samples * 4;
+		loops--;
+	  }while( loops );
+  }
 }
 
 //added for pineapple tracker
 
-void hvl_playNote(struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod, struct hvl_voice *voice) {
+void hvl_iedplonk(int note, int instr, void *t){
+//void hvl_playNote(struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod, struct hvl_voice *voice) {
+  struct hvl_tune *ht;
+  ht = (struct hvl_tune*)t;
+  int8 *buf1 = (int8 *)  ht->hivelyLeft;
+  int8 *buf2 = (int8 *)  ht->hivelyRight;
+  int32 bufmod = 2;
+  struct hvl_voice *voice = &ht->ht_Voices[0];
   uint32 samples, loops;
   
   samples = ht->ht_Frequency/50/ht->ht_SpeedMultiplier;
@@ -2056,7 +2063,8 @@ void hvl_playNote(struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod, str
 	  Step = &ht->ht_Tracks[ht->ht_Positions[ht->ht_PosNr].pos_Track[voice->vc_VoiceNum]][ht->ht_NoteNr];
 	  
 	  Note    = htTune->curNote;
-	  Instr   = Step->stp_Instrument;
+	  //Instr   = Step->stp_Instrument;
+	  Instr = 01;
 	  
 	  // --------- 1.6: from here --------------
 

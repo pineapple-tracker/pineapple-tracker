@@ -4,6 +4,7 @@
 #include "pineapple.h"
 #include "gui.h"
 #include "filetypes.h"
+#include "hvl_replay.h"
 
 #include <curses.h>
 #include <ctype.h>
@@ -108,7 +109,15 @@ void _insertc(int c){
 			}else{
 				tune->trk[currtrack].line[tracky].instr = 0;
 			}
-			if(x) lft_iedplonk(x, currinstr);
+			if(x) {
+				//shouldn't have to use this if statement...grr...
+				if(tune->type == LFT) tune->iedplonk(x, currinstr, tune);
+				if(tune->type == AHX) tune->iedplonk(x, currinstr, htTune);
+			}
+			//if(x){
+				//hvl_playNote(htTune, (int8 *) hivelyLeft, (int8 *) hivelyRight, 2, &htTune->ht_Voices[0]);
+				//htTune->curNote = x;
+			//}
 		}
 	}
 	if(currtab == 2 && instrx == 0){
@@ -1097,11 +1106,11 @@ void jammermode(void){
 				break;
 			default:
 				x = freqkey(c);
-
-				if(x > 0){
-					lft_iedplonk(x, currinstr);
+				if(x) {
+					//shouldn't have to use this if statement...grr...
+					if(tune->type == LFT) tune->iedplonk(x, currinstr, tune);
+					else if(tune->type == AHX) tune->iedplonk(x, currinstr, htTune);
 				}
-
 				break;
 		}
 		drawgui();

@@ -220,6 +220,7 @@ struct hvl_tune
   //added for pineappletracker
   uint8					 curNote;
   uint8					 curInstr;
+  int16 hivelyLeft[HIVELY_LEN], hivelyRight[HIVELY_LEN];
 };
 
 void hvl_DecodeFrame( struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod );
@@ -231,7 +232,8 @@ void hvl_FreeTune( struct hvl_tune *ht );
 void hvl_process_step( struct hvl_tune *ht, struct hvl_voice *voice );
 void hvl_process_frame( struct hvl_tune *ht, struct hvl_voice *voice );
 void hvl_set_audio( struct hvl_voice *voice, float64 freqf );
-void hvl_playNote(struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod, struct hvl_voice *voice);
+//void hvl_playNote(struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod, struct hvl_voice *voice);
+void hvl_iedplonk(int note, int instr, void *t);
 
 void hvl_play_irq( struct hvl_tune *ht );
 void hvl_mixchunk( struct hvl_tune *ht, uint32 samples, int8 *buf1, int8 *buf2, int32 bufmod );
@@ -241,7 +243,7 @@ struct hvl_tune *htTune;
 void hvlSdlCallBack( struct hvl_tune *ht, uint8 *stream, int length );
 
 
-int16 hivelyLeft[HIVELY_LEN], hivelyRight[HIVELY_LEN];
+//int16 hivelyLeft[HIVELY_LEN], hivelyRight[HIVELY_LEN];
 int hivelyIndex;
 
 //int play;

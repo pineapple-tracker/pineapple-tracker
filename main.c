@@ -35,7 +35,10 @@ pineapple_tune *importHvl(struct hvl_tune *ht) {
 	tune->type = AHX;
 
 	tune->songlen = ht->ht_PositionNr;
-	
+	/* TODO: turn songpos and trackpos into pointers */
+	//tune->songpos = &ht->ht_PosNr;
+	//tune-trackpos = &ht->ht_NoteNr;
+
 	tune->tracklen = ht->ht_TrackLength;
 	for(int i = 0; i < tune->songlen; i++) {
 		for(int j = 0; j < ht->ht_Channels; j++){
@@ -56,7 +59,7 @@ pineapple_tune *importHvl(struct hvl_tune *ht) {
 		}
 	}
 
-	tune->iedplonk = hvl_playNote;
+	tune->iedplonk = hvl_iedplonk;
 
 	return tune;
 }

@@ -92,7 +92,6 @@ void readtrack(int num, int pos, struct trackline *tl);
 void readinstr(int num, int pos, u8 *il);
 
 void silence(void);
-void lft_iedplonk(int, int);
 
 void initgui(void);
 void eventloop(void);
@@ -206,7 +205,8 @@ typedef struct _pineapple_tune {
 	int currtab;
 	int saved;
 
-	void (*iedplonk)(int note, int instr);
+	void (*iedplonk)(int note, int instr, void *t);
+	void (*silence)(void);
 } pineapple_tune;
 
 pineapple_tune *tune;

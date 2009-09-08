@@ -84,20 +84,20 @@ void hvlSdlCallBack(struct hvl_tune *ht, u8 *stream, int length){
   size_t streamPos = 0;
   length = length >> 1;
 
-  if(htTune) {
+  if(htTune && playsong) {
     // Mix to 16bit interleaved stereo
     out = (int16*) stream;
     // Flush remains of previous frame
     for(i = hivelyIndex; i < (HIVELY_LEN); i++) {
-      out[streamPos++] = hivelyLeft[i];
-      out[streamPos++] = hivelyRight[i];
+      out[streamPos++] = htTune->hivelyLeft[i];
+      out[streamPos++] = htTune->hivelyRight[i];
     }
 	
     while(streamPos < length) {
-		hvl_DecodeFrame( htTune, (int8 *) hivelyLeft, (int8 *) hivelyRight, 2 );
+		hvl_DecodeFrame( htTune, (int8 *) htTune->hivelyLeft, (int8 *) htTune->hivelyRight, 2 );
 		for(i = 0; i < (HIVELY_LEN) && streamPos < length; i++) {
-			out[streamPos++] = hivelyLeft[i];
-			out[streamPos++] = hivelyRight[i];
+		      out[streamPos++] = htTune->hivelyLeft[i];
+		      out[streamPos++] = htTune->hivelyRight[i];
 		}
     }
     hivelyIndex = i;
