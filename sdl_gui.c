@@ -31,9 +31,9 @@ static Uint32 boxcolor;
 static int voffs;
 static int colh;
 
-pineapple_tune tune;
+//pineapple_tune tune;
 
-int main(int argc, char *args[]){
+int main(int argc, char **argv){
 	int tick;
 
 	//------------------------------------------------------------------\\
@@ -42,6 +42,7 @@ int main(int argc, char *args[]){
 	if(argc==1){
 		tune = pt_empty_tune();
 	}else{
+		tune = lft_loadfile(argv[1]);
 	}
 
 	if(SDL_Init(SDL_INIT_VIDEO)!=0)
@@ -125,17 +126,22 @@ static void breakhandler(int a){
 }
 
 static void draw_songed(const int x, const int y, const int w, const int h){
-	int i, pos;
+	int i;
+	int pos = 0;
 	char buf[1024];
 
-	for(i=0; (i+y < h)
-		&&(i < h/FONT_CH)
-		&&(i < tune->songlen); i+=(FONT_CH+2))
+	for(i=0; (i+y < h) &&(i < h/FONT_CH) &&(i < tune->songlen); i+=(FONT_CH))
 	{
-		pos = i/FONT_CH;
+		//pos = i/FONT_CH;
+		pos++;
+
 		snprintf(buf, sizeof(buf),
 			"%02x:__ __:__ __:__ __:__", pos);
 		gui_text(x+SP,i+y+SP,buf,screen);
+
+		fprintf(stderr, "i: %i\n", i);
+		fprintf(stderr, "pos: %i\n", pos);
+		fprintf(stderr, "songlen: %i\n", tune->songlen);
 
 		// draw a box if selected
 		if(songy==pos){

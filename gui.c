@@ -509,9 +509,16 @@ void drawsonged(int x, int y, int height){
 				addstr(buf);
 				if(j != 3) addch(' ');
 			}
-			if(playsong && tune->songpos == (i + 1)){
-				attrset(A_STANDOUT);
-				addch('*');
+			if(tune->type == LFT){
+				if(playsong && tune->songpos == (i+1)){
+					attrset(A_STANDOUT);
+					addch('*');
+				}
+			}else if(tune->type == AHX){
+				if(playsong && tune->songpos == (i)){
+					attrset(A_STANDOUT);
+					addch('*');
+				}
 			}
 			attrset(A_NORMAL);
 		}

@@ -36,8 +36,9 @@ pineapple_tune *importHvl(struct hvl_tune *ht) {
 
 	tune->songlen = ht->ht_PositionNr;
 	/* TODO: turn songpos and trackpos into pointers */
-	//tune->songpos = &ht->ht_PosNr;
-	//tune-trackpos = &ht->ht_NoteNr;
+	/* lolwat */
+	//tune->songpos = ht->ht_PosNr;
+	//tune->trackpos = &ht->ht_NoteNr;
 
 	tune->tracklen = ht->ht_TrackLength;
 	for(int i = 0; i < tune->songlen; i++) {
@@ -68,14 +69,14 @@ int main(int argc, char **argv){
 	//----------------------------------\\
 	// parse those args :^)
 	//----------------------------------//
-	tune = (pineapple_tune*) malloc(sizeof(pineapple_tune));
+	/*tune = (pineapple_tune*) malloc(sizeof(pineapple_tune));
 	if(!tune) {
 		fprintf(stderr, "couldn't malloc pineapple_tune *tune!\n");
 		return 1;
 	}
+	*/
 
 	initinstrs();
-	hvl_InitReplayer();
 
 	if(argc > 1){
 		if((tune = lft_loadfile(argv[1]))){
@@ -85,6 +86,7 @@ int main(int argc, char **argv){
 		}else if((htTune = hvl_LoadTune(argv[1], 48000, 4))){
 			fprintf(stderr, "loading ahx/hvl...\n");
 			fprintf(stderr, "loaded %s\n", argv[1]);
+			hvl_InitReplayer();
 			tune = importHvl(htTune);
 			sdl_init = hvl_sdl_init;
 			hvl_InitSubsong(htTune,0);
@@ -93,6 +95,7 @@ int main(int argc, char **argv){
 			fprintf(stderr, "loading empty tune");
 			tune = lft_loadfile("");
 			sdl_init = lft_sdl_init;
+			//hvl_InitSubsong(htTune, 0);
 		}
 	}else{
 	//what happens if we load with no filename?
@@ -108,11 +111,11 @@ int main(int argc, char **argv){
 		//----------------------------------//
 		initchip();
 		initgui();
-		
+
 		SDL_PauseAudio(0);
 
 		//----------------------------------\\
-		// actually start the program
+		// ACTUALLY start the program
 		//----------------------------------//
 		eventloop();
 

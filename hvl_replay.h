@@ -16,7 +16,7 @@ typedef int BOOL;
 // Woohoo!
 #define MAX_CHANNELS 16
 
-#define Period2Freq(period) ((3546897.f * 65536.f) / (period)) 
+#define Period2Freq(period) ((3546897.f * 65536.f) / (period))
 #define FREQ 48000
 #define HIVELY_LEN FREQ/50
 #define OUTPUT_LEN 4096
@@ -183,7 +183,7 @@ struct hvl_voice
 
 struct hvl_tune
 {
-  TEXT                   ht_Name[128];
+  char                   ht_Name[128];
   uint16                 ht_SongNum;
   uint32                 ht_Frequency;
   float64                ht_FreqF;

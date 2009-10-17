@@ -2016,16 +2016,16 @@ void hvl_mixchunk( struct hvl_tune *ht, uint32 samples, int8 *buf1, int8 *buf2, 
 void hvl_DecodeFrame( struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod )
 {
   uint32 samples, loops;
-  
+
   samples = ht->ht_Frequency/50/ht->ht_SpeedMultiplier;
   loops   = ht->ht_SpeedMultiplier;
-  
+
   do
   {
     hvl_play_irq( ht );
     hvl_mixchunk( ht, samples, buf1, buf2, bufmod );
-    buf1 += samples * 4;
-    buf2 += samples * 4;
+    buf1 += samples * bufmod;
+    buf2 += samples * bufmod;
     loops--;
   } while( loops );
 }
@@ -2034,27 +2034,27 @@ void hvl_DecodeFrame( struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod 
 
 void hvl_playNote(struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod, struct hvl_voice *voice) {
   uint32 samples, loops;
-  
+
   samples = ht->ht_Frequency/50/ht->ht_SpeedMultiplier;
   loops   = ht->ht_SpeedMultiplier;
-  
+
   do
   {
     //hvl_play_irq( ht );
     //hvl_process_step( ht, &ht->ht_Voices[0] );
 	  int32  Note, Instr, donenotedel;
 	  struct hvl_step *Step;
-	  
+
 	  if( voice->vc_TrackOn == 0 )
 		return;
-	  
+
 	  voice->vc_VolumeSlideUp = voice->vc_VolumeSlideDown = 0;
-	  
+
 	  Step = &ht->ht_Tracks[ht->ht_Positions[ht->ht_PosNr].pos_Track[voice->vc_VoiceNum]][ht->ht_NoteNr];
-	  
+
 	  Note    = tune->curNote;
 	  Instr   = Step->stp_Instrument;
-	  
+
 	  // --------- 1.6: from here --------------
 
 	  donenotedel = 0;
@@ -2202,10 +2202,10 @@ void hvl_playNote(struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod, str
 		voice->vc_TrackPeriod = Note;
 		voice->vc_PlantPeriod = 1;
 	  }
-	  
+
 	  //hvl_process_stepfx_3( ht, voice, Step->stp_FX&0xf,  Step->stp_FXParam );  
 	  //hvl_process_stepfx_3( ht, voice, Step->stp_FXb&0xf, Step->stp_FXbParam );  
-	
+
 	hvl_process_frame( ht, &ht->ht_Voices[0] );
     ht->ht_NoteNr = -1;
 	hvl_set_audio( &ht->ht_Voices[0], ht->ht_Frequency );
@@ -2306,8 +2306,8 @@ void hvl_playNote(struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod, str
 //    ht->ht_Voices[i].vc_VUMeter = vu[i];
   //}
 
-    buf1 += samples * 4;
-    buf2 += samples * 4;
+    buf1 += samples * bufmod;
+    buf2 += samples * bufmod;
     loops--;
   } while( loops );
 }

@@ -18,7 +18,7 @@ pppt: main.o pt.o lft.o gui.o modes.o actions.o drivers/sdl/sdl_audio.o hvl_repl
 player:	player.o lft.o gui.o modes.o actions.o
 	$(CC) -o $@ $^ ${LIBS}
 
-sdl_gui: sdl_gui.o gui.o modes.o actions.o lft.o
+sdl_gui: sdl_gui.o pt.o gui.o modes.o actions.o lft.o
 	$(CC) -o $@ $^ ${LIBS}
 
 .PHONY:
