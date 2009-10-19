@@ -127,6 +127,9 @@ static void breakhandler(int a){
 
 static void draw_songed(const int x, const int y, const int w, const int h){
 	int i, k, pos;
+	/*int i;
+	int pos = 0;
+	*/
 	char buf[1024];
 	int j = 0;
 
@@ -138,6 +141,15 @@ static void draw_songed(const int x, const int y, const int w, const int h){
 		int space = 0;
 		pos = i/FONT_CH;
 		snprintf(buf, sizeof(buf), "%02x| ", j);
+		
+	/*for(i=0; (i+y < h) &&(i < h/FONT_CH) &&(i < tune->songlen); i+=(FONT_CH))
+	{
+		//pos = i/FONT_CH;
+		pos++;
+
+		snprintf(buf, sizeof(buf),
+			"%02x:__ __:__ __:__ __:__", pos);
+		*/
 		gui_text(x+SP,i+y+SP,buf,screen);
 		for(k = 0; k < 4; k++){
 			snprintf(buf, sizeof(buf),
@@ -148,6 +160,10 @@ static void draw_songed(const int x, const int y, const int w, const int h){
 		fprintf(stderr,"tune->songlen: %i\n", tune->songlen);
 		fprintf(stderr,"i: %i\n", i);
 		fprintf(stderr,"j: %i\n", j);
+
+		fprintf(stderr, "i: %i\n", i);
+		fprintf(stderr, "pos: %i\n", pos);
+		fprintf(stderr, "songlen: %i\n", tune->songlen);
 
 		// draw a box if selected
 		if(songy==pos){

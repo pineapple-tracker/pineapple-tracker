@@ -589,7 +589,7 @@ void lft_saveinstrument(char *fname){
 		fprintf(stderr, "save error!\n");
 		return;
 	}
-	
+
 	fprintf(f, "pineapple tune instrument\n");
 	fprintf(f, "version alphamega\n");
 	fprintf(f, "\n");

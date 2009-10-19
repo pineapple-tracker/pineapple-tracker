@@ -104,8 +104,10 @@ void _insertc(int c){
 		}
 		if(currtab == 1 && !trackx){
 			tune->trk[currtrack].line[tracky].note = x;
+			//htTune->ht_Tracks[currtrack][tracky].stp_Note = x;
 			if(x){
 				tune->trk[currtrack].line[tracky].instr = currinstr;
+				//htTune->ht_Tracks[currtrack][tracky].stp_Instrument = currinstr;
 			}else{
 				tune->trk[currtrack].line[tracky].instr = 0;
 			}
@@ -263,7 +265,7 @@ void _parsecmd(char cmd[]){
 		}
 	}else if(cmd[1] == 'c' && cmd[2] == ' '){
 		strncpy(comment, cmd+3, sizeof(comment));
-	}else 
+	}else
 		setdisplay("not a tracker command!");
 	return;
 }
@@ -275,18 +277,18 @@ void normalmode(int c){
 	// don't save the action for repeat if it's a movement or a repeat, or
 	// something else that doesnt make sense to repeat
 	if(c != 'h' &&
-		c != 'j' && 
-		c != 'k' && 
-		c != 'l' && 
-		c != CTRL('D') && 
-		c != CTRL('U') && 
-		c != CTRL('H') && 
-		c != CTRL('L') && 
-		c != 'H' && 
-		c != 'M' && 
-		c != 'L' && 
-		c != 'g' && 
-		c != 'G' && 
+		c != 'j' &&
+		c != 'k' &&
+		c != 'l' &&
+		c != CTRL('D') &&
+		c != CTRL('U') &&
+		c != CTRL('H') &&
+		c != CTRL('L') &&
+		c != 'H' &&
+		c != 'M' &&
+		c != 'L' &&
+		c != 'g' &&
+		c != 'G' &&
 		c != '.'){
 		lastaction = c;
 		lastrepeatnum = cmdrepeatnum;

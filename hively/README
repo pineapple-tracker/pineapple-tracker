@@ -1,17 +1,13 @@
-This is a proof-of-concept of trying to load .hvl and .ahx files into a 
+This is a proof-of-concept of trying to load .hvl and .ahx files into a
 pineapple tracker interface. Note that .ahx files have only four channels,
 like our .songformat, but .hvl files can have up to sixteen. We will have
 to figure out if we want to have a tracker that can load different file
 formats, and how that will be handled in the code. One idea I had was
 to have all the funcitons that will have to be different depending on
 which file format is loaded be determined at runtime using function pointers.
-For example, the drawsonged() function will have to be different if a 
+For example, the drawsonged() function will have to be different if a
 .hvl file with more than 4 channels is loaded. So we could have different
 drawsonged() functions, and the appropriate one could be assigned to the
 pointer to the drawsonged() function at runtime. This is just one idea
 that sounded cool, however, and may in fact be more complicated than
 necessary.
-
-Makefile
----------
-use 'make old' to build the version that works......

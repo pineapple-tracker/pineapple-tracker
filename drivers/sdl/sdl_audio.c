@@ -95,6 +95,7 @@ void hvlSdlCallBack(struct hvl_tune *ht, u8 *stream, int length){
 
     while(streamPos < length) {
 		hvl_DecodeFrame( htTune, (int8 *) htTune->hivelyLeft, (int8 *) htTune->hivelyRight, 2 );
+		//if(plonked) hvl_iedplonk(
 		for(i = 0; i < (HIVELY_LEN) && streamPos < length; i++) {
 		      out[streamPos++] = htTune->hivelyLeft[i];
 		      out[streamPos++] = htTune->hivelyRight[i];
@@ -103,4 +104,3 @@ void hvlSdlCallBack(struct hvl_tune *ht, u8 *stream, int length){
     hivelyIndex = i;
   }
 }
-

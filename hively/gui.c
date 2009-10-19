@@ -292,7 +292,7 @@ void handleinput(){
 			plonked = 0;
 			break;
 		default:
-			x = freqkey(c);	
+			x = freqkey(c);
 			if(x > 0) iedplonk(x);
 			break;
 		}

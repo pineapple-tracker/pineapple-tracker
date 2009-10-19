@@ -117,7 +117,7 @@ int lastrepeatnum;
 int highlight_firstline, highlight_lastline, highlight_lineamount;
 
 /* lines to be highlighted in visual mode */
-int highlight_firstx, highlight_firsty, highlight_lasty, highlight_lastx; 
+int highlight_firstx, highlight_firsty, highlight_lasty, highlight_lastx;
 
 /* ACTIONS */
 void act_bigmvdown(void);
@@ -163,8 +163,8 @@ int playsong;
 
 struct config_params {
 	int buffersize;
-	char *gui;
-	char *audio_driver;
+	char *gui; //sdl, ncurses, caca
+	char *audio_driver; //sdl
 	int samplefreq;
 };
 
