@@ -17,6 +17,8 @@ typedef int32_t s32;
 
 int smp_index = 0;
 
+SDL_AudioSpec requested, obtained;
+
 //static char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-",
 //				"G#", "A-", "A#", "H-"};
 
@@ -62,14 +64,16 @@ void callback(void *data, Uint8 *buf, int len){
 	fprintf(stderr, "reallength: %i\n", realLength);
 	if(smp_index < realLength){
 		for(i = 0; i < len; i ++){
-			out[i] = (modheader.sample[10].smpdata[smp_index]) + 128;
+			if(obtained.format == AUDIO_U8)
+				out[i] = (modheader.sample[10].smpdata[smp_index]) + 128;
+			else
+				out[i] = modheader.sample[10].smpdata[smp_index];
 			smp_index++;
 		}
 	}
 }
 
 int sdl_init(void){
-	SDL_AudioSpec requested, obtained;
 
 	if(SDL_Init(SDL_INIT_AUDIO) < 0){
 		printf("couldn't init SDL: %s\n", SDL_GetError());
@@ -86,7 +90,10 @@ int sdl_init(void){
 	SDL_OpenAudio(&requested, &obtained);
 
 	fprintf(stderr, "freq %d\n", obtained.freq);
-	fprintf(stderr, "format:%04x\n", obtained.format);
+	if(obtained.format == 0x0008)
+		fprintf(stderr, "format: AUDIO_U8\n");
+	else if(obtained.format == 0x8008)
+		fprintf(stderr, "format: AUDIO_S8\n");
 	fprintf(stderr, "samples:%d\n", obtained.samples);
 	fprintf(stderr, "channels:%d\n", obtained.channels);
 

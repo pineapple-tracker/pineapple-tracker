@@ -110,7 +110,7 @@ void hvl_GenTriangle( int8 *buf, uint32 len )
   d1  = 128/d5;
   d4  = -(d2 >> 1);
   val = 0;
-  
+
   for( i=0; i<d5; i++ )
   {
     *buf++ = val;
@@ -127,18 +127,18 @@ void hvl_GenTriangle( int8 *buf, uint32 len )
       *buf++ = val;
     }
   }
-  
+
   buf2 = buf + d4;
   for( i=0; i<d5*2; i++ )
   {
     int8 c;
-    
+
     c = *buf2++;
     if( c == 0x7f )
       c = 0x80;
     else
       c = -c;
-    
+
     *buf++ = c;
   }
 }
@@ -146,7 +146,7 @@ void hvl_GenTriangle( int8 *buf, uint32 len )
 void hvl_GenSquare( int8 *buf )
 {
   uint32 i, j;
-  
+
   for( i=1; i<=0x20; i++ )
   {
     for( j=0; j<(0x40-i)*2; j++ )
@@ -174,21 +174,21 @@ void hvl_GenFilterWaves( int8 *buf, int8 *lowbuf, int8 *highbuf )
 
   float64 freq;
   uint32  temp;
-  
+
   for( temp=0, freq=8.f; temp<31; temp++, freq+=3.f )
   {
     uint32 wv;
     int8   *a0 = buf;
-    
+
     for( wv=0; wv<6+6+0x20+1; wv++ )
     {
       float64 fre, high, mid, low;
       uint32  i;
-      
+
       mid = 0.f;
       low = 0.f;
       fre = freq * 1.25f / 100.0f;
-      
+
       for( i=0; i<=lentab[wv]; i++ )
       {
         high  = a0[i] - mid - low;
@@ -198,7 +198,7 @@ void hvl_GenFilterWaves( int8 *buf, int8 *lowbuf, int8 *highbuf )
         low  += mid * fre;
         low   = clip( low );
       }
-      
+
       for( i=0; i<=lentab[wv]; i++ )
       {
         high  = a0[i] - mid - low;
@@ -210,7 +210,7 @@ void hvl_GenFilterWaves( int8 *buf, int8 *lowbuf, int8 *highbuf )
         *lowbuf++  = (int8)low;
         *highbuf++ = (int8)high;
       }
-      
+
       a0 += lentab[wv]+1;
     }
   }
@@ -281,7 +281,7 @@ void hvl_reset_some_stuff( struct hvl_tune *ht )
     memset(&ht->ht_Voices[i].vc_VoiceBuffer,0,0x281);
     memset(&ht->ht_Voices[i].vc_RingVoiceBuffer,0,0x281);
   }
-  
+
   for( i=0; i<MAX_CHANNELS; i++ )
   {
     ht->ht_Voices[i].vc_WNRandom          = 0x280;
@@ -336,7 +336,7 @@ BOOL hvl_InitSubsong( struct hvl_tune *ht, uint32 nr )
   }
 
   hvl_reset_some_stuff( ht );
-  
+
   return TRUE;
 }
 
@@ -368,7 +368,7 @@ struct hvl_tune *hvl_load_ahx( uint8 *buf, uint32 buflen, uint32 defstereo, uint
   struct hvl_tune *ht;
   struct  hvl_plsentry *ple;
   int32 defgain[] = { 71, 72, 76, 85, 100 };
-  
+
   posn = ((buf[6]&0x0f)<<8)|buf[7];
   insn = buf[12];
   ssn  = buf[13];
@@ -386,7 +386,7 @@ struct hvl_tune *hvl_load_ahx( uint8 *buf, uint32 buflen, uint32 defstereo, uint
   bptr += posn*4*2; // Skip past the positions
   bptr += trkn*trkl*3;
   if((buf[6]&0x80)==0) bptr += trkl*3;
-  
+
   // *NOW* we can finally calculate PList space
   for( i=1; i<=insn; i++ )
   {
@@ -401,10 +401,10 @@ struct hvl_tune *hvl_load_ahx( uint8 *buf, uint32 buflen, uint32 defstereo, uint
     printf( "Out of memory!\n" );
     return NULL;
   }
-  
+
   ht->ht_Frequency       = freq;
   ht->ht_FreqF           = (float64)freq;
-  
+
   ht->ht_Positions   = (struct hvl_position *)(&ht[1]);
   ht->ht_Instruments = (struct hvl_instrument *)(&ht->ht_Positions[posn]);
   ht->ht_Subsongs    = (uint16 *)(&ht->ht_Instruments[(insn+1)]);
@@ -1285,7 +1285,7 @@ void hvl_plist_command_parse( struct hvl_tune *ht, struct hvl_voice *voice, int3
       voice->vc_RingNewWaveform = 1;
       voice->vc_RingPlantPeriod = 1;
       break;
-
+	//orly
     case 8:  // Ring modulate with sawtooth
       if(( FXParam >= 1 ) && ( FXParam <= 0x3C ))
       {
@@ -1323,7 +1323,7 @@ void hvl_plist_command_parse( struct hvl_tune *ht, struct hvl_voice *voice, int3
         voice->vc_NoteMaxVolume = FXParam;
         break;
       }
-      
+
       if( (FXParam -= 0x50) < 0 ) break;
 
       if( FXParam <= 0x40 )
@@ -1331,17 +1331,17 @@ void hvl_plist_command_parse( struct hvl_tune *ht, struct hvl_voice *voice, int3
         voice->vc_PerfSubVolume = FXParam;
         break;
       }
-      
+
       if( (FXParam -= 0xa0-0x50) < 0 ) break;
-      
+
       if( FXParam <= 0x40 )
         voice->vc_TrackMasterVolume = FXParam;
       break;
-    
+
     case 15:
       voice->vc_PerfSpeed = voice->vc_PerfWait = FXParam;
       break;
-  } 
+  }
 }
 
 void hvl_process_frame( struct hvl_tune *ht, struct hvl_voice *voice )
@@ -1358,16 +1358,16 @@ void hvl_process_frame( struct hvl_tune *ht, struct hvl_voice *voice )
     else
       voice->vc_NoteDelayWait--;
   }
-  
+
   if( voice->vc_HardCut )
   {
     int32 nextinst;
-    
+
     if( ht->ht_NoteNr+1 < ht->ht_TrackLength )
       nextinst = ht->ht_Tracks[voice->vc_Track][ht->ht_NoteNr+1].stp_Instrument;
     else
       nextinst = ht->ht_Tracks[voice->vc_NextTrack][0].stp_Instrument;
-    
+
     if( nextinst )
     {
       int32 d1;
@@ -1453,13 +1453,13 @@ void hvl_process_frame( struct hvl_tune *ht, struct hvl_voice *voice )
 
       if( d0 > 0 )
         d2 = -d2;
-      
+
       if( d0 )
       {
         int32 d3;
-         
+
         d3 = (d0 + d2) ^ d0;
-        
+
         if( d3 >= 0 )
           d0 = voice->vc_PeriodSlidePeriod + d2;
         else
