@@ -31,9 +31,9 @@ static Uint32 boxcolor;
 static int voffs;
 static int colh;
 
-pineapple_tune tune;
+//pineapple_tune tune;
 
-int main(int argc, char *args[]){
+int main(int argc, char **argv){
 	int tick;
 
 	//------------------------------------------------------------------\\
@@ -42,6 +42,7 @@ int main(int argc, char *args[]){
 	if(argc==1){
 		tune = pt_empty_tune();
 	}else{
+		tune = lft_loadfile(argv[1]);
 	}
 
 	if(SDL_Init(SDL_INIT_VIDEO)!=0)
@@ -125,22 +126,34 @@ static void breakhandler(int a){
 }
 
 static void draw_songed(const int x, const int y, const int w, const int h){
-	int i, pos;
+	int i, k, pos;
 	char buf[1024];
+	int j = 0;
 
 	for(i=0; (i+y < h)
-		&&(i < h/FONT_CH)
-		&&(i < tune->songlen); i+=(FONT_CH+2))
+		//&&(i < h/FONT_CH)
+		&&(j < tune->songlen); 
+		i+=(FONT_CH+2))
 	{
+		int space = 0;
 		pos = i/FONT_CH;
-		snprintf(buf, sizeof(buf),
-			"%02x:__ __:__ __:__ __:__", pos);
+		snprintf(buf, sizeof(buf), "%02x| ", j);
 		gui_text(x+SP,i+y+SP,buf,screen);
+		for(k = 0; k < 4; k++){
+			snprintf(buf, sizeof(buf),
+				"%02x:%02x", tune->sng[j].track[k], tune->sng[j].transp[k]);
+			gui_text(x+(space+=40),i+y+SP,buf,screen);
+		}
+
+		fprintf(stderr,"tune->songlen: %i\n", tune->songlen);
+		fprintf(stderr,"i: %i\n", i);
+		fprintf(stderr,"j: %i\n", j);
 
 		// draw a box if selected
 		if(songy==pos){
 			gui_box(x,i,w,FONT_CH+(SP*2),boxcolor,screen);
 		}
+		j++;
 	}
 	gui_box(x,y,w,h,boxcolor,screen);
 }
@@ -242,13 +255,13 @@ static void handle_key_normal(SDL_Event *ev){
 	}
 }
 
-static void update_main(SDL_Surface *screen){
+//static void update_main(SDL_Surface *screen){
 	//unsigned int pos;
 
 	//draw_songed(SP,voffs,230+(SP*2),colh);
 	//draw_tracked(230+(SP*4),voffs,100,colh);
 	//draw_instred(230+100*(SP*8),voffs,100,colh);
-}
+//}
 
 
 // \\ // \\ // \\  //

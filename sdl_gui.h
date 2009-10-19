@@ -51,4 +51,4 @@ void gui_draw_activity(int dt);
 void gui_activity(int trk);
 
 void gui_draw_screen(GUI_pages page);*/
-static void update_main(SDL_Surface *screen);
+//static void update_main(SDL_Surface *screen);

@@ -56,13 +56,13 @@ struct mod_header modheader;
 void callback(void *data, Uint8 *buf, int len){
 	int i;
 	s8 *out;
-	u32 realLength = (modheader.sample[9].length) * 2;
+	u32 realLength = (modheader.sample[10].length) * 2;
 	fprintf(stderr, "len: %i\n", len);
 	out = (s8*) buf;
 	fprintf(stderr, "reallength: %i\n", realLength);
 	if(smp_index < realLength){
 		for(i = 0; i < len; i ++){
-			out[i] = (modheader.sample[9].smpdata[smp_index]) + 128;
+			out[i] = (modheader.sample[10].smpdata[smp_index]) + 128;
 			smp_index++;
 		}
 	}
