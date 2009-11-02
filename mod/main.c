@@ -15,7 +15,8 @@ typedef int8_t s8;
 typedef int16_t s16;
 typedef int32_t s32;
 
-int smp_index = 0;
+double smp_index = 0;
+double freq = 0.105;
 
 SDL_AudioSpec requested, obtained;
 
@@ -58,17 +59,22 @@ struct mod_header modheader;
 void callback(void *data, Uint8 *buf, int len){
 	int i;
 	s8 *out;
-	u32 realLength = (modheader.sample[10].length) * 2;
-	fprintf(stderr, "len: %i\n", len);
+	u32 realLength = (modheader.sample[0].length) * 2;
+	//fprintf(stderr, "len: %i\n", len);
 	out = (s8*) buf;
-	fprintf(stderr, "reallength: %i\n", realLength);
+	//fprintf(stderr, "reallength: %i\n", realLength);
+	//fprintf(stderr, "smp_index: %f\n", smp_index);
 	if(smp_index < realLength){
+		//for(i = 0; i < realLength; i ++){
 		for(i = 0; i < len; i ++){
 			if(obtained.format == AUDIO_U8)
-				out[i] = (modheader.sample[10].smpdata[smp_index]) + 128;
+				out[i] = (modheader.sample[0].smpdata[(int)smp_index]) + 128;
 			else
-				out[i] = modheader.sample[10].smpdata[smp_index];
-			smp_index++;
+				out[i] = modheader.sample[0].smpdata[(int)smp_index];
+			smp_index+=freq;
+			if(smp_index >= realLength)
+				smp_index = 0;
+			//fprintf(stderr, "smp_index: %f\n", smp_index);
 		}
 	}
 }
@@ -83,7 +89,7 @@ int sdl_init(void){
 
 	requested.freq = 44100;
 	requested.format = AUDIO_S8;
-	requested.samples = 2048;
+	requested.samples = 512;
 	requested.channels = 1;
 	requested.callback = callback;
 
@@ -219,6 +225,7 @@ int main(int argc, char **argv){
 				u16 period;
 				u8 effect;
 				u8 param;
+				u8 closestNote;
 
 				fread(cell, 4, 1, modfile);
 
@@ -227,26 +234,22 @@ int main(int argc, char **argv){
 				effect = cell[2] & 0xf;
 				param = cell[3];
 
-				//looping through the period table
-				/*u8 closestNote = 0;
-				u16 closestDist = 0xffff; //make sure the first comparison sets the closet note
-				u16 newDist;
-				*/
-
 				if(period == 0){
-					period = MOD_NO_NOTE; //period 0 is no note
+					closestNote = MOD_NO_NOTE; //period 0 is no note
 				}
 
-				/*else {
+				else {
+				u16 closestDist = 0xffff; //make sure the first comparison sets the closet note
+				closestNote = 0;
+				//looping through the period table
 					for(i = 0; i < 12*5; i++){
-						newDist = abs(period = periodTable[i]);
+						u16 newDist = abs(period - periodTable[i]);
 						if(newDist < closestDist){
-							closestNote = i;
+							closestNote = (u8)i;
 							closestDist = newDist;
 						}
 					}
 				}
-				*/
 
 				if(sample == 0){
 					sample = MOD_NO_SAMPLE;
@@ -265,8 +268,7 @@ int main(int argc, char **argv){
 				outCell[2] = effect;
 				outCell[3] = param;
 				*/
-				//modheader.patterns[curPattern].pattern_entry[row][column].period = closestNote;
-				modheader.patterns[curPattern].pattern_entry[row][column].period = period;
+				modheader.patterns[curPattern].pattern_entry[row][column].period = closestNote;
 				modheader.patterns[curPattern].pattern_entry[row][column].sample = sample;
 				modheader.patterns[curPattern].pattern_entry[row][column].effect = effect;
 				modheader.patterns[curPattern].pattern_entry[row][column].param = param;
@@ -319,21 +321,18 @@ int main(int argc, char **argv){
 		printf("%i : %i\n", i, modheader.order[i]);
 
 	for(row = 0; row < 64; row++){
-		printf("%i %x %x %02x\n", modheader.patterns[0].pattern_entry[row][3].period,
-			modheader.patterns[0].pattern_entry[row][3].sample + 1,
-			modheader.patterns[0].pattern_entry[row][3].effect,
-			modheader.patterns[0].pattern_entry[row][3].param);
+		printf("%i %x %x %02x\n", modheader.patterns[0].pattern_entry[row][0].period,
+			modheader.patterns[0].pattern_entry[row][0].sample + 1,
+			modheader.patterns[0].pattern_entry[row][0].effect,
+			modheader.patterns[0].pattern_entry[row][0].param);
 	}
 
-
-
-	/*if(sdl_init() == 0){
+	if(sdl_init() == 0){
 		SDL_PauseAudio(0);
 		getchar();
 		SDL_PauseAudio(1);
 		SDL_Quit();
 	}
-	*/
 
 	return 0;
 }
