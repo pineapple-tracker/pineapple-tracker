@@ -176,6 +176,8 @@ int main(int argc, char **argv){
 
 	fread(&modheader.order, 128, 1 , modfile);
 
+	fread(&trash, 4, 1, modfile);
+
 	/*~ load patterns ~*/
 	for(i = 0; i < modheader.orderCount; i++){
 		if(modheader.order[i] > highestPattern)
@@ -263,6 +265,7 @@ int main(int argc, char **argv){
 				outCell[2] = effect;
 				outCell[3] = param;
 				*/
+				//modheader.patterns[curPattern].pattern_entry[row][column].period = closestNote;
 				modheader.patterns[curPattern].pattern_entry[row][column].period = period;
 				modheader.patterns[curPattern].pattern_entry[row][column].sample = sample;
 				modheader.patterns[curPattern].pattern_entry[row][column].effect = effect;
@@ -315,21 +318,22 @@ int main(int argc, char **argv){
 	for(i = 0; i < modheader.orderCount; i++)
 		printf("%i : %i\n", i, modheader.order[i]);
 
-/*	for(row = 0; row < 64; row++){
-		printf("%i %x %x %x\n", modheader.patterns[7].pattern_entry[row][0].period,
-			modheader.patterns[7].pattern_entry[row][0].sample + 1,
-			modheader.patterns[7].pattern_entry[row][0].effect,
-			modheader.patterns[7].pattern_entry[row][0].param);
+	for(row = 0; row < 64; row++){
+		printf("%i %x %x %02x\n", modheader.patterns[0].pattern_entry[row][3].period,
+			modheader.patterns[0].pattern_entry[row][3].sample + 1,
+			modheader.patterns[0].pattern_entry[row][3].effect,
+			modheader.patterns[0].pattern_entry[row][3].param);
 	}
-*/
 
 
-	if(sdl_init() == 0){
+
+	/*if(sdl_init() == 0){
 		SDL_PauseAudio(0);
 		getchar();
 		SDL_PauseAudio(1);
 		SDL_Quit();
 	}
+	*/
 
 	return 0;
 }
