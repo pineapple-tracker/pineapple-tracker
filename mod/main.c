@@ -7,6 +7,8 @@
 #define MOD_NO_NOTE	63
 #define MOD_NO_SAMPLE	31
 
+#define FREQ 44100
+
 typedef uint8_t u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
@@ -16,7 +18,12 @@ typedef int16_t s16;
 typedef int32_t s32;
 
 double smp_index = 0;
-double freq = 0.105;
+double note = 65.41; //c2
+
+int tick = 6;
+
+int currpatt;
+int currrow;
 
 SDL_AudioSpec requested, obtained;
 
@@ -56,27 +63,38 @@ struct mod_header {
 
 struct mod_header modheader;
 
+void play(void){
+	if(tick == 0)
+		update_row();
+	else
+		tick--;
+}
+
+void update_row(void){
+}
+
 void callback(void *data, Uint8 *buf, int len){
 	int i;
 	s8 *out;
-	u32 realLength = (modheader.sample[0].length) * 2;
+	u32 realLength = (modheader.sample[5].length) * 2;
 	//fprintf(stderr, "len: %i\n", len);
 	out = (s8*) buf;
 	//fprintf(stderr, "reallength: %i\n", realLength);
 	//fprintf(stderr, "smp_index: %f\n", smp_index);
-	if(smp_index < realLength){
+	//if(smp_index < realLength){
 		//for(i = 0; i < realLength; i ++){
-		for(i = 0; i < len; i ++){
+		for(i = 0; i < len; i++){
 			if(obtained.format == AUDIO_U8)
-				out[i] = (modheader.sample[0].smpdata[(int)smp_index]) + 128;
+				out[i] = (modheader.sample[5].smpdata[(int)smp_index]) + 128;
 			else
-				out[i] = modheader.sample[0].smpdata[(int)smp_index];
-			smp_index+=freq;
+				out[i] = modheader.sample[5].smpdata[(int)smp_index];
+			smp_index+=1/(((FREQ/note)/realLength));
+			//smp_index++;
 			if(smp_index >= realLength)
-				smp_index = 0;
+				smp_index -= realLength;
 			//fprintf(stderr, "smp_index: %f\n", smp_index);
 		}
-	}
+	//}
 }
 
 int sdl_init(void){
@@ -87,7 +105,7 @@ int sdl_init(void){
 		return 1;
 	}
 
-	requested.freq = 44100;
+	requested.freq = FREQ;
 	requested.format = AUDIO_S8;
 	requested.samples = 512;
 	requested.channels = 1;
