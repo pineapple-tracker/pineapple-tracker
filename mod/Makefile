@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -std=c99 -Wall $(SDL_CFLAGS)
+CFLAGS = -g -std=c99 -Wall -lm $(SDL_CFLAGS)
 
 SDL_CFLAGS = $(shell pkg-config --cflags sdl)
 
