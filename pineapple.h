@@ -205,6 +205,9 @@ typedef struct _pineapple_tune {
 	int currtab;
 	int saved;
 
+	int plonked;
+	int currnote;
+
 	void (*iedplonk)(int note, int instr, void *t);
 	void (*silence)(void);
 } pineapple_tune;

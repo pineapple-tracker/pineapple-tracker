@@ -61,7 +61,7 @@ s8 get_sample(struct mix_channel *chn){
 	if(chn->currnote == 0)
 		return 0;
 	chn->smp_index+=inc_table[chn->currnote]/((float)FREQ/8363.0);
-	if(modheader.sample[chn->currsample].length > 2){
+	if(modheader.sample[chn->currsample].looplength > 2){
 		if(chn->smp_index >= (modheader.sample[chn->currsample].looplength + modheader.sample[chn->currsample].loopstart))
 			chn->smp_index = modheader.sample[chn->currsample].loopstart;
 	}else{
@@ -78,11 +78,14 @@ s8 get_sample(struct mix_channel *chn){
 
 /* the worst mixer in the wurld */
 s8 mix(void){
-	s16 temp_buf;
+	s16 temp_buf = 0;
 	//only four channels for now...
 	for(int i = 0; i < 4; i++){
 		temp_buf += get_sample(&mix_channels[i]);
+		//LOG(i, i);
+		//LOG(temp_buf, i);
 	}
+	//LOG(temp_buf, i);
 	// >>6 to divide off the volume, >>2 to divide by 4 channels to prevent overflow
 	return temp_buf >> 8;
 }

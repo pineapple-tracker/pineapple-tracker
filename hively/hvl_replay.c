@@ -2285,15 +2285,15 @@ void hvl_playNote(struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod, str
         b += (j * panr[0]) >> 7;
         pos[0] += delta[0];
       //}
-      
+
       a = (a*ht->ht_mixgain)>>8;
       b = (b*ht->ht_mixgain)>>8;
-      
+
       *(int16 *)buf1 = a;
       *(int16 *)buf2 = b;
-      
+
       loops2--;
-      
+
       buf1 += bufmod;
       buf2 += bufmod;
     } while( loops2 > 0 );

@@ -615,7 +615,7 @@ int lft_loadinstrument(char *fname){
 	if(!f){
 		return -1;
 	}
-	
+
 	fr = nextfreeinstr();
 
 	while(!feof(f) && fgets(buf, sizeof(buf), f)){

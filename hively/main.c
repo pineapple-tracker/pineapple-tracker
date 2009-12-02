@@ -30,8 +30,8 @@ BOOL init( void )
 		return FALSE;
 	}
 
-	wanted.freq = FREQ; 
-	wanted.format = AUDIO_S16SYS; 
+	wanted.freq = FREQ;
+	wanted.format = AUDIO_S16SYS;
 	wanted.channels = 2; /* 1 = mono, 2 = stereo */
 	wanted.samples = OUTPUT_LEN; // HIVELY_LEN;
 
@@ -70,7 +70,7 @@ void mix_and_play( struct hvl_tune *ht, uint8 *stream, int length )
 			hvl_DecodeFrame( tune, (int8 *) hivelyLeft, (int8 *) hivelyRight, 2 );
 			for(i = 0; i < (HIVELY_LEN) && streamPos < length; i++) {
 				out[streamPos++] = hivelyLeft[i];
-		 		out[streamPos++] = hivelyRight[i];
+				out[streamPos++] = hivelyRight[i];
 			}
 		}
 		hivelyIndex = i;
@@ -87,7 +87,7 @@ void mix_and_play( struct hvl_tune *ht, uint8 *stream, int length )
 			hvl_playNote( tune, (int8 *) hivelyLeft, (int8 *) hivelyRight, 2, &tune->ht_Voices[0]);
 			for(i = 0; i < (HIVELY_LEN) && streamPos < length; i++) {
 				out[streamPos++] = hivelyLeft[i];
-		 		out[streamPos++] = hivelyRight[i];
+				out[streamPos++] = hivelyRight[i];
 			}
 		}
 		hivelyIndex = i;

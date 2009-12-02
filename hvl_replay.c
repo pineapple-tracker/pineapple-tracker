@@ -1997,7 +1997,7 @@ void hvl_mixchunk( struct hvl_tune *ht, uint32 samples, int8 *buf1, int8 *buf2, 
       *(int16 *)buf2 = b;
 
       loops--;
-      
+
       buf1 += bufmod;
       buf2 += bufmod;
     } while( loops > 0 );
@@ -2032,7 +2032,6 @@ void hvl_DecodeFrame( struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod 
 
 void hvl_iedplonk(int note, int instr, void *t){
 //void hvl_playNote(struct hvl_tune *ht, int8 *buf1, int8 *buf2, int32 bufmod, struct hvl_voice *voice) {
-  //plonked = TRUE;
   struct hvl_tune *ht;
   ht = (struct hvl_tune*)t;
   int8 *buf1 = (int8 *)  ht->hivelyLeft;
@@ -2317,7 +2316,6 @@ void hvl_iedplonk(int note, int instr, void *t){
     buf2 += samples * bufmod;
     loops--;
   } while( loops );
-  //plonked = FALSE;
 }
 
 /*int hvl_save_ahx(struct hvl_tune *ht, sturct pineapple_tune *pt){

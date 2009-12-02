@@ -114,7 +114,11 @@ void _insertc(int c){
 			if(x) {
 				//shouldn't have to use this if statement...grr...
 				if(tune->type == LFT) tune->iedplonk(x, currinstr, tune);
-				if(tune->type == AHX) tune->iedplonk(x, currinstr, htTune);
+				//if(tune->type == AHX) tune->iedplonk(x, currinstr, htTune);
+				if(tune->type == AHX){
+					tune->plonked = 1;
+					tune->currnote = x;
+				}
 			}
 			//if(x){
 				//hvl_playNote(htTune, (int8 *) hivelyLeft, (int8 *) hivelyRight, 2, &htTune->ht_Voices[0]);
@@ -660,6 +664,7 @@ void normalmode(int c){
 			break;
 		case ' ':
 			silence();
+			tune->plonked = 0;
 			break;
 		// TODO: make an act_ function for '`'
 		case '`':

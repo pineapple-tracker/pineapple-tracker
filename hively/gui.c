@@ -293,7 +293,8 @@ void handleinput(){
 			break;
 		default:
 			x = freqkey(c);
-			if(x > 0) iedplonk(x);
+			if(x) tune->ht_Tracks[currtrack][tracky].stp_Note = x;
+			if(x) iedplonk(x);
 			break;
 		}
 	}
