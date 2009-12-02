@@ -45,52 +45,6 @@ const double inc_table[60] = {
 	4.000000, 4.237852, 4.489848, 4.756828, 5.039684, 5.339359, 5.656854, 5.993228, 6.349604, 6.727171, 7.127190, 7.550995,
 };
 
-struct sample_header {
-	u8 name[22]; //22 bytes
-	u16 length; //2 bytes
-	u8 finetune; //1 byte
-	u8 vol; //1 byte
-	u16 loopstart; //2 bytes
-	u16 looplength; //2 bytes //more like loop-end
-	char *smpdata; //1 byte
-};
-
-struct pattern_entry {
-	u16 period;
-	u8 sample;
-	u8 effect;
-	u8 param;
-};
-
-struct pattern {
-	struct pattern_entry pattern_entry[64][4];
-};
-
-struct mod_header {
-	char name[20];
-	struct sample_header sample[31];
-	u8 order[128];
-	//u8 **pattern;
-	struct pattern *patterns;
-	u8 orderCount;
-	u8 patternCount;
-	int speed;
-	int tempo;
-};
-
-struct mix_channel {
-	char *data;
-	double smp_index;
-	double inc;
-	u32 vol;
-	u32 length;
-	u32 looplength;
-
-	int currsample;
-	int currnote;
-}mix_channels[4];
-
-struct mod_header modheader;
 
 void init_player(void){
 	modheader.speed = 3;
@@ -103,11 +57,12 @@ void init_player(void){
 	currorder = 0;
 }
 
-void get_sample(struct mix_channel *chn){
-	chn->smp_index+=inc_table[currnote]/((float)FREQ/8363.0);
+int get_sample(struct mix_channel *chn){
+	chn->smp_index+=inc_table[chn->currnote]/((float)FREQ/8363.0);
+	return modheader.sample[chn->currsample].smpdata[(int)chn->smp_index];
 }
 
-void update(void){
+void process_tick(void){
 	if(tick >= modheader.speed){
 		tick = 0;
 		process_row();
@@ -151,9 +106,12 @@ void callback(void *data, Uint8 *buf, int len){
 		//LOG(buffer_left, i);
 		if(samples_left <= 0){
 			//CHECK(1);
-			update();
+			process_tick();
 			samples_left = samples_per_tick;
 			//LOG(samples_left, i);
+			CHECK(ifstatement);
+			LOG(buffer_left, i);
+			LOG(samples_left, i);
 		}
 		while((buffer_left > 0) && (samples_left > 0)){
 			/* probably should wrap this up into its own function... */
@@ -175,11 +133,14 @@ void callback(void *data, Uint8 *buf, int len){
 			pos += 1;
 			buffer_left -= 1;
 			samples_left -= 1;
+			CHECK(inner-loop);
+			LOG(buffer_left, i);
+			LOG(samples_left, i);
 		}
 	}
-	//CHECK(3);
-	//LOG(buffer_left, i);
-	//LOG(samples_left, i);
+	CHECK(post-loop);
+	LOG(buffer_left, i);
+	LOG(samples_left, i);
 }
 
 int sdl_init(void){
