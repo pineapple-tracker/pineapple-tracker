@@ -18,7 +18,7 @@ int currsample;
 int currnote;
 int tick = 6;
 int last_sample;
-double samples_per_tick;
+int samples_per_tick;
 int samples_left; //counter
 
 SDL_AudioSpec requested, obtained;
@@ -34,6 +34,9 @@ SDL_AudioSpec requested, obtained;
 	261.63, 277.18, 293.66, 311.13, 329.63, 349.23, 369.99, 392, 415.3, 440, 466.16, 493.88 //C-5..B-5
 };
 */
+/*smp_index+=(
+pow(2.0, (currnote-24.0)/12.0)*1.0)
+/((float)FREQ/8363.0);*/
 const double inc_table[60] = {
 	0.250000, 0.264866, 0.280616, 0.297302, 0.314980, 0.333710, 0.353553, 0.374577, 0.396850, 0.420448, 0.445449, 0.471937,
 	0.500000, 0.529732, 0.561231, 0.594604, 0.629961, 0.667420, 0.707107, 0.749154, 0.793701, 0.840896, 0.890899, 0.943874,
@@ -48,7 +51,7 @@ struct sample_header {
 	u8 finetune; //1 byte
 	u8 vol; //1 byte
 	u16 loopstart; //2 bytes
-	u16 looplength; //2 bytes
+	u16 looplength; //2 bytes //more like loop-end
 	char *smpdata; //1 byte
 };
 
@@ -75,12 +78,24 @@ struct mod_header {
 	int tempo;
 };
 
+struct mix_channel {
+	char *data;
+	double smp_index;
+	double inc;
+	u32 vol;
+	u32 length;
+	u32 looplength;
+
+	int currsample;
+	int currnote;
+}mix_channels[4];
+
 struct mod_header modheader;
 
 void init_player(void){
 	modheader.speed = 3;
 	modheader.tempo = 150;
-	samples_per_tick = FREQ / ((modheader.tempo*2)/5);
+	samples_per_tick = FREQ / (2 * modheader.tempo / 5);
 	samples_left = samples_per_tick;
 	tick = 0;
 	currpatt = modheader.order[0];
@@ -88,15 +103,21 @@ void init_player(void){
 	currorder = 0;
 }
 
+void get_sample(struct mix_channel *chn){
+	chn->smp_index+=inc_table[currnote]/((float)FREQ/8363.0);
+}
+
 void update(void){
-	if(tick == 0){
-		tick = modheader.speed;
+	if(tick >= modheader.speed){
+		tick = 0;
 		process_row();
 	}else
-		tick--;
+		tick++;
 }
 
 void process_row(void){
+	//iterate through channels
+	//for(int i = 0; i < 4; i++){
 	if(modheader.patterns[currpatt].pattern_entry[currrow][0].sample == MOD_NO_SAMPLE)
 		currsample = last_sample;
 	else{
@@ -105,8 +126,8 @@ void process_row(void){
 		smp_index = 0;
 	}
 	if(modheader.patterns[currpatt].pattern_entry[currrow][0].period != MOD_NO_NOTE)
-		//currnote = note_table[modheader.patterns[currpatt].pattern_entry[currrow][0].period];
 		currnote = modheader.patterns[currpatt].pattern_entry[currrow][0].period;
+	//}
 
 	if(currrow++ >= 64){
 		currrow = 0;
@@ -121,32 +142,27 @@ void callback(void *data, Uint8 *buf, int len){
 	int buffer_left = len;
 	s8 *out;
 	//these real bullshits need to be phased out >:(
-	u32 realLength = (modheader.sample[currsample].length) * 2;
-	u32 realLoopStart = (modheader.sample[currsample].loopstart) * 2;
-	u32 realLoopLength = (modheader.sample[currsample].looplength) * 2;
+	u32 realLength = (modheader.sample[currsample].length);
+	u32 realLoopStart = (modheader.sample[currsample].loopstart);
+	u32 realLoopLength = (modheader.sample[currsample].looplength);
 	out = (s8*) buf;
+	//LOG(buffer_left, i);
 	while(buffer_left > 0){
 		//LOG(buffer_left, i);
-		//CHECK(hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii);
 		if(samples_left <= 0){
 			//CHECK(1);
 			update();
 			samples_left = samples_per_tick;
+			//LOG(samples_left, i);
 		}
-		while((buffer_left > 0) || (samples_left > 0)){
-			//CHECK(2);
+		while((buffer_left > 0) && (samples_left > 0)){
 			/* probably should wrap this up into its own function... */
 			/* sometimes you get unsigned audio even if you ask for signed :| */
 			if(obtained.format == AUDIO_U8)
 				out[pos] = (modheader.sample[currsample].smpdata[(int)smp_index]) + 128;
 			else
 				out[pos] = modheader.sample[currsample].smpdata[(int)smp_index];
-			/*smp_index+=(
-			pow(2.0, (currnote-24.0)/12.0)*1.0)
-			/((float)FREQ/8363.0);*/
 			smp_index+=inc_table[currnote]/((float)FREQ/8363.0);
-			//LOG(currnote, f);
-			//LOG((pow(2.0, (currnote-24.0)/12.0)*1.0) / ((float)FREQ/8363.0), f);
 			if(realLoopLength > 2){
 				if(smp_index >= (realLoopStart+realLoopLength))
 					smp_index = realLoopStart;
@@ -161,6 +177,9 @@ void callback(void *data, Uint8 *buf, int len){
 			samples_left -= 1;
 		}
 	}
+	//CHECK(3);
+	//LOG(buffer_left, i);
+	//LOG(samples_left, i);
 }
 
 int sdl_init(void){
@@ -253,18 +272,22 @@ int main(int argc, char **argv){
 	for(i = 0; i < 31; i++){
 		fread(&modheader.sample[i], 30, 1, modfile);
 		modheader.sample[i].smpdata = NULL;
-
+		/* these bit shifty hacks only work because length, loopstart and
+		looplength are u16 */
 		modheader.sample[i].length =
 			( ((modheader.sample[i].length & 0xff) << 8) |
-				(modheader.sample[i].length >> 8) );
-
+				(modheader.sample[i].length >> 8) ) * 2; /*just times it by two when you
+														  *load it the FIRST time.
+													      *most samples will fit in a u16
+														  *when multiplied by two but some
+														  *probably won't!*/
 		modheader.sample[i].loopstart =
 			( ((modheader.sample[i].loopstart & 0xff) << 8) |
-				(modheader.sample[i].loopstart >> 8) );
+				(modheader.sample[i].loopstart >> 8) ) * 2;
 
 		modheader.sample[i].looplength =
 			( ((modheader.sample[i].looplength & 0xff) << 8) |
-				(modheader.sample[i].looplength >> 8) );
+				(modheader.sample[i].looplength >> 8) ) * 2;
 	}
 
 	/*~ load orders ~*/
@@ -371,7 +394,7 @@ int main(int argc, char **argv){
 
 	/* ~~ load sample datas ~~ */
 	for(i = 0; i < 31; i++){
-		int realLength = (modheader.sample[i].length) * 2;
+		int realLength = (modheader.sample[i].length);
 		if(realLength != 0){
 			modheader.sample[i].smpdata = malloc(realLength);
 			if(modheader.sample[i].smpdata != NULL){
@@ -384,7 +407,7 @@ int main(int argc, char **argv){
 	//done reading modfile
 	fclose(modfile);
 
-	fwrite(modheader.sample[30].smpdata, (modheader.sample[30].length * 2), 1, samplefile);
+	fwrite(modheader.sample[30].smpdata, (modheader.sample[30].length), 1, samplefile);
 
 	fclose(samplefile);
 
