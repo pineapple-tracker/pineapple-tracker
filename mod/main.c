@@ -45,7 +45,6 @@ const double inc_table[60] = {
 	4.000000, 4.237852, 4.489848, 4.756828, 5.039684, 5.339359, 5.656854, 5.993228, 6.349604, 6.727171, 7.127190, 7.550995,
 };
 
-
 void init_player(void){
 	modheader.speed = 3;
 	modheader.tempo = 150;
@@ -59,6 +58,15 @@ void init_player(void){
 
 int get_sample(struct mix_channel *chn){
 	chn->smp_index+=inc_table[chn->currnote]/((float)FREQ/8363.0);
+	if(modheader.sample[chn->currsample].length > 2){
+		if(smp_index >= (modheader.sample[chn->currsample].looplength + modheader.sample[chn->currsample].loopstart))
+			chn->smp_index = modheader.sample[chn->currsample].loopstart;
+	}else{
+		if(smp_index >= modheader.sample[chn->currsample].length){
+			chn->currnote = 0;
+			chn->smp_index = 0;
+		}
+	}
 	return modheader.sample[chn->currsample].smpdata[(int)chn->smp_index];
 }
 
