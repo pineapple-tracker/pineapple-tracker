@@ -56,18 +56,35 @@ void init_player(void){
 	currorder = 0;
 }
 
-int get_sample(struct mix_channel *chn){
+s8 get_sample(struct mix_channel *chn){
+	//LOG(chn->currsample, i);
+	if(chn->currnote == 0)
+		return 0;
 	chn->smp_index+=inc_table[chn->currnote]/((float)FREQ/8363.0);
 	if(modheader.sample[chn->currsample].length > 2){
-		if(smp_index >= (modheader.sample[chn->currsample].looplength + modheader.sample[chn->currsample].loopstart))
+		if(chn->smp_index >= (modheader.sample[chn->currsample].looplength + modheader.sample[chn->currsample].loopstart))
 			chn->smp_index = modheader.sample[chn->currsample].loopstart;
 	}else{
-		if(smp_index >= modheader.sample[chn->currsample].length){
+		if(chn->smp_index >= modheader.sample[chn->currsample].length){
 			chn->currnote = 0;
 			chn->smp_index = 0;
 		}
 	}
-	return modheader.sample[chn->currsample].smpdata[(int)chn->smp_index];
+	if(obtained.format == AUDIO_U8)
+		return modheader.sample[chn->currsample].smpdata[(int)chn->smp_index] + 128;
+	else
+		return modheader.sample[chn->currsample].smpdata[(int)chn->smp_index];
+}
+
+/* the worst mixer in the wurld */
+s8 mix(void){
+	s16 temp_buf;
+	//only four channels for now...
+	for(int i = 0; i < 4; i++){
+		temp_buf += get_sample(&mix_channels[i]);
+	}
+	// >>6 to divide off the volume, >>2 to divide by 4 channels to prevent overflow
+	return temp_buf >> 8;
 }
 
 void process_tick(void){
@@ -80,17 +97,17 @@ void process_tick(void){
 
 void process_row(void){
 	//iterate through channels
-	//for(int i = 0; i < 4; i++){
-	if(modheader.patterns[currpatt].pattern_entry[currrow][0].sample == MOD_NO_SAMPLE)
-		currsample = last_sample;
-	else{
-		last_sample = modheader.patterns[currpatt].pattern_entry[currrow][0].sample;
-		currsample = last_sample;
-		smp_index = 0;
+	for(int i = 0; i < 4; i++){
+		if(modheader.patterns[currpatt].pattern_entry[currrow][i].sample == MOD_NO_SAMPLE)
+			mix_channels[i].currsample = mix_channels[i].last_sample;
+		else{
+			mix_channels[i].last_sample = modheader.patterns[currpatt].pattern_entry[currrow][i].sample;
+			mix_channels[i].currsample = mix_channels[i].last_sample;
+			mix_channels[i].smp_index = 0;
+		}
+		if(modheader.patterns[currpatt].pattern_entry[currrow][i].period != MOD_NO_NOTE)
+			mix_channels[i].currnote = modheader.patterns[currpatt].pattern_entry[currrow][i].period;
 	}
-	if(modheader.patterns[currpatt].pattern_entry[currrow][0].period != MOD_NO_NOTE)
-		currnote = modheader.patterns[currpatt].pattern_entry[currrow][0].period;
-	//}
 
 	if(currrow++ >= 64){
 		currrow = 0;
@@ -104,51 +121,33 @@ void callback(void *data, Uint8 *buf, int len){
 	int pos = 0;
 	int buffer_left = len;
 	s8 *out;
-	//these real bullshits need to be phased out >:(
-	u32 realLength = (modheader.sample[currsample].length);
-	u32 realLoopStart = (modheader.sample[currsample].loopstart);
-	u32 realLoopLength = (modheader.sample[currsample].looplength);
 	out = (s8*) buf;
-	//LOG(buffer_left, i);
 	while(buffer_left > 0){
 		//LOG(buffer_left, i);
 		if(samples_left <= 0){
 			//CHECK(1);
 			process_tick();
 			samples_left = samples_per_tick;
+			//CHECK(ifstatement);
+			//LOG(buffer_left, i);
 			//LOG(samples_left, i);
-			CHECK(ifstatement);
-			LOG(buffer_left, i);
-			LOG(samples_left, i);
 		}
 		while((buffer_left > 0) && (samples_left > 0)){
 			/* probably should wrap this up into its own function... */
 			/* sometimes you get unsigned audio even if you ask for signed :| */
-			if(obtained.format == AUDIO_U8)
-				out[pos] = (modheader.sample[currsample].smpdata[(int)smp_index]) + 128;
-			else
-				out[pos] = modheader.sample[currsample].smpdata[(int)smp_index];
-			smp_index+=inc_table[currnote]/((float)FREQ/8363.0);
-			if(realLoopLength > 2){
-				if(smp_index >= (realLoopStart+realLoopLength))
-					smp_index = realLoopStart;
-			}else{
-				if(smp_index >= realLength){
-					currnote = 0;
-					smp_index = 0;
-				}
-			}
+			out[pos] += mix();
+			//out[pos] = get_sample(&mix_channels[0]);
 			pos += 1;
 			buffer_left -= 1;
 			samples_left -= 1;
-			CHECK(inner-loop);
-			LOG(buffer_left, i);
-			LOG(samples_left, i);
+			//CHECK(inner-loop);
+			//LOG(buffer_left, i);
+			//LOG(samples_left, i);
 		}
 	}
-	CHECK(post-loop);
-	LOG(buffer_left, i);
-	LOG(samples_left, i);
+	//CHECK(post-loop);
+	//LOG(buffer_left, i);
+	//LOG(samples_left, i);
 }
 
 int sdl_init(void){

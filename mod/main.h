@@ -57,12 +57,15 @@ struct mix_channel {
 
 	int currsample;
 	int currnote;
+
+	int last_sample;
 }mix_channels[4];
 
 struct mod_header modheader;
 
 void process_row(void);
-int get_sample(struct mix_channel *chn);
+s8 get_sample(struct mix_channel *chn);
+s8 mix(void);
 void update(void);
 void init_player(void);
 
