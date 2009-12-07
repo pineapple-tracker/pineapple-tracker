@@ -21,6 +21,8 @@ int last_sample;
 int samples_per_tick;
 int samples_left; //counter
 
+int volume_levels = 64;
+
 SDL_AudioSpec requested, obtained;
 
 //static char *notenames[] = {"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-",
@@ -54,6 +56,8 @@ void init_player(void){
 	currpatt = modheader.order[0];
 	currrow = 0;
 	currorder = 0;
+	for(int i = 0; i < 4; i++)
+		mix_channels[i].vol = 64;
 }
 
 s8 get_sample(struct mix_channel *chn){
@@ -70,10 +74,7 @@ s8 get_sample(struct mix_channel *chn){
 			chn->smp_index = 0;
 		}
 	}
-	if(obtained.format == AUDIO_U8)
-		return modheader.sample[chn->currsample].smpdata[(int)chn->smp_index] + 128;
-	else
-		return modheader.sample[chn->currsample].smpdata[(int)chn->smp_index];
+	return modheader.sample[chn->currsample].smpdata[(int)chn->smp_index] * chn->vol / volume_levels;
 }
 
 /* the worst mixer in the wurld */
@@ -81,13 +82,13 @@ s8 mix(void){
 	s16 temp_buf = 0;
 	//only four channels for now...
 	for(int i = 0; i < 4; i++){
-		temp_buf += get_sample(&mix_channels[i]);
+		temp_buf += get_sample(&mix_channels[i]) * mix_channels[i].vol / volume_levels;
 		//LOG(i, i);
 		//LOG(temp_buf, i);
 	}
 	//LOG(temp_buf, i);
 	// >>6 to divide off the volume, >>2 to divide by 4 channels to prevent overflow
-	return temp_buf >> 8;
+	return temp_buf >> 2;
 }
 
 void process_tick(void){
@@ -107,9 +108,17 @@ void process_row(void){
 			mix_channels[i].last_sample = modheader.patterns[currpatt].pattern_entry[currrow][i].sample;
 			mix_channels[i].currsample = mix_channels[i].last_sample;
 			mix_channels[i].smp_index = 0;
+			if(modheader.patterns[currpatt].pattern_entry[currrow][i].effect == 0xc)
+				mix_channels[i].vol = modheader.patterns[currpatt].pattern_entry[currrow][i].param;
+			else
+				mix_channels[i].vol = volume_levels;
 		}
 		if(modheader.patterns[currpatt].pattern_entry[currrow][i].period != MOD_NO_NOTE)
 			mix_channels[i].currnote = modheader.patterns[currpatt].pattern_entry[currrow][i].period;
+		if(modheader.patterns[currpatt].pattern_entry[currrow][i].effect == 0xc)
+			mix_channels[i].vol = modheader.patterns[currpatt].pattern_entry[currrow][i].param;
+		//else
+		//	mix_channels[i].vol = volume_levels;
 	}
 
 	if(currrow++ >= 64){
@@ -136,21 +145,18 @@ void callback(void *data, Uint8 *buf, int len){
 			//LOG(samples_left, i);
 		}
 		while((buffer_left > 0) && (samples_left > 0)){
-			/* probably should wrap this up into its own function... */
 			/* sometimes you get unsigned audio even if you ask for signed :| */
-			out[pos] += mix();
-			//out[pos] = get_sample(&mix_channels[0]);
+			//if(obtained.format == AUDIO_U8)
+			//	out[pos] += (mix() + 128);
+			//else
+				out[pos] += mix();
+			//out[pos] = (get_sample(&mix_channels[2]) * mix_channels[2].vol / volume_levels) + 128;
+			//out[pos] = get_sample(&mix_channels[2]) + 128;
 			pos += 1;
 			buffer_left -= 1;
 			samples_left -= 1;
-			//CHECK(inner-loop);
-			//LOG(buffer_left, i);
-			//LOG(samples_left, i);
 		}
 	}
-	//CHECK(post-loop);
-	//LOG(buffer_left, i);
-	//LOG(samples_left, i);
 }
 
 int sdl_init(void){

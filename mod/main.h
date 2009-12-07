@@ -48,7 +48,7 @@ struct mod_header {
 };
 
 struct mix_channel {
-	char *data;
+	//char *data;
 	double smp_index;
 	double inc;
 	u32 vol;
