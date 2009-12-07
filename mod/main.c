@@ -48,8 +48,8 @@ const double inc_table[60] = {
 };
 
 void init_player(void){
-	modheader.speed = 3;
-	modheader.tempo = 150;
+	modheader.speed = 6;
+	modheader.tempo = 125;
 	samples_per_tick = FREQ / (2 * modheader.tempo / 5);
 	samples_left = samples_per_tick;
 	tick = 0;
@@ -117,8 +117,16 @@ void process_row(void){
 			mix_channels[i].currnote = modheader.patterns[currpatt].pattern_entry[currrow][i].period;
 		if(modheader.patterns[currpatt].pattern_entry[currrow][i].effect == 0xc)
 			mix_channels[i].vol = modheader.patterns[currpatt].pattern_entry[currrow][i].param;
+		if(modheader.patterns[currpatt].pattern_entry[currrow][i].effect == 0xf){
+			if(modheader.patterns[currpatt].pattern_entry[currrow][i].param > 0x1f)
+				modheader.tempo = modheader.patterns[currpatt].pattern_entry[currrow][i].param;
+			else
+				modheader.speed = modheader.patterns[currpatt].pattern_entry[currrow][i].param;
+		}
 		//else
 		//	mix_channels[i].vol = volume_levels;
+		//LOG(modheader.tempo, i);
+		//LOG(modheader.speed, i);
 	}
 
 	if(currrow++ >= 64){
