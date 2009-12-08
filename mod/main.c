@@ -65,10 +65,10 @@ s8 get_sample(struct mix_channel *chn){
 	if(chn->currnote == 0)
 		return 0;
 	chn->smp_index+=inc_table[chn->currnote]/((float)FREQ/8363.0);
-	if(modheader.sample[chn->currsample].looplength > 2){
+	if(modheader.sample[chn->currsample].looplength > 2){ //looping
 		if(chn->smp_index >= (modheader.sample[chn->currsample].looplength + modheader.sample[chn->currsample].loopstart))
 			chn->smp_index = modheader.sample[chn->currsample].loopstart;
-	}else{
+	}else{ //not looping
 		if(chn->smp_index >= modheader.sample[chn->currsample].length){
 			chn->currnote = 0;
 			chn->smp_index = 0;
@@ -125,11 +125,9 @@ void process_row(void){
 		}
 		//else
 		//	mix_channels[i].vol = volume_levels;
-		//LOG(modheader.tempo, i);
-		//LOG(modheader.speed, i);
 	}
-
-	if(currrow++ >= 64){
+	currrow++;
+	if(currrow >= 64){
 		currrow = 0;
 		if(currorder++ >= modheader.orderCount)
 			currorder = 0;
@@ -153,13 +151,12 @@ void callback(void *data, Uint8 *buf, int len){
 			//LOG(samples_left, i);
 		}
 		while((buffer_left > 0) && (samples_left > 0)){
-			/* sometimes you get unsigned audio even if you ask for signed :| */
-			//if(obtained.format == AUDIO_U8)
-			//	out[pos] += (mix() + 128);
-			//else
-				out[pos] += mix();
+			//for some reason i dont have to add 128 when i am using unsigned audio anymore ??
+			out[pos] += mix();
 			//out[pos] = (get_sample(&mix_channels[2]) * mix_channels[2].vol / volume_levels) + 128;
-			//out[pos] = get_sample(&mix_channels[2]) + 128;
+			//out[pos] = get_sample(&mix_channels[3]) + 128;
+			//LOG(mix_channels[3].currsample + 1, x);
+			//LOG(out[pos], i);
 			pos += 1;
 			buffer_left -= 1;
 			samples_left -= 1;
@@ -400,9 +397,9 @@ int main(int argc, char **argv){
 
 	for(i = 0; i < 31; i++)	{
 		printf("%0x: %s\n", i, modheader.sample[i].name);
-		printf("%0x: length:%i\n", i, modheader.sample[i].length);
-		printf("%0x: loopstart:%i\n", i, modheader.sample[i].loopstart);
-		printf("%0x: looplength:%i\n", i, modheader.sample[i].looplength);
+		printf("%0x: length:%x\n", i, modheader.sample[i].length);
+		printf("%0x: loopstart:%x\n", i, modheader.sample[i].loopstart);
+		printf("%0x: looplength:%x\n", i, modheader.sample[i].looplength);
 	}
 
 	printf("highest pattern: %i\n", highestPattern);
