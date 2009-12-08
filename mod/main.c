@@ -92,11 +92,11 @@ s8 mix(void){
 }
 
 void process_tick(void){
+	tick++;
 	if(tick >= modheader.speed){
 		tick = 0;
 		process_row();
-	}else
-		tick++;
+	}
 }
 
 void process_row(void){
@@ -118,9 +118,10 @@ void process_row(void){
 		if(modheader.patterns[currpatt].pattern_entry[currrow][i].effect == 0xc)
 			mix_channels[i].vol = modheader.patterns[currpatt].pattern_entry[currrow][i].param;
 		if(modheader.patterns[currpatt].pattern_entry[currrow][i].effect == 0xf){
-			if(modheader.patterns[currpatt].pattern_entry[currrow][i].param > 0x1f)
+			if(modheader.patterns[currpatt].pattern_entry[currrow][i].param > 0x1f){
 				modheader.tempo = modheader.patterns[currpatt].pattern_entry[currrow][i].param;
-			else
+				samples_per_tick = FREQ / (2 * modheader.tempo / 5);
+			}else
 				modheader.speed = modheader.patterns[currpatt].pattern_entry[currrow][i].param;
 		}
 		//else
@@ -150,7 +151,7 @@ void callback(void *data, Uint8 *buf, int len){
 			//LOG(buffer_left, i);
 			//LOG(samples_left, i);
 		}
-		while((buffer_left > 0) && (samples_left > 0)){
+		while((buffer_left >= 0) && (samples_left >= 0)){
 			//for some reason i dont have to add 128 when i am using unsigned audio anymore ??
 			out[pos] += mix();
 			//out[pos] = (get_sample(&mix_channels[2]) * mix_channels[2].vol / volume_levels) + 128;
