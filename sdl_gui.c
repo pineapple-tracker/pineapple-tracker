@@ -2,7 +2,7 @@
  * (C) David Olofson, 2003, 2006
  *   modified by the pineapple team, 2009
  */
-#include <SDL/SDL.h>
+#include <SDL.h>
 #include <signal.h>
 #include <stdio.h>
 
@@ -228,7 +228,7 @@ static void handle_key_normal(SDL_Event *ev){
 	case SDLK_PAGEDOWN:
 		act_bigmvdown();
 		break;
-	case SDLK_F1:
+	/*case SDLK_F1:
 	case SDLK_F2:
 	case SDLK_F3:
 	case SDLK_F4:
@@ -265,7 +265,7 @@ static void handle_key_normal(SDL_Event *ev){
 	case SDLK_KP9:
 	case SDLK_SPACE:
 	case SDLK_TAB:
-	case SDLK_ESCAPE:
+	case SDLK_ESCAPE:*/
 	default:
 		break;
 	}

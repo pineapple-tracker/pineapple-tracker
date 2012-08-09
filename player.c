@@ -1,6 +1,6 @@
 /* vi:set ts=8 sts=8 sw=8 noexpandtab: */
 #include <stdio.h>
-#include <SDL/SDL.h>
+#include <SDL.h>
 #include <caca.h>
 #ifndef WINDOWS
 #include <err.h>
@@ -52,7 +52,7 @@ int main(int argc, char **argv){
 		return 1;
 	}
 
-	caca_import_file(pineapple, "./pineapple", "");
+	caca_import_canvas_from_file(pineapple, "./pineapple", "");
 
 	atexit(SDL_Quit);
 
@@ -87,7 +87,7 @@ int main(int argc, char **argv){
 		caca_set_color_ansi(cv, caca_rand(0, 16), caca_rand(0, 16));
 		caca_put_str(cv, (xo - strlen("pineapple player")) / 2, (yo / 2) - 5, "pineapple player");
 		caca_set_color_ansi(cv, caca_rand(0, 16), caca_rand(0, 16));
-		caca_printf(cv, (xo - strlen("song pos ->   ")) / 2, (yo / 2) - 3, "song pos -> %x", songpos);
+		caca_printf(cv, (xo - strlen("song pos ->   ")) / 2, (yo / 2) - 3, "song pos -> %x", trackpos);
 		
 		for(i = 0; i < 4; i ++)
 			meter[i] = (osc[i].volume*20)/255;

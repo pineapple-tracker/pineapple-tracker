@@ -1,6 +1,6 @@
 #include "../../pineapple.h"
 #include "../../hvl_replay.h"
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 
 /* lft SDL audioInit function */
@@ -112,7 +112,7 @@ void hvlSdlCallBack(struct hvl_tune *ht, u8 *stream, int length){
 		}
 
 		while(streamPos < length) {
-			hvl_iedplonk(tune->currnote, currinstr, htTune);
+			//hvl_iedplonk(tune->currnote, currinstr, htTune);
 			for(i = 0; i < (HIVELY_LEN) && streamPos < length; i++) {
 				out[streamPos++] = htTune->hivelyLeft[i];
 				out[streamPos++] = htTune->hivelyRight[i];

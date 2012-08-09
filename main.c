@@ -1,7 +1,7 @@
 /* vi:set ts=8 sts=8 sw=8 noexpandtab: */
 #include <stdio.h>
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #ifndef WINDOWS
 #include <err.h>
