@@ -100,8 +100,13 @@ int main(int argc, char **argv){
 	}else{
 	//what happens if we load with no filename?
 		// make an empty tune?
-		//tune = pt_empty_tune();
-		tune = lft_loadfile("");
+		if((tune = pt_empty_tune())){
+			fprintf(stderr, "loaded empty tune\n");
+			sdl_init = lft_sdl_init;
+		}
+		if (!tune) {
+			exit(1);
+		}
 	}
 
 	if(sdl_init() == 0){

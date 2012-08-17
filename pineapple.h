@@ -179,7 +179,8 @@ void (*sdlCallback)(void); //function that changes depending on which type of fi
 
 enum {
 	LFT,
-	AHX
+	AHX,
+	PT
 };
 
 typedef struct _pineapple_tune {

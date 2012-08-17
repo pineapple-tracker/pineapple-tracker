@@ -4,6 +4,7 @@
 //---------------------------------------------------------------------------//
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "pineapple.h"
@@ -502,16 +503,12 @@ pineapple_tune *lft_loadfile(char *fname){
 		return NULL;
 	}
 
-	if (strlen(fname) == 0) {
-		fprintf(stderr, "no filename!\n");
-		exit(1);
-	}
-
 	snprintf(filename, sizeof(filename), "%s", fname);
 	//snprintf(t->filename, sizeof(filename), "%s", fname);
 
 	f = fopen(fname, "r");
 	if(!f){
+		fprintf(stderr, "couldn't open file!\n");
 		return NULL;
 	}
 
