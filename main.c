@@ -101,7 +101,6 @@ int main(int argc, char **argv){
 	//what happens if we load with no filename?
 		// make an empty tune?
 		//tune = pt_empty_tune();
-		/* FIXME: the function below segfaults! */
 		tune = lft_loadfile("");
 	}
 

@@ -502,6 +502,11 @@ pineapple_tune *lft_loadfile(char *fname){
 		return NULL;
 	}
 
+	if (strlen(fname) == 0) {
+		fprintf(stderr, "no filename!\n");
+		exit(1);
+	}
+
 	snprintf(filename, sizeof(filename), "%s", fname);
 	//snprintf(t->filename, sizeof(filename), "%s", fname);
 
