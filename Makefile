@@ -3,12 +3,13 @@ CFLAGS = -g -std=c99 -O2 -Wall -Wno-comment $(SDL_CFLAGS) \
 		$(NCURSES_CFLAGS)
 
 SDL_CFLAGS = $(shell sdl2-config --cflags)
-NCURSES_CFLAGS = $(shell ncurses5-config --cflags)
+
+NCURSES_CFLAGS = $(shell ncurses5.4-config --cflags || ncurses5-config --cflags)
+NCURSES_LIBS = $(shell ncurses5.4-config --libs || ncurses5-config --libs)
 
 LIBS = $(shell sdl2-config --libs) \
-	$(shell ncurses5-config --libs) \
+	$(NCURSES_LIBS) \
 	$(shell pkg-config --libs caca)
-	#$(shell pkg-config --libs jack)
 
 all: ptracker
 
