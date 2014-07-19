@@ -1,19 +1,20 @@
 CC = clang
 CFLAGS = -g -std=c99 -O2 -Wall -Wno-comment $(SDL_CFLAGS) \
-		$(NCURSES_CFLAGS)
-
-SDL_CFLAGS = $(shell sdl2-config --cflags)
-
-NCURSES_CFLAGS = $(shell ncurses5.4-config --cflags || ncurses5-config --cflags)
-NCURSES_LIBS = $(shell ncurses5.4-config --libs || ncurses5-config --libs)
+	$(NCURSES_CFLAGS)
 
 LIBS = $(shell sdl2-config --libs) \
 	$(NCURSES_LIBS) \
 	$(shell pkg-config --libs caca)
 
-all: ptracker
+SDL_CFLAGS = $(shell sdl2-config --cflags)
+NCURSES_CFLAGS = \
+	$(shell ncurses5.4-config --cflags || ncurses5-config --cflags)
+NCURSES_LIBS = \
+	$(shell ncurses5.4-config --libs || ncurses5-config --libs)
 
-ptracker: main.o pt.o lft.o gui.o modes.o actions.o drivers/sdl/sdl_audio.o hvl_replay.o
+all: pt
+
+pt: main.o pt.o lft.o gui.o modes.o actions.o drivers/sdl/sdl_audio.o hvl_replay.o
 	$(CC) -o $@ $^ ${LIBS}
 
 player:	player.o lft.o gui.o modes.o actions.o
@@ -26,4 +27,4 @@ sdl_gui: sdl_gui.o pt.o gui.o modes.o actions.o lft.o
 	clean
 clean:	
 	@echo "clean ..."
-	@rm -f *.o ptracker player sdl_gui
+	@rm -f *.o pt player sdl_gui
