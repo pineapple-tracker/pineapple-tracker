@@ -1,4 +1,4 @@
-CC = clang
+CC = gcc
 CFLAGS = -g -std=c99 -O2 -Wall -Wno-comment $(SDL_CFLAGS) \
 	$(NCURSES_CFLAGS)
 
