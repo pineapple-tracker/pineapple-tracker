@@ -22,6 +22,15 @@ included in pineapple tracker.
 Look at our SPEC file for a command reference. Not everything is implemented,
 yet... it's just a specification!
 
+To use pineapple-tracker, you need sdl installed. `brew install sdl` will work.
+
+Then, run make:
+```
+~/src/pineapple-tracker $ make
+~/src/pineapple-tracker $ ./pt songs/josh.song
+```
+
+And press Enter to play the loaded song.
 
 
 below is the original README:
