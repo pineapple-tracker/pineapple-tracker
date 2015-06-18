@@ -232,7 +232,7 @@ void _parsecmd(char cmd[]){
 		refresh();
 		endwin();
 		exit(0);
-	}else if(strcmp(cmd, ":quit") == 0){
+	}else if(strcmp(cmd, ":quit") == 0 || strcmp(cmd, ":q") == 0){
 		erase();
 		refresh();
 		endwin();
