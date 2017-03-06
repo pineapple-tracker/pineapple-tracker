@@ -8,9 +8,9 @@ NCURSES_CFLAGS := $(shell ncurses5-config --cflags)
 LIBS := -O2 $(shell pkg-config --libs sdl) \
 		$(shell ncurses5-config --libs)
 
-all: pt-hively
+all: pppt-hively
 
-pt-hively: main.o gui.o hvl_replay.o actions.o
+pppt-hively: main.o gui.o hvl_replay.o actions.o
 	$(CC) -g -o $@ $^ ${LIBS}
 
 %.o: %.c pineapple.h gui.h hvl_replay.h Makefile
@@ -19,4 +19,4 @@ pt-hively: main.o gui.o hvl_replay.o actions.o
 	clean
 clean:	
 	@echo "clean ..."
-	@rm -f *.o pt-hively
+	@rm -f *.o pineapple-hively
