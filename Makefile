@@ -4,8 +4,8 @@ CFLAGS = -g -std=c99 -O2 -Wall -Wno-comment $(SDL_CFLAGS) \
 
 SDL_CFLAGS = $(shell sdl2-config --cflags)
 
-NCURSES_CFLAGS = $(shell ncurses5.4-config --cflags || ncurses5-config --cflags)
-NCURSES_LIBS = $(shell ncurses5.4-config --libs || ncurses5-config --libs)
+NCURSES_CFLAGS = $(shell pkg-config --libs ncurses)
+NCURSES_LIBS = $(shell pkg-config --libs ncurses)
 
 LIBS = $(shell sdl2-config --libs) \
 	$(NCURSES_LIBS) \
