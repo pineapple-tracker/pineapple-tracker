@@ -27,4 +27,4 @@ sdl_gui: sdl_gui.o pt.o gui.o modes.o actions.o lft.o
 
 clean:	
 	@echo "clean ..."
-	@rm -f *.o ptracker player sdl_gui
+	@rm -f *.o drivers/sdl/*.o ptracker player sdl_gui

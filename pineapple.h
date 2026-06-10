@@ -12,7 +12,7 @@ typedef int8_t s8;
 typedef int16_t s16;
 typedef int32_t s32;
 
-u8 callbacktime;
+extern u8 callbacktime;
 char filename[1024];
 char *infinitemsg;
 char comment[1024];
