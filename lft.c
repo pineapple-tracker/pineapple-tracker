@@ -173,7 +173,7 @@ void silence(void){
 \\\  < void lft_iedplonk(int,int) >                                              .|
 ///  Plays a note.                                                           .\
  \\/\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\//
-void lft_iedplonk(int note, int instr, pineapple_tune *t){
+void lft_iedplonk(int note, int instr, void *t){
 	channel[0].tnote = note;
 	channel[0].inum = instr;
 	channel[0].iptr = 0;
