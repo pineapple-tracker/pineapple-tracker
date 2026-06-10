@@ -144,7 +144,7 @@ int main(int argc, char **argv){
 	printf("chnlvols:\n");
 
 	/* read in order of orders , 0xc0*/
-	it_header.orders = malloc(sizeof(it_header.ord_num));
+	it_header.orders = malloc(it_header.ord_num);
 	fread(it_header.orders, 1, it_header.ord_num, file);
 	for(int i = 0; i < it_header.ord_num; i++)
 		printf("%02x | ", it_header.orders[i]);
