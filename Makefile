@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -std=c99 -O2 -Wall -Wno-comment $(SDL_CFLAGS) \
+CFLAGS = -g -std=c99 -O2 -Wall -Wno-comment -fcommon $(SDL_CFLAGS) \
 		$(NCURSES_CFLAGS)
 
 SDL_CFLAGS = $(shell sdl2-config --cflags)
@@ -23,8 +23,8 @@ player:	player.o lft.o gui.o modes.o actions.o
 sdl_gui: sdl_gui.o pt.o gui.o modes.o actions.o lft.o
 	$(CC) -o $@ $^ ${LIBS}
 
-.PHONY:
-	clean
+.PHONY: all clean
+
 clean:	
 	@echo "clean ..."
 	@rm -f *.o ptracker player sdl_gui
